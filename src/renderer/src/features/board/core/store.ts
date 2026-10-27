@@ -272,6 +272,11 @@ export const useBoard = create<BoardState>((set, get) => {
       internal.future = []
       internal.tx = null
       internal.txDepth = 0
+      // The board's contents are gone, so are its pending changes.
+      internal.dirtyItems.clear()
+      internal.dirtyLinks.clear()
+      internal.dirtyBoardMeta = false
+      internal.dirtyViewport = false
       set({ ...initialView })
     },
 

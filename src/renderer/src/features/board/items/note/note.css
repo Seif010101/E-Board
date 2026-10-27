@@ -132,6 +132,11 @@
   transform: skew(-8deg) rotate(-4deg);
 }
 
+/* The pin (and the threads tied to it) sits over the top of the sheet: keep the text below it. */
+[data-board-theme='detective'] .nt__sheet {
+  padding-top: 32px;
+}
+
 /* Push pin centred on the thread anchor (top centre, 12px down). */
 .nt__pin {
   position: absolute;
@@ -174,7 +179,8 @@
   color: color-mix(in srgb, var(--nt-paper) 78%, #ffffff);
 }
 [data-board-theme='hacker'] .nt__sheet {
-  padding-top: 18px;
+  /* Clears the thread end node at the top-centre anchor. */
+  padding-top: 28px;
   border: 1px solid color-mix(in srgb, var(--nt-paper) 62%, transparent);
   border-top-width: 3px;
   border-radius: 3px;
