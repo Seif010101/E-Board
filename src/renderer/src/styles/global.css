@@ -444,7 +444,11 @@ a {
   }
 }
 
-/* Arabic letters must join: any letter-spacing makes Chromium render them disconnected. */
+/* Arabic letters must join: any letter-spacing makes Chromium render them disconnected, and the
+   typewriter face has fixed-width Arabic glyphs that look stretched. */
+:root[lang='ar'] {
+  --font-type: var(--font-ui);
+}
 :root[lang='ar'] * {
   letter-spacing: normal !important;
 }
