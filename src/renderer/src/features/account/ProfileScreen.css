@@ -1,0 +1,149 @@
+/* Profile page specifics; the shell, sections and rows come from accountPage.css. */
+
+/* ---------- Identity card ---------- */
+
+.acct-prof__hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 24px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(420px 160px at 0% 0%, var(--accent-soft), transparent 70%),
+    var(--surface);
+  box-shadow: var(--shadow-sm);
+  animation: acct-section-in 0.3s var(--ease) both;
+}
+[dir='rtl'] .acct-prof__hero {
+  background:
+    radial-gradient(420px 160px at 100% 0%, var(--accent-soft), transparent 70%),
+    var(--surface);
+}
+/* A pinned strand of red string across the card corner, echoing the evidence board. */
+.acct-prof__hero::after {
+  content: '';
+  position: absolute;
+  top: 18px;
+  inset-inline-end: -30px;
+  width: 190px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgb(195 38 43 / 0.55) 30%, rgb(195 38 43 / 0.55));
+  transform: rotate(-14deg);
+  pointer-events: none;
+}
+[dir='rtl'] .acct-prof__hero::after {
+  transform: rotate(14deg) scaleX(-1);
+}
+.acct-prof__avatar {
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.16),
+    0 0 0 4px var(--surface),
+    0 0 0 5px var(--border-strong),
+    0 10px 24px rgb(0 0 0 / 0.25);
+}
+.acct-prof__who {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.acct-prof__name {
+  font-size: 21px;
+  overflow-wrap: anywhere;
+}
+.acct-prof__username {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+[dir='rtl'] .acct-prof__username {
+  text-align: right;
+}
+.acct-prof__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+/* ---------- Forms ---------- */
+
+.acct-prof__name-form,
+.acct-prof__pw-form {
+  width: 100%;
+  max-width: 460px;
+}
+.acct-prof__inline {
+  display: flex;
+  gap: 8px;
+}
+.acct-prof__inline .input {
+  flex: 1;
+  min-width: 0;
+}
+.acct-prof__actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 4px;
+}
+.acct-prof__readonly {
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.acct-prof__danger-btn {
+  border-color: color-mix(in srgb, var(--danger) 55%, var(--border-strong));
+  color: var(--danger);
+  background: transparent;
+}
+.acct-prof__danger-btn:hover {
+  background: var(--danger-soft);
+}
+
+/* ---------- Dialogs ---------- */
+
+.acct-prof__dialog-form {
+  display: flex;
+  flex-direction: column;
+  padding-top: 4px;
+}
+.acct-prof__dialog-text {
+  margin-bottom: 14px;
+  color: var(--text-muted);
+}
+.acct-prof__code-field .auth-code {
+  max-width: none;
+}
+.acct-prof__warning {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
+  background: var(--danger-soft);
+}
+.acct-prof__warning svg {
+  flex: none;
+  margin-top: 1px;
+  color: var(--danger);
+}
+.acct-prof__warning p {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .acct-prof__hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

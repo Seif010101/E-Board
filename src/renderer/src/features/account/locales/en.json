@@ -1,0 +1,187 @@
+{
+  "account": {
+    "crumbs": {
+      "cases": "Cases"
+    },
+    "languages": {
+      "en": "English",
+      "ar": "العربية"
+    },
+    "menu": {
+      "open": "Account menu for {{name}}",
+      "profile": "Profile",
+      "settings": "Settings",
+      "language": "Language",
+      "theme": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "lock": "Lock now",
+      "signOut": "Sign out"
+    },
+    "profile": {
+      "title": "Profile",
+      "subtitle": "Your investigator identity and account security.",
+      "identity": "Investigator identity",
+      "memberSince": "Member since {{date}}",
+      "accountTitle": "Account",
+      "accountText": "How you appear in E-Board.",
+      "displayName": "Display name",
+      "displayNameHint": "Leave empty to use your username.",
+      "nameSaved": "Display name saved",
+      "username": "Username",
+      "usernameText": "Used to sign in. It cannot be changed.",
+      "storage": "Storage",
+      "storageText": "Your cases and media are encrypted and never leave this computer. Cloud sync is coming in a later version.",
+      "storageLocal": "Local (this device)"
+    },
+    "password": {
+      "title": "Password",
+      "text": "Use a long, unique password that you do not use anywhere else.",
+      "current": "Current password",
+      "new": "New password",
+      "submit": "Update password",
+      "changed": "Password updated",
+      "wrongCurrent": "The current password is incorrect",
+      "sameAsCurrent": "Choose a password different from the current one"
+    },
+    "twofa": {
+      "title": "Two-factor authentication",
+      "text": "Require a code from your phone in addition to your password when signing in.",
+      "on": "Enabled",
+      "off": "Disabled",
+      "app": "Authenticator app",
+      "enabledText": "Sign-in asks for a 6-digit code from your authenticator app.",
+      "disabledText": "Add a second layer of protection with Google Authenticator, Microsoft Authenticator or Authy.",
+      "enable": "Enable",
+      "disable": "Disable",
+      "enableTitle": "Set up two-factor authentication",
+      "disableTitle": "Turn off two-factor authentication",
+      "disableText": "Confirm with your password and a current code from your authenticator app.",
+      "disableConfirm": "Turn off",
+      "disabled": "Two-factor authentication is off",
+      "password": "Password",
+      "code": "Authentication code",
+      "codeHint": "The 6-digit code shown in your authenticator app.",
+      "wrongPassword": "Wrong password"
+    },
+    "totp": {
+      "loading": "Generating a secure key…",
+      "loadFailed": "Could not start the setup.",
+      "retry": "Try again",
+      "restarted": "The setup was reset. Scan the new code and try again.",
+      "qrAlt": "QR code for your authenticator app",
+      "step1Title": "Install an authenticator app",
+      "step1Text": "Google Authenticator, Microsoft Authenticator or Authy on your phone.",
+      "step2Title": "Scan the QR code",
+      "step2Text": "Or enter this key manually:",
+      "copySecret": "Copy key",
+      "step3Title": "Enter the 6-digit code",
+      "step3Text": "Type the code the app shows for E-Board to confirm.",
+      "codeLabel": "Verification code",
+      "verify": "Verify and enable",
+      "successTitle": "Two-factor authentication is on",
+      "successText": "From now on, signing in will also ask for a code from your authenticator app.",
+      "done": "Done"
+    },
+    "delete": {
+      "title": "Danger zone",
+      "text": "Irreversible actions for this account.",
+      "label": "Delete account",
+      "rowText": "Permanently removes your account with all cases, boards and media.",
+      "open": "Delete account",
+      "dialogTitle": "Delete account permanently?",
+      "warningTitle": "This cannot be undone",
+      "warningText": "All cases, evidence boards, cards and images stored for this account on this device will be erased.",
+      "password": "Enter your password to confirm",
+      "confirm": "Delete permanently",
+      "wrongPassword": "Wrong password",
+      "done": "Your account has been deleted"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Changes are saved automatically.",
+      "appearance": {
+        "title": "Appearance",
+        "description": "Language and colours of the app."
+      },
+      "language": {
+        "label": "Language",
+        "description": "Arabic switches the interface to right-to-left."
+      },
+      "appTheme": {
+        "label": "App theme",
+        "description": "Pages, menus and dialogs. Boards keep their own theme.",
+        "light": "Light",
+        "dark": "Dark"
+      },
+      "boards": {
+        "title": "Boards",
+        "description": "Defaults for your evidence boards."
+      },
+      "boardTheme": {
+        "label": "Default board theme",
+        "description": "Used for new boards. Any board can switch theme at any time.",
+        "normal": {
+          "name": "Normal",
+          "text": "Clean, light and modern"
+        },
+        "hacker": {
+          "name": "Hacker",
+          "text": "Dark terminal, flowing green threads"
+        },
+        "detective": {
+          "name": "Detective",
+          "text": "Cork board, push pins, red string"
+        }
+      },
+      "toolbar": {
+        "label": "Toolbar position",
+        "description": "Where the tool dock sits on the board. You can also drag it to any edge.",
+        "top": "Top",
+        "bottom": "Bottom",
+        "left": "Left",
+        "right": "Right"
+      },
+      "wheel": {
+        "label": "Mouse wheel",
+        "description": "Ctrl + wheel and touchpad pinch always zoom.",
+        "zoom": "Zoom",
+        "pan": "Pan"
+      },
+      "grid": {
+        "label": "Show grid",
+        "description": "Background grid on boards that use one."
+      },
+      "animations": {
+        "label": "Animations",
+        "description": "Flowing threads and subtle motion effects."
+      },
+      "security": {
+        "title": "Security",
+        "description": "Protect your cases when you step away."
+      },
+      "autoLock": {
+        "label": "Auto-lock",
+        "description": "E-Board locks itself after this long without activity. Lock instantly at any time with",
+        "off": "Off",
+        "short": "{{count}} min",
+        "minutes_one": "{{count}} minute",
+        "minutes_other": "{{count}} minutes"
+      },
+      "about": {
+        "title": "About",
+        "description": "Version and where your data lives.",
+        "version": "Version",
+        "dataLocation": "Data location",
+        "dataLocationText": "Your encrypted database and media files are kept in this folder.",
+        "copyPath": "Copy folder path",
+        "unavailable": "Unavailable",
+        "platforms": {
+          "win32": "Windows",
+          "darwin": "macOS",
+          "linux": "Linux"
+        }
+      }
+    }
+  }
+}

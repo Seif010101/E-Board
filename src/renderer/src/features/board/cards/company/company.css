@@ -1,0 +1,283 @@
+/* Company card: logo, name, status, and the expandable company file with its employees. */
+
+.cd-company__main {
+  /* The top margin leaves room for the pin. */
+  padding: 26px 12px 12px;
+}
+
+.cd-company__head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+.cd-company__logo {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  border-radius: 11px;
+  background: var(--card-bg-2);
+  color: var(--card-muted);
+}
+.cd-company__logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+.cd-company__id {
+  flex: 1;
+  min-width: 0;
+}
+.cd-company__name {
+  font-family: var(--board-font-title);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.cd-company__name.is-placeholder {
+  color: var(--card-muted);
+  font-weight: 600;
+  font-style: italic;
+}
+.cd-company__legal,
+.cd-company__meta {
+  margin-top: 2px;
+  color: var(--card-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.cd-company__badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-top: 10px;
+}
+.cd-company__staff {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--card-muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cd-card .cd-company__site {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 3px 4px;
+  border-radius: 5px;
+  color: var(--card-accent);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.cd-company__site span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cd-card .cd-company__site:hover {
+  background: var(--card-bg-2);
+}
+.cd-card .cd-company__site:hover span {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cd-company__empty {
+  color: var(--card-muted);
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* ---------- Employees ---------- */
+
+.cd-emps {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cd-card .cd-emp {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 3px 4px;
+  border-radius: 7px;
+  text-align: start;
+}
+.cd-card .cd-emp:hover {
+  background: var(--card-bg-2);
+}
+.cd-emp__pic {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--card-bg-2);
+}
+.cd-emp__pic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cd-emp__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+.cd-emp__name,
+.cd-emp__role {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cd-emp__name {
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.cd-emp__role {
+  color: var(--card-muted);
+  font-size: 10.5px;
+}
+.cd-emp__locate {
+  flex: none;
+  color: var(--card-muted);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.cd-emp:hover .cd-emp__locate,
+.cd-emp:focus-visible .cd-emp__locate {
+  opacity: 1;
+}
+
+/* ---------- Warning statuses (suspicious, shell, fraudulent) ---------- */
+
+[data-board-theme='normal'] .cd-company[data-alert] {
+  border-color: color-mix(in srgb, var(--cd-tone) 45%, var(--card-border));
+}
+[data-board-theme='normal'] .cd-company[data-alert]::before {
+  content: '';
+  position: absolute;
+  inset-inline: -1px;
+  top: -1px;
+  height: 4px;
+  border-radius: var(--board-radius-card) var(--board-radius-card) 0 0;
+  background: var(--cd-tone);
+}
+
+/* ---------- Hacker ---------- */
+
+[data-board-theme='hacker'] .cd-company__main {
+  padding: 10px;
+}
+[data-board-theme='hacker'] .cd-company__logo {
+  border-radius: 2px;
+  background: #031409;
+  color: var(--card-accent);
+}
+[data-board-theme='hacker'] .cd-company__logo img {
+  background: #031409;
+  filter: grayscale(1) sepia(1) hue-rotate(75deg) saturate(2.2) brightness(0.9);
+}
+[data-board-theme='hacker'] .cd-company__name {
+  font-size: 13.5px;
+  text-shadow: 0 0 10px rgb(25 226 122 / 0.35);
+}
+[data-board-theme='hacker'] .cd-company__legal,
+[data-board-theme='hacker'] .cd-company__meta,
+[data-board-theme='hacker'] .cd-company__staff {
+  font-family: var(--board-font-mono);
+  font-size: 10px;
+}
+[data-board-theme='hacker'] .cd-card .cd-company__site,
+[data-board-theme='hacker'] .cd-card .cd-emp {
+  border-radius: 2px;
+}
+[data-board-theme='hacker'] .cd-emp__pic {
+  border: 1px solid var(--card-border);
+  border-radius: 2px;
+}
+[data-board-theme='hacker'] .cd-emp__pic img {
+  filter: grayscale(1) sepia(1) hue-rotate(75deg) saturate(2.2) brightness(0.85);
+}
+[data-board-theme='hacker'] .cd-company[data-alert] {
+  border-color: color-mix(in srgb, var(--cd-tone) 65%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--cd-tone) 25%, transparent),
+    0 0 22px color-mix(in srgb, var(--cd-tone) 28%, transparent);
+}
+[data-board-theme='hacker'] .cd-company[data-alert] .cd-bar {
+  border-bottom-color: color-mix(in srgb, var(--cd-tone) 55%, transparent);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--cd-tone) 22%, transparent),
+    color-mix(in srgb, var(--cd-tone) 6%, transparent)
+  );
+}
+
+/* ---------- Detective: company file, warning statuses as a big rubber stamp ---------- */
+
+[data-board-theme='detective'] .cd-company__main {
+  padding: 26px 13px 13px;
+}
+[data-board-theme='detective'] .cd-company__logo {
+  border-color: rgb(60 40 20 / 0.28);
+  border-radius: 2px;
+  background: #e2d6bd;
+}
+[data-board-theme='detective'] .cd-company__logo img {
+  filter: sepia(0.3) saturate(0.85);
+}
+[data-board-theme='detective'] .cd-company__name {
+  font-family: var(--font-type);
+  font-size: 15.5px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+[data-board-theme='detective'] .cd-company__legal,
+[data-board-theme='detective'] .cd-company__meta {
+  font-family: var(--font-type);
+}
+[data-board-theme='detective'] .cd-card .cd-emp {
+  border-radius: 2px;
+}
+[data-board-theme='detective'] .cd-emp__pic img {
+  filter: sepia(0.4) saturate(0.8);
+}
+[data-board-theme='detective'] .cd-emp__name {
+  font-family: var(--font-type);
+}
+[data-board-theme='detective'] .cd-company__staff {
+  font-family: var(--font-type);
+}
+/* Warning statuses become a big rubber stamp in the badge row (never over the name). */
+[data-board-theme='detective'] .cd-company[data-alert] .cd-company__badges {
+  margin-top: 12px;
+}
+[data-board-theme='detective'] .cd-company[data-alert] .cd-company__status {
+  padding: 3px 8px 2px;
+  border-width: 2.5px;
+  font-size: 13px;
+  opacity: 0.8;
+  transform: rotate(-6deg);
+}

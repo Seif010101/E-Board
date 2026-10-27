@@ -1,0 +1,15 @@
+/* Shape being dragged out, in world coordinates. */
+.shpt-draft {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0.85;
+  pointer-events: none;
+}
+.shpt-draft::after {
+  content: '';
+  position: absolute;
+  inset: calc(-4px * var(--bc-inv));
+  border: calc(1px * var(--bc-inv)) dashed var(--selection);
+  border-radius: calc(3px * var(--bc-inv));
+}

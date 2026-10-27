@@ -1,0 +1,275 @@
+/* Shared shell for the case library and the case page. */
+
+.cases-page {
+  --cases-manila: #eedfb8;
+  --cases-manila-back: #d9c290;
+  --cases-ink: #2b2216;
+  --cases-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.32 0 0 0 0 0.22 0 0 0 0 0.08 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background:
+    radial-gradient(1200px 420px at 50% -120px, color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%),
+    var(--bg);
+}
+:root[data-theme='dark'] .cases-page {
+  --cases-manila: #d4c094;
+  --cases-manila-back: #b39c6b;
+}
+
+.cases-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.cases-container {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 28px 32px 56px;
+}
+
+.cases-eyebrow {
+  font: 600 11px/1.2 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+[dir='rtl'] .cases-eyebrow {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+/* ---------- Library hero + toolbar ---------- */
+
+.cases-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+.cases-hero__text {
+  min-width: 0;
+}
+.cases-hero__new {
+  flex: none;
+}
+.cases-hero__title {
+  margin-top: 6px;
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.cases-hero__sub {
+  margin-top: 4px;
+  color: var(--text-muted);
+}
+
+.cases-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  margin-bottom: 30px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(8px);
+}
+
+.cases-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 260px;
+  min-width: 220px;
+  max-width: 420px;
+}
+.cases-search__icon {
+  position: absolute;
+  inset-inline-start: 11px;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+.cases-search__input {
+  padding-inline: 34px;
+}
+.cases-search__input::-webkit-search-cancel-button {
+  display: none;
+  -webkit-appearance: none;
+}
+.cases-search__clear {
+  position: absolute;
+  inset-inline-end: 5px;
+}
+
+.cases-segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface-2);
+}
+.cases-segmented__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.cases-segmented__btn:hover {
+  background: var(--surface-3);
+  color: var(--text);
+}
+.cases-segmented__btn[aria-pressed='true'] {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow:
+    0 0 0 1px var(--border),
+    var(--shadow-sm);
+}
+.cases-segmented__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.cases-segmented__btn[aria-pressed='true'] .cases-segmented__count {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.cases-sort {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-inline-start: auto;
+}
+.cases-sort__icon {
+  position: absolute;
+  inset-inline-start: 10px;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+.cases-sort__select {
+  width: auto;
+  min-width: 196px;
+  padding-inline-start: 32px;
+  cursor: pointer;
+}
+
+/* ---------- Grids ---------- */
+
+.cases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(252px, 1fr));
+  gap: 30px 26px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cases-results-note {
+  margin: -14px 0 18px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ---------- Small shared bits ---------- */
+
+.cases-btn-danger {
+  color: var(--danger);
+}
+.cases-btn-danger:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.cases-fieldset {
+  min-width: 0;
+  margin: 0 0 14px;
+  padding: 0;
+  border: 0;
+}
+.cases-fieldset > legend {
+  display: block;
+  margin-bottom: 6px;
+  padding: 0;
+}
+.cases-fieldset--last {
+  margin-bottom: 4px;
+}
+
+.cases-btn-spinner {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+  border-color: color-mix(in srgb, currentColor 35%, transparent);
+  border-top-color: currentColor;
+}
+
+/* ---------- Loading skeletons ---------- */
+
+.cases-skel {
+  display: block;
+  width: 60%;
+  height: 10px;
+  border-radius: 6px;
+  background: var(--surface-3);
+}
+.cases-skel--title {
+  width: 82%;
+  height: 15px;
+}
+.cases-skel--short {
+  width: 48%;
+}
+.cases-skel--pill {
+  width: 92px;
+  height: 20px;
+  border-radius: 999px;
+}
+
+@keyframes cases-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes cases-shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}

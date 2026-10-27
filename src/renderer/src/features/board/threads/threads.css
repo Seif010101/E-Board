@@ -1,0 +1,306 @@
+/*
+ * Threads layer, connect-tool overlay and hover label.
+ * Everything here lives in world coordinates. The canvas keeps --bc-inv (1 / zoom) up to date on
+ * its root, so hit areas, outlines, labels and the minimum stroke width stay constant on screen at
+ * any zoom without re-rendering a single thread.
+ */
+
+.thr-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+  pointer-events: none;
+  /* One screen pixel in world units. */
+  --thr-px: calc(1px * var(--bc-inv, 1));
+  /* Base stroke width: the theme width, but never thinner than ~1.2 screen px when zoomed out. */
+  --thr-w: max(var(--thread-width, 2px), calc(var(--thr-px) * 1.2));
+}
+/* Yarn needs a little more body than a plain line so its two plies stay legible. */
+[data-board-theme='detective'] .thr-layer {
+  --thr-w: max(calc(var(--thread-width, 2.4px) * 1.25), calc(var(--thr-px) * 1.8));
+}
+
+/* ---------- Per-thread state (colour + width flow down to every stroke) ---------- */
+
+.thr {
+  --thr-c: var(--thread-color);
+  --thr-sw: var(--thr-w);
+}
+.thr--custom {
+  --thr-c: var(--thr-custom);
+}
+.thr.is-hover {
+  --thr-c: var(--thread-hover);
+  --thr-sw: calc(var(--thr-w) * 1.5);
+}
+.thr--custom.is-hover {
+  --thr-c: color-mix(in srgb, var(--thr-custom) 72%, #fff);
+}
+.thr.is-selected {
+  --thr-c: var(--selection);
+  --thr-sw: calc(var(--thr-w) * 1.5);
+}
+
+/* Colours only: widths follow the zoom, and transitioning them would animate every zoom step. */
+.thr path,
+.thr circle {
+  transition:
+    stroke 0.15s,
+    fill 0.15s;
+}
+
+.thr__strokes path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.thr__hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: max(calc(var(--thr-px) * 14), calc(var(--thr-sw) * 2));
+  stroke-linecap: round;
+  pointer-events: stroke;
+}
+.thr-layer--pointer .thr__hit {
+  cursor: pointer;
+}
+.thr-layer--busy .thr__hit {
+  pointer-events: none;
+}
+
+.thr__handle {
+  fill: var(--selection);
+  stroke: var(--board-bg, #fff);
+  stroke-width: calc(var(--thr-px) * 2);
+  r: calc(var(--thr-px) * 5.5);
+}
+
+/* ---------- Normal: clean curve with small end dots ---------- */
+
+.thr__strokes--normal .thr__base {
+  stroke: var(--thr-c);
+  stroke-width: var(--thr-sw);
+}
+.thr__strokes--normal .thr__end {
+  fill: var(--thr-c);
+  stroke: var(--board-bg, #fff);
+  stroke-width: calc(var(--thr-sw) * 0.7);
+  r: calc(var(--thr-sw) * 1.9);
+}
+
+/* ---------- Hacker: faint trace + glowing dots flowing source → target ---------- */
+
+.thr__strokes--hacker .thr__glow {
+  stroke: var(--thr-c);
+  stroke-width: calc(var(--thr-sw) * 4.5);
+  opacity: 0.07;
+}
+.thr__strokes--hacker .thr__trace {
+  stroke: var(--thr-c);
+  stroke-width: calc(var(--thr-sw) * 0.55);
+  opacity: 0.3;
+}
+.thr__strokes--hacker .thr__dots {
+  stroke: var(--thr-c);
+  stroke-width: calc(var(--thr-sw) * 1.6);
+  /* Zero-length dashes with round caps draw dots; spacing follows the base width, not hover. */
+  stroke-dasharray: 0 calc(var(--thr-w) * 5);
+}
+.thr-layer--flow .thr__strokes--hacker .thr__dots {
+  animation: thr-flow 0.45s linear infinite;
+}
+/* Phosphor bloom on the thread being pointed at (a filter on one path only, so it stays cheap). */
+.thr.is-hover .thr__strokes--hacker .thr__dots,
+.thr.is-selected .thr__strokes--hacker .thr__dots {
+  filter: drop-shadow(0 0 calc(var(--thr-px) * 4) var(--thr-c));
+}
+.thr.is-hover .thr__strokes--hacker .thr__glow,
+.thr.is-selected .thr__strokes--hacker .thr__glow {
+  opacity: 0.14;
+}
+.thr__strokes--hacker .thr__node {
+  fill: var(--thr-c);
+  r: calc(var(--thr-sw) * 1.7);
+}
+.thr__strokes--hacker .thr__halo {
+  fill: var(--thr-c);
+  opacity: 0.14;
+  r: calc(var(--thr-sw) * 4);
+}
+
+/* A negative offset moves the dash pattern forwards along the path, i.e. from source to target. */
+@keyframes thr-flow {
+  to {
+    stroke-dashoffset: calc(var(--thr-w) * -5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thr-layer--flow .thr__strokes--hacker .thr__dots {
+    animation: none;
+  }
+}
+
+/* ---------- Detective: red yarn with sag, shadow on the cork and twisted fibres ---------- */
+
+.thr__strokes--detective .thr__shadow {
+  stroke: rgb(28 12 4 / 0.32);
+  stroke-width: calc(var(--thr-sw) * 1.15);
+  transform: translate(0.8px, 1.8px);
+}
+.thr__strokes--detective .thr__shadow--soft {
+  stroke: rgb(28 12 4 / 0.15);
+  stroke-width: calc(var(--thr-sw) * 2.6);
+  transform: translate(1.8px, 4px);
+}
+.thr__strokes--detective .thr__base {
+  stroke: var(--thr-c);
+  stroke-width: var(--thr-sw);
+}
+/* Uneven dye / thickness along the yarn. */
+.thr__strokes--detective .thr__grain {
+  stroke: color-mix(in srgb, var(--thr-c) 70%, #000);
+  stroke-width: calc(var(--thr-sw) * 0.9);
+  stroke-linecap: butt;
+  stroke-dasharray:
+    calc(var(--thr-sw) * 3.8) calc(var(--thr-sw) * 2) calc(var(--thr-sw) * 1.2) calc(var(--thr-sw) * 3)
+    calc(var(--thr-sw) * 6) calc(var(--thr-sw) * 1.6);
+  opacity: 0.22;
+}
+/*
+ * Two plies: light dashes on one side, dark dashes on the other, half a period apart.
+ * Dash lengths follow the stroke width so the twist keeps its proportions at every zoom.
+ */
+.thr__strokes--detective .thr__fibre {
+  stroke-width: calc(var(--thr-sw) * 0.36);
+  stroke-dasharray: calc(var(--thr-sw) * 0.85) calc(var(--thr-sw) * 1.25);
+}
+.thr__strokes--detective .thr__fibre--dark {
+  stroke: color-mix(in srgb, var(--thr-c) 52%, #000);
+  stroke-dashoffset: calc(var(--thr-sw) * 1.05);
+  transform: translate(
+    calc(var(--thr-sw) * var(--thr-nx, 0) * -0.26),
+    calc(var(--thr-sw) * var(--thr-ny, 0) * -0.26)
+  );
+  opacity: 0.85;
+}
+.thr__strokes--detective .thr__fibre--light {
+  stroke: color-mix(in srgb, var(--thr-c) 52%, #fff);
+  transform: translate(
+    calc(var(--thr-sw) * var(--thr-nx, 0) * 0.24),
+    calc(var(--thr-sw) * var(--thr-ny, 0) * 0.24)
+  );
+  opacity: 0.8;
+}
+/* Where the string is tied around the pin. */
+.thr__strokes--detective .thr__knot {
+  fill: color-mix(in srgb, var(--thr-c) 72%, #000);
+  r: calc(var(--thr-sw) * 1.05);
+}
+
+/* ---------- Connect tool overlay ---------- */
+
+.thr--preview {
+  opacity: 0.92;
+}
+
+.thr-outline {
+  fill: var(--selection-fill);
+  stroke: var(--selection);
+  stroke-width: calc(var(--thr-px) * 2);
+  rx: calc(var(--thr-px) * 10);
+}
+.thr-outline--source {
+  fill: none;
+  stroke-dasharray: calc(var(--thr-px) * 6) calc(var(--thr-px) * 5);
+}
+.thr-outline--hover {
+  fill: none;
+  opacity: 0.65;
+}
+
+/* ---------- Hover label (HTML, counter-scaled inline) ---------- */
+
+/* Anchored at its world point (left/top inline); counter-scaled so it reads the same at any zoom. */
+.thr-tip {
+  position: absolute;
+  transform-origin: 0 0;
+  transform: scale(var(--bc-inv, 1)) translate(-50%, calc(-100% - 12px));
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 300px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--board-ui-border);
+  background: var(--board-ui-bg);
+  color: var(--board-ui-text);
+  box-shadow: var(--board-ui-shadow);
+  font: 600 12.5px/1.25 var(--font-ui);
+  white-space: nowrap;
+  pointer-events: none;
+  /* Above the tool and selection overlays, which follow the threads layer in the world. */
+  z-index: 1;
+  animation: thr-tip-in 0.12s var(--ease);
+}
+.thr-tip--still {
+  animation: none;
+}
+.thr-tip--preview {
+  transform: scale(var(--bc-inv, 1)) translate(-50%, calc(-100% - 14px));
+  opacity: 0.94;
+}
+.thr-tip__icon {
+  flex: none;
+  color: var(--board-ui-accent);
+}
+.thr-tip__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.thr-tip__kind {
+  flex: none;
+  padding-inline-start: 7px;
+  border-inline-start: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  font-weight: 500;
+  opacity: 0.72;
+}
+
+[data-board-theme='detective'] .thr-tip {
+  border-radius: 2px;
+  border-color: rgb(60 40 20 / 0.28);
+  background: var(--card-bg);
+  color: var(--card-text);
+  box-shadow:
+    1px 2px 3px rgb(0 0 0 / 0.3),
+    3px 6px 12px rgb(0 0 0 / 0.25);
+  font-family: var(--board-font-title);
+  font-weight: 700;
+}
+[data-board-theme='detective'] .thr-tip__icon {
+  color: var(--thread-color);
+}
+
+[data-board-theme='hacker'] .thr-tip {
+  border-radius: 3px;
+  border-color: color-mix(in srgb, var(--thread-color) 45%, transparent);
+  color: var(--thread-color);
+  font-family: var(--board-font-mono);
+  font-weight: 500;
+  text-shadow: 0 0 6px color-mix(in srgb, var(--thread-color) 55%, transparent);
+}
+[data-board-theme='hacker'] .thr-tip__icon {
+  color: var(--thread-color);
+}
+
+/* Opacity only: the transform is owned by the counter-scale. */
+@keyframes thr-tip-in {
+  from {
+    opacity: 0;
+  }
+}

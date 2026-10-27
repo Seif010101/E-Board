@@ -1,0 +1,62 @@
+{
+  "threads": {
+    "kind": {
+      "family": "Family",
+      "friend": "Friends",
+      "coworker": "Coworkers",
+      "employee": "Employee",
+      "owner": "Owner",
+      "partner": "Partner",
+      "romantic": "Romantic",
+      "financial": "Financial",
+      "communication": "Communication",
+      "associate": "Associate",
+      "suspected": "Suspected link",
+      "other": "Other"
+    },
+    "type": {
+      "person": "Person",
+      "company": "Company",
+      "entity": "Entity",
+      "note": "Note",
+      "image": "Image",
+      "shape": "Shape",
+      "text": "Text",
+      "stroke": "Drawing"
+    },
+    "color": {
+      "default": "Theme default",
+      "red": "Red",
+      "orange": "Orange",
+      "amber": "Amber",
+      "green": "Green",
+      "teal": "Teal",
+      "blue": "Blue",
+      "violet": "Violet",
+      "pink": "Pink"
+    },
+    "tool": {
+      "name": "Connect",
+      "hint": "Drag from one card to another to draw a thread",
+      "kind": "New thread type"
+    },
+    "inspector": {
+      "title": "Relationship",
+      "endpoints": "Connected cards",
+      "from": "From",
+      "to": "To",
+      "go_to": "{{end}}: {{name}}, show on board",
+      "go_to_hint": "Show on board",
+      "swap": "Swap direction",
+      "kind": "Relationship type",
+      "label": "Name shown on hover",
+      "label_hint": "Leave empty to show “{{kind}}”.",
+      "label_invalid": "Use letters, numbers and basic punctuation only",
+      "color": "Thread colour",
+      "delete": "Delete thread",
+      "deleted": "Thread deleted. Press Ctrl+Z to undo.",
+      "created": "Created {{date}}",
+      "updated": "Last changed {{date}}"
+    }
+  }
+}

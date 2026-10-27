@@ -1,0 +1,46 @@
+{
+  "name": "e-board",
+  "productName": "E-Board",
+  "version": "0.1.0",
+  "description": "Digital investigator evidence board",
+  "main": "./out/main/index.js",
+  "author": "Seif010101",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "test": "vitest run",
+    "dist": "npm run build && electron-builder --win --x64"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.20",
+    "@types/node": "^24.0.0",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "electron": "^45.0.0",
+    "electron-builder": "^26.18.0",
+    "electron-vite": "^6.0.0",
+    "i18next": "^26.5.10",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^1.61.0",
+    "perfect-freehand": "^1.2.3",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-i18next": "^17.1.8",
+    "react-leaflet": "^5.0.0",
+    "simple-icons": "^16.35.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5",
+    "zod": "^4.6.7",
+    "zustand": "^5.0.16"
+  }
+}

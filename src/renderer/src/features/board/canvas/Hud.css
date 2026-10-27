@@ -1,0 +1,131 @@
+/* Floating board widgets in a bottom corner: zoom controls and minimap (themed via --board-ui-*). */
+
+.bc-hud {
+  --bc-hud-gap: 14px;
+  /* Room left for a toolbar docked on the bottom edge. */
+  --bc-hud-dock: 72px;
+  --bc-hud-zoom-h: 38px;
+  position: absolute;
+  bottom: var(--bc-hud-gap);
+  z-index: 30;
+  border: 1px solid var(--board-ui-border);
+  border-radius: 10px;
+  background: var(--board-ui-bg);
+  color: var(--board-ui-text);
+  box-shadow: var(--board-ui-shadow);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-family: var(--font-ui);
+  transition:
+    left 0.2s var(--ease),
+    right 0.2s var(--ease),
+    bottom 0.2s var(--ease);
+}
+.bc-hud--left {
+  left: var(--bc-hud-gap);
+}
+.bc-hud--right {
+  right: var(--bc-hud-gap);
+}
+.bc-hud.is-raised {
+  bottom: calc(var(--bc-hud-gap) + var(--bc-hud-dock));
+}
+
+[data-board-theme='hacker'] .bc-hud {
+  border-radius: 4px;
+  font-family: var(--font-mono);
+}
+
+/* ---------- Zoom controls ---------- */
+
+.bc-zoom {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: var(--bc-hud-zoom-h);
+  padding: 3px;
+}
+
+.bc-hud__btn {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--board-ui-muted);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    color 0.12s;
+}
+.bc-hud__btn:hover:not(:disabled) {
+  background: var(--board-ui-hover);
+  color: var(--board-ui-text);
+}
+.bc-hud__btn:focus-visible {
+  outline: 2px solid var(--board-ui-accent);
+  outline-offset: -2px;
+}
+.bc-hud__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.bc-hud__btn[aria-pressed='true'] {
+  background: var(--board-ui-accent-soft);
+  color: var(--board-ui-accent);
+}
+[data-board-theme='hacker'] .bc-hud__btn {
+  border-radius: 2px;
+}
+
+.bc-zoom__value {
+  min-width: 56px;
+  color: var(--board-ui-text);
+  font-size: 12.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.bc-hud__sep {
+  width: 1px;
+  height: 18px;
+  margin: 0 3px;
+  background: var(--board-ui-border);
+}
+
+/* ---------- Minimap ---------- */
+
+.bc-minimap {
+  bottom: calc(var(--bc-hud-gap) + var(--bc-hud-zoom-h) + 8px);
+  padding: 4px;
+  overflow: hidden;
+  animation: bc-hud-in 0.16s var(--ease);
+}
+.bc-minimap.is-raised {
+  bottom: calc(var(--bc-hud-gap) + var(--bc-hud-dock) + var(--bc-hud-zoom-h) + 8px);
+}
+
+.bc-minimap__canvas {
+  display: block;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--board-bg) 70%, transparent);
+  cursor: pointer;
+  touch-action: none;
+}
+.bc-minimap__canvas.is-dragging {
+  cursor: grabbing;
+}
+[data-board-theme='hacker'] .bc-minimap__canvas {
+  border-radius: 2px;
+}
+
+@keyframes bc-hud-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}

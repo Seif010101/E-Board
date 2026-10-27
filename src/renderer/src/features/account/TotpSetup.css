@@ -1,0 +1,172 @@
+.acct-totp {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.acct-totp__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 36px 0 24px;
+  color: var(--text-muted);
+}
+
+/* ---------- QR + steps ---------- */
+
+.acct-totp__grid {
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+}
+@container (min-width: 500px) {
+  .acct-totp__grid {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    justify-items: stretch;
+    gap: 22px;
+  }
+}
+.acct-totp__grid--no-qr {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Always white so phone cameras can read the code on the dark theme too. */
+.acct-totp__qr {
+  padding: 10px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  line-height: 0;
+}
+.acct-totp__qr img {
+  display: block;
+  width: 168px;
+  height: 168px;
+  image-rendering: pixelated;
+}
+
+.acct-totp__steps {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.acct-totp__steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+.acct-totp__steps li > div {
+  min-width: 0;
+  flex: 1;
+}
+.acct-totp__steps strong {
+  display: block;
+  font-weight: 600;
+}
+.acct-totp__steps p {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.acct-totp__num {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.acct-totp__secret {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding-block: 6px;
+  padding-inline: 12px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border-strong);
+  background: var(--surface-2);
+}
+.acct-totp__secret code {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+[dir='rtl'] .acct-totp__secret code {
+  text-align: right;
+}
+
+/* ---------- Code + actions ---------- */
+
+.acct-totp__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.acct-totp__form .auth-code {
+  margin-bottom: 14px;
+}
+.acct-totp__form .auth-alert {
+  align-self: stretch;
+}
+
+.acct-totp__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  align-self: stretch;
+}
+.acct-totp__actions--center {
+  justify-content: center;
+}
+
+/* ---------- Success ---------- */
+
+.acct-totp__done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 0 4px;
+  text-align: center;
+  animation: pop-in 0.25s var(--ease);
+}
+.acct-totp__done-icon {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 6px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--success) 15%, transparent);
+  color: var(--success);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--success) 7%, transparent);
+}
+.acct-totp__done h3 {
+  font-size: 18px;
+}
+.acct-totp__done p {
+  max-width: 380px;
+  color: var(--text-muted);
+}

@@ -1,0 +1,47 @@
+{
+  "items": {
+    "note": "Note",
+    "text": "Text",
+    "stroke": "Drawing",
+    "shape": {
+      "rect": "Rectangle",
+      "roundRect": "Rounded rectangle",
+      "ellipse": "Ellipse",
+      "triangle": "Triangle",
+      "diamond": "Diamond",
+      "line": "Line",
+      "arrow": "Arrow"
+    },
+    "placeholder": {
+      "note": "Double-click to write",
+      "text": "Empty text",
+      "typing": "Type here…",
+      "shape": "Add a label"
+    },
+    "editor": {
+      "note": "Note text",
+      "text": "Text",
+      "shape": "Shape label"
+    },
+    "inspector": {
+      "color": "Colour",
+      "paper": "Paper colour",
+      "size": "Thickness",
+      "font_size": "Font size",
+      "style": "Line style",
+      "shape": "Shape",
+      "stroke": "Outline colour",
+      "fill": "Fill",
+      "no_fill": "No fill",
+      "stroke_width": "Outline width",
+      "text": "Text",
+      "label": "Label",
+      "weight": "Weight",
+      "bold": "Bold",
+      "align": "Alignment",
+      "align_start": "Start",
+      "align_center": "Centre",
+      "align_end": "End"
+    }
+  }
+}

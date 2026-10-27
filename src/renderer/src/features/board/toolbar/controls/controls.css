@@ -1,0 +1,388 @@
+/*
+ * Style controls shared by the toolbar flyouts and the item inspectors.
+ * They are colour-agnostic: the host sets the --sc-* variables (board UI tokens inside flyouts,
+ * app tokens inside the inspector drawer); the fallbacks are the app tokens.
+ */
+
+.sc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+.sc-group + .sc-group {
+  margin-top: 14px;
+}
+.sc-group--compact + .sc-group,
+.sc-group + .sc-group--compact {
+  margin-top: 10px;
+}
+
+.sc-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--sc-muted, var(--text-muted));
+}
+/* Letter spacing breaks Arabic joining. */
+[dir='rtl'] .sc-label {
+  letter-spacing: 0;
+}
+
+.sc-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.sc-error {
+  font-size: 12px;
+  color: var(--sc-danger, var(--danger));
+}
+
+.sc-counter {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--sc-muted, var(--text-faint));
+}
+
+/* ---------- Swatches ---------- */
+
+.sc-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.sc-swatches__radios {
+  display: contents;
+}
+
+.sc-swatch {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--sc-text, var(--text)) 22%, transparent);
+  background: var(--sc-sw, transparent);
+  color: #fff;
+  cursor: pointer;
+  transition:
+    transform 0.12s var(--ease),
+    box-shadow 0.12s var(--ease);
+}
+.sc-swatch:hover {
+  transform: scale(1.1);
+}
+.sc-swatch.is-checked {
+  box-shadow:
+    0 0 0 2px var(--sc-surface, var(--surface)),
+    0 0 0 4px var(--sc-accent, var(--accent));
+}
+.sc-swatch:focus-visible {
+  outline: 2px solid var(--sc-accent, var(--focus));
+  outline-offset: 3px;
+}
+.sc-swatch svg {
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.35));
+}
+.sc-swatch svg.is-dark {
+  color: #1c1b19;
+  filter: none;
+}
+
+.sc-swatch--none {
+  background:
+    linear-gradient(
+      135deg,
+      transparent calc(50% - 1px),
+      color-mix(in srgb, var(--sc-danger, var(--danger)) 80%, transparent) calc(50% - 1px),
+      color-mix(in srgb, var(--sc-danger, var(--danger)) 80%, transparent) calc(50% + 1px),
+      transparent calc(50% + 1px)
+    ),
+    color-mix(in srgb, var(--sc-text, var(--text)) 5%, transparent);
+  color: transparent;
+}
+.sc-swatch--none svg {
+  display: none;
+}
+
+.sc-swatch--custom {
+  background: conic-gradient(from 90deg, #ff5f5f, #ffd43b, #69db7c, #4dabf7, #b197fc, #f783ac, #ff5f5f);
+  overflow: hidden;
+}
+.sc-swatch--custom.is-checked {
+  background: var(--sc-sw);
+}
+.sc-swatch--custom input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+}
+.sc-swatch--custom:focus-within {
+  outline: 2px solid var(--sc-accent, var(--focus));
+  outline-offset: 3px;
+}
+.sc-swatch--custom svg {
+  pointer-events: none;
+  color: #fff;
+}
+
+/* ---------- Segmented ---------- */
+
+.sc-seg {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--sc-text, var(--text)) 7%, transparent);
+}
+.sc-seg__opt {
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 30px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--sc-muted, var(--text-muted));
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.12s,
+    color 0.12s;
+}
+.sc-seg__opt span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sc-seg__opt:hover {
+  color: var(--sc-text, var(--text));
+  background: color-mix(in srgb, var(--sc-text, var(--text)) 7%, transparent);
+}
+.sc-seg__opt.is-checked {
+  background: var(--sc-surface, var(--surface));
+  color: var(--sc-accent, var(--accent));
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.18);
+}
+.sc-seg__opt:focus-visible {
+  outline: 2px solid var(--sc-accent, var(--focus));
+  outline-offset: 1px;
+}
+.sc-seg--icons .sc-seg__opt {
+  padding: 4px;
+}
+
+.sc-linestyle {
+  display: block;
+}
+
+/* ---------- Size ---------- */
+
+.sc-size__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 18px;
+}
+.sc-size__preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+}
+
+.sc-size {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sc-range {
+  flex: 1;
+  min-width: 0;
+  height: 20px;
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
+}
+.sc-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--sc-text, var(--text)) 18%, transparent);
+}
+.sc-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--sc-accent, var(--accent));
+  background: var(--sc-surface, var(--surface));
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+  transition: transform 0.1s;
+}
+.sc-range:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+.sc-range:focus-visible {
+  outline: none;
+}
+.sc-range:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 3px var(--sc-accent-soft, var(--accent-soft)),
+    0 1px 3px rgb(0 0 0 / 0.3);
+}
+
+.sc-number,
+.sc-textarea {
+  border: 1px solid color-mix(in srgb, var(--sc-text, var(--text)) 20%, transparent);
+  background: color-mix(in srgb, var(--sc-text, var(--text)) 5%, transparent);
+  color: var(--sc-text, var(--text));
+  font: inherit;
+  transition:
+    border-color 0.12s,
+    box-shadow 0.12s;
+}
+.sc-number {
+  width: 46px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 7px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.sc-textarea {
+  width: 100%;
+  min-height: 84px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  resize: vertical;
+  line-height: 1.45;
+}
+.sc-number:focus,
+.sc-textarea:focus {
+  outline: none;
+  border-color: var(--sc-accent, var(--accent));
+  box-shadow: 0 0 0 3px var(--sc-accent-soft, var(--accent-soft));
+}
+.sc-group.is-invalid .sc-number,
+.sc-group.is-invalid .sc-textarea {
+  border-color: var(--sc-danger, var(--danger));
+}
+
+/* ---------- Toggle button ---------- */
+
+.sc-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--sc-text, var(--text)) 18%, transparent);
+  background: transparent;
+  color: var(--sc-text, var(--text));
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.sc-toggle:hover {
+  background: color-mix(in srgb, var(--sc-text, var(--text)) 7%, transparent);
+}
+.sc-toggle[aria-pressed='true'] {
+  border-color: var(--sc-accent, var(--accent));
+  background: var(--sc-accent-soft, var(--accent-soft));
+  color: var(--sc-accent, var(--accent));
+}
+.sc-toggle:focus-visible {
+  outline: 2px solid var(--sc-accent, var(--focus));
+  outline-offset: 2px;
+}
+
+/* Icons that point "toward the start" are mirrored in right-to-left layouts. */
+[dir='rtl'] .sc-flip-rtl {
+  transform: scaleX(-1);
+}
+
+/* ---------- Layout helpers ---------- */
+
+/* Vertical stack of control groups (inspector content). */
+.sc-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.sc-stack > .sc-group + .sc-group,
+.sc-stack > * + .sc-group {
+  margin-top: 0;
+}
+
+/* Two control groups side by side; wraps in a narrow drawer. */
+.sc-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 14px 18px;
+}
+.sc-row > .sc-group {
+  flex: 1 1 140px;
+}
+.sc-row > .sc-group + .sc-group {
+  margin-top: 0;
+}
+
+/* ---------- Size previews ---------- */
+
+.sc-preview-dot {
+  display: block;
+  border-radius: 50%;
+  background: var(--sc-preview, currentColor);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--sc-text, var(--text)) 18%, transparent);
+}
+.sc-preview-ring {
+  display: block;
+  border-radius: 50%;
+  border: 1.5px solid var(--sc-text, var(--text));
+  background: color-mix(in srgb, var(--sc-text, var(--text)) 8%, transparent);
+}
+.sc-preview-bar {
+  display: block;
+  width: 26px;
+  border-radius: 999px;
+  background: var(--sc-preview, currentColor);
+  opacity: 0.5;
+}
+.sc-preview-line {
+  display: block;
+  width: 26px;
+  border-radius: 999px;
+  background: var(--sc-text, var(--text));
+}
+.sc-preview-text {
+  font-size: 15px;
+  line-height: 1;
+}

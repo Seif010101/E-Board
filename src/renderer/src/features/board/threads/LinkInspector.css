@@ -1,0 +1,280 @@
+/* Thread inspector (drawer content). Uses the app tokens so it matches the other drawer forms. */
+
+.thr-insp {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.thr-insp__label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+}
+
+.thr-insp .field {
+  margin-bottom: 0;
+}
+
+/* ---------- From → To ---------- */
+
+.thr-insp__ends {
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.thr-insp__end {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.thr-insp__end:hover {
+  background: var(--surface);
+  border-color: var(--border);
+}
+.thr-insp__end-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.thr-insp__end-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.thr-insp__end-meta {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.thr-insp__end-name {
+  overflow: hidden;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.thr-insp__end-go {
+  flex: none;
+  color: var(--text-faint);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.thr-insp__end:hover .thr-insp__end-go,
+.thr-insp__end:focus-visible .thr-insp__end-go {
+  opacity: 1;
+}
+
+/* Arrow between the two endpoints, aligned with the endpoint icons. */
+.thr-insp__dir {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 30px;
+  /* Endpoint border (1px) + padding (10px), so the arrow sits under the endpoint icons. */
+  padding-inline: 11px 6px;
+}
+.thr-insp__dir-line {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  color: var(--text-faint);
+}
+.thr-insp__dir-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--thr-insp-accent);
+}
+.thr-insp__dir-kind > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.thr-insp__dir-kind svg {
+  flex: none;
+}
+.thr-insp__swap {
+  flex: none;
+}
+
+/* ---------- Relationship type ---------- */
+
+.thr-insp__kinds {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 6px;
+}
+.thr-insp__kind {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 34px;
+  padding-inline: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.thr-insp__kind:hover {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+}
+.thr-insp__kind.is-checked {
+  border-color: var(--thr-insp-accent);
+  background: color-mix(in srgb, var(--thr-insp-accent) 12%, var(--surface));
+  box-shadow: inset 0 0 0 1px var(--thr-insp-accent);
+  font-weight: 600;
+}
+.thr-insp__kind-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--thr-insp-accent) 18%, transparent);
+  color: var(--thr-insp-accent);
+}
+.thr-insp__kind-name {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Colour ---------- */
+
+.thr-insp__colors {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.thr-insp__default {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding-inline: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+.thr-insp__default:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.thr-insp__default.is-checked {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.thr-insp__swatch {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: var(--thr-insp-swatch);
+  color: #fff;
+  box-shadow: 0 0 0 1px var(--border-strong);
+  cursor: pointer;
+  transition:
+    transform 0.12s var(--ease),
+    box-shadow 0.15s;
+}
+.thr-insp__swatch:hover {
+  transform: scale(1.1);
+}
+.thr-insp__swatch.is-checked {
+  box-shadow: 0 0 0 2px var(--thr-insp-swatch);
+}
+
+/* ---------- Footer ---------- */
+
+.thr-insp__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.thr-insp__delete {
+  align-self: flex-start;
+  border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.thr-insp__delete:hover {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+.thr-insp__meta {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thr-insp__swatch,
+  .thr-insp__swatch:hover {
+    transition: none;
+    transform: none;
+  }
+}

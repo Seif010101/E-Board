@@ -1,0 +1,859 @@
+/*
+ * Shared parts of the card faces (person, company, entity, image). Everything is themed through the
+ * board tokens (core/theme.css) plus [data-board-theme] selectors where a token is not enough.
+ * Sizes are world px: the canvas scales the whole layer.
+ */
+
+.cd-card {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--card-border);
+  border-radius: var(--board-radius-card);
+  background-color: var(--card-bg);
+  color: var(--card-text);
+  box-shadow: var(--card-shadow);
+  font-family: var(--board-font-card);
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  transition: box-shadow 0.18s ease;
+}
+.bc-frame:hover > .cd-card {
+  box-shadow: var(--card-shadow-hover);
+}
+
+[data-board-theme='detective'] .cd-card {
+  /* Aged paper: darker towards the edges, faint fibres. */
+  background-image:
+    radial-gradient(ellipse 120% 95% at 50% 42%, transparent 58%, rgb(120 84 38 / 0.16) 100%),
+    repeating-linear-gradient(0deg, rgb(110 80 40 / 0.025) 0 1px, transparent 1px 3px);
+}
+
+/* Text for assistive technology only. */
+.cd-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Shared control reset for buttons inside cards. */
+.cd-card button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.cd-card :focus-visible {
+  outline: 2px solid var(--selection);
+  outline-offset: 1px;
+}
+
+/* ---------- Push pin (centred on the thread anchor: top centre, 12px below the card top) ---------- */
+
+.cd-pin {
+  position: absolute;
+  left: 50%;
+  /* 12px from the outer edge: the containing block starts inside the 1px card border. */
+  top: 11px;
+  z-index: 3;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.cd-pin__head {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+[data-board-theme='normal'] .cd-pin__head {
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(
+    circle at 35% 32%,
+    color-mix(in srgb, var(--cd-pin, var(--pin-color)) 40%, #fff),
+    var(--cd-pin, var(--pin-color)) 62%
+  );
+  box-shadow:
+    0 0 0 2px #fff,
+    0 1px 3px 1px rgb(16 24 40 / 0.3);
+}
+
+[data-board-theme='hacker'] .cd-pin__head {
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid var(--pin-color);
+  background: radial-gradient(circle, var(--pin-shine) 0 1.4px, var(--pin-color) 2px 2.4px, #031008 2.9px);
+  box-shadow: 0 0 8px rgb(25 226 122 / 0.65);
+}
+
+[data-board-theme='detective'] .cd-pin__head {
+  width: 18px;
+  height: 18px;
+  background:
+    radial-gradient(circle at 33% 29%, rgb(255 255 255 / 0.92) 0 1.4px, rgb(255 255 255 / 0) 4px),
+    radial-gradient(
+      circle at 40% 36%,
+      var(--pin-shine) 0%,
+      var(--pin-color) 46%,
+      color-mix(in srgb, var(--pin-color) 52%, #000) 100%
+    );
+  box-shadow:
+    inset -1.5px -2px 3px rgb(0 0 0 / 0.35),
+    inset 1px 1px 2px rgb(255 255 255 / 0.25),
+    0 1px 1.5px rgb(0 0 0 / 0.45);
+}
+/* Cast shadow of the head (light from the top-left)… */
+[data-board-theme='detective'] .cd-pin::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  transform: translate(calc(-50% + 4px), calc(-50% + 5px));
+  background: rgb(20 10 0 / 0.42);
+  filter: blur(2.5px);
+}
+/* …and of the needle stuck into the board. */
+[data-board-theme='detective'] .cd-pin::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 13px;
+  height: 2px;
+  border-radius: 2px;
+  transform-origin: 0 50%;
+  transform: translate(2px, 3px) rotate(42deg);
+  background: linear-gradient(to right, rgb(20 10 0 / 0.5), transparent);
+  filter: blur(0.6px);
+}
+
+/* ---------- Terminal title bar (hacker only) ---------- */
+
+.cd-bar {
+  display: none;
+}
+[data-board-theme='hacker'] .cd-bar {
+  display: grid;
+  /* The middle column keeps the pin node clear of the text. */
+  grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr);
+  align-items: center;
+  height: 24px;
+  padding-inline: 8px;
+  border-bottom: 1px solid var(--card-border);
+  background: linear-gradient(to bottom, rgb(25 226 122 / 0.11), rgb(25 226 122 / 0.03));
+  color: var(--card-muted);
+  font: 600 9.5px/1 var(--board-font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.cd-bar__label {
+  grid-column: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cd-bar__label::before {
+  content: '// ';
+  color: var(--card-accent);
+}
+.cd-bar__id {
+  grid-column: 3;
+  justify-self: end;
+  color: rgb(25 226 122 / 0.55);
+  letter-spacing: 0.06em;
+}
+
+/* ---------- Default avatar & missing media ---------- */
+
+.cd-avatar {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.cd-avatar__bg {
+  fill: var(--card-bg-2);
+}
+.cd-avatar__fg {
+  fill: color-mix(in srgb, var(--card-muted) 45%, var(--card-bg-2));
+}
+[data-board-theme='detective'] .cd-avatar__bg {
+  fill: #ddd0b6;
+}
+[data-board-theme='detective'] .cd-avatar__fg {
+  fill: #a08a6a;
+}
+[data-board-theme='hacker'] .cd-avatar__bg {
+  fill: #031409;
+}
+[data-board-theme='hacker'] .cd-avatar__fg {
+  fill: rgb(25 226 122 / 0.32);
+}
+
+.cd-media-missing {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--card-bg-2);
+  color: var(--card-muted);
+}
+
+/* ---------- Tones ---------- */
+
+:is(.cd-card, .cd-card *)[data-tone='red'] {
+  --cd-tone: #d93b3b;
+}
+:is(.cd-card, .cd-card *)[data-tone='orange'] {
+  --cd-tone: #e2701f;
+}
+:is(.cd-card, .cd-card *)[data-tone='amber'] {
+  --cd-tone: #c99312;
+}
+:is(.cd-card, .cd-card *)[data-tone='green'] {
+  --cd-tone: #2e9a58;
+}
+:is(.cd-card, .cd-card *)[data-tone='teal'] {
+  --cd-tone: #16989a;
+}
+:is(.cd-card, .cd-card *)[data-tone='blue'] {
+  --cd-tone: #3b6fd8;
+}
+:is(.cd-card, .cd-card *)[data-tone='purple'] {
+  --cd-tone: #8656e0;
+}
+:is(.cd-card, .cd-card *)[data-tone='grey'] {
+  --cd-tone: #7a8394;
+}
+.cd-card [data-tone] {
+  --cd-ink: color-mix(in srgb, var(--cd-tone) 80%, var(--card-text));
+}
+[data-board-theme='hacker'] .cd-card [data-tone] {
+  --cd-ink: color-mix(in srgb, var(--cd-tone) 62%, #fff);
+}
+[data-board-theme='detective'] .cd-card [data-tone] {
+  --cd-ink: color-mix(in srgb, var(--cd-tone) 78%, #3a2414);
+}
+
+/* ---------- Badges ---------- */
+
+.cd-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cd-tone) 14%, transparent);
+  color: var(--cd-ink);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+.cd-badge__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cd-badge--solid {
+  background: var(--cd-tone);
+  color: #fff;
+}
+
+[data-board-theme='hacker'] .cd-badge {
+  height: 18px;
+  padding: 0 6px;
+  border: 1px solid color-mix(in srgb, var(--cd-tone) 55%, transparent);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--cd-tone) 12%, transparent);
+  font-family: var(--board-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+[data-board-theme='hacker'] .cd-badge--solid {
+  background: color-mix(in srgb, var(--cd-tone) 32%, transparent);
+  color: #fff;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--cd-tone) 45%, transparent);
+}
+
+/* Detective: rubber stamps in coloured ink. */
+[data-board-theme='detective'] .cd-badge {
+  height: auto;
+  padding: 2px 6px 1px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  background: transparent;
+  font-family: var(--font-type);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.86;
+  transform: rotate(-2.5deg);
+  mix-blend-mode: multiply;
+}
+[data-board-theme='detective'] .cd-badge--solid {
+  border-width: 2px;
+  outline: 1px solid currentColor;
+  outline-offset: 1.5px;
+  color: var(--cd-ink);
+}
+
+/* ---------- Risk meter & confidence ---------- */
+
+.cd-risk {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--cd-ink);
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.cd-risk__bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 11px;
+}
+.cd-risk__bars i {
+  width: 3px;
+  border-radius: 1px;
+  background: var(--card-border);
+}
+.cd-risk__bars i:nth-child(1) {
+  height: 4px;
+}
+.cd-risk__bars i:nth-child(2) {
+  height: 6.5px;
+}
+.cd-risk__bars i:nth-child(3) {
+  height: 9px;
+}
+.cd-risk__bars i:nth-child(4) {
+  height: 11px;
+}
+.cd-risk__bars i.is-on {
+  background: var(--cd-tone);
+}
+[data-board-theme='hacker'] .cd-risk {
+  font-family: var(--board-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+[data-board-theme='hacker'] .cd-risk__bars i {
+  border-radius: 0;
+  background: rgb(25 226 122 / 0.15);
+}
+[data-board-theme='hacker'] .cd-risk__bars i.is-on {
+  background: var(--cd-ink);
+  box-shadow: 0 0 4px color-mix(in srgb, var(--cd-tone) 70%, transparent);
+}
+[data-board-theme='detective'] .cd-risk {
+  font-family: var(--font-type);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+[data-board-theme='detective'] .cd-risk__bars i {
+  border-radius: 0;
+  background: rgb(60 40 20 / 0.16);
+}
+
+.cd-conf {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  white-space: nowrap;
+}
+.cd-conf__dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cd-tone);
+}
+[data-board-theme='hacker'] .cd-conf__dot {
+  border-radius: 0;
+  box-shadow: 0 0 5px var(--cd-tone);
+}
+
+/* ---------- "More" toggle ---------- */
+
+.cd-card .cd-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  height: 26px;
+  margin-top: 10px;
+  border-radius: 7px;
+  background: var(--card-bg-2);
+  color: var(--card-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+.cd-card .cd-more:hover {
+  background: color-mix(in srgb, var(--card-bg-2) 65%, var(--card-border));
+  color: var(--card-text);
+}
+.cd-more__chev {
+  transition: transform 0.2s var(--ease);
+}
+.cd-more[aria-expanded='true'] .cd-more__chev {
+  transform: rotate(180deg);
+}
+[data-board-theme='hacker'] .cd-card .cd-more {
+  height: 24px;
+  border: 1px dashed var(--card-border);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--card-accent);
+  font-family: var(--board-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+[data-board-theme='hacker'] .cd-card .cd-more:hover {
+  border-style: solid;
+  background: rgb(25 226 122 / 0.08);
+  color: var(--card-text);
+}
+[data-board-theme='detective'] .cd-card .cd-more {
+  height: 24px;
+  border-top: 1px dashed rgb(60 40 20 / 0.35);
+  border-radius: 0;
+  background: transparent;
+  color: var(--card-accent);
+  font-family: var(--font-type);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+[data-board-theme='detective'] .cd-card .cd-more:hover {
+  background: rgb(60 40 20 / 0.06);
+  color: color-mix(in srgb, var(--card-accent) 75%, #000);
+}
+
+/* ---------- Expanded details ---------- */
+
+.cd-expand {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-top: 10px;
+  text-align: start;
+  animation: cd-reveal 0.18s var(--ease);
+}
+@keyframes cd-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+}
+.no-anim .cd-expand {
+  animation: none;
+}
+
+.cd-section {
+  min-width: 0;
+}
+.cd-label {
+  margin: 0 0 5px;
+  color: var(--card-muted);
+  font-family: var(--board-font-card);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+[data-board-theme='hacker'] .cd-label::before {
+  content: '// ';
+  color: var(--card-accent);
+}
+[data-board-theme='detective'] .cd-label {
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgb(60 40 20 / 0.2);
+  font-family: var(--font-type);
+  color: var(--card-accent);
+}
+
+/* ---------- Social media ---------- */
+
+.cd-social {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cd-social__row {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.cd-social__row.is-lit {
+  height: 26px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--cd-brand-bg);
+  color: var(--cd-brand-fg);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.1),
+    0 1px 2px rgb(0 0 0 / 0.14);
+}
+.cd-card .cd-social__copy {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  height: 100%;
+  padding-inline: 8px 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-align: start;
+  cursor: copy;
+}
+.cd-card .cd-social__copy:hover {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+.cd-social__handle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cd-card .cd-social__open {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 100%;
+  border-inline-start: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  background: rgb(0 0 0 / 0.08);
+}
+.cd-card .cd-social__open:hover {
+  background: color-mix(in srgb, currentColor 18%, transparent);
+}
+.cd-social__row.is-dim {
+  gap: 6px;
+  height: 17px;
+  padding-inline: 8px;
+  color: var(--card-muted);
+  font-size: 10px;
+  opacity: 0.42;
+  filter: grayscale(1);
+}
+.cd-social__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+[data-board-theme='hacker'] .cd-social__row.is-lit,
+[data-board-theme='detective'] .cd-social__row.is-lit {
+  border-radius: 2px;
+}
+[data-board-theme='hacker'] .cd-social__row.is-lit {
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.14),
+    0 0 8px rgb(0 0 0 / 0.5);
+}
+[data-board-theme='hacker'] .cd-social__row.is-dim {
+  font-family: var(--board-font-mono);
+  opacity: 0.38;
+}
+[data-board-theme='detective'] .cd-social__row.is-dim {
+  opacity: 0.5;
+}
+
+/* ---------- Facts, counts, locations ---------- */
+
+.cd-facts {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 3px 10px;
+  margin: 0;
+}
+.cd-facts__row {
+  display: contents;
+}
+.cd-facts dt {
+  color: var(--card-muted);
+  font-size: 11px;
+}
+.cd-facts dd {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.cd-facts__value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.cd-facts__value.is-mono {
+  font-family: var(--board-font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  word-break: break-all;
+}
+[data-board-theme='detective'] .cd-facts dd {
+  font-family: var(--font-type);
+}
+/* Row actions (copy / open) show on hover or keyboard focus only. */
+.cd-facts__acts {
+  display: inline-flex;
+  flex: none;
+  margin-inline-start: auto;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.cd-facts__row:hover .cd-facts__acts,
+.cd-facts__acts:focus-within {
+  opacity: 1;
+}
+
+.cd-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.cd-counts:first-child {
+  margin-top: 0;
+}
+.cd-counts__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--card-bg-2);
+  color: var(--card-muted);
+  font-size: 10.5px;
+  font-weight: 600;
+}
+[data-board-theme='hacker'] .cd-counts__item {
+  border: 1px solid var(--card-border);
+  border-radius: 2px;
+  background: transparent;
+  font-family: var(--board-font-mono);
+}
+[data-board-theme='detective'] .cd-counts__item {
+  border-radius: 2px;
+  background: rgb(60 40 20 / 0.08);
+}
+
+.cd-locs {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cd-locs__row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+.cd-card .cd-locs__copy {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 3px 4px;
+  border-radius: 5px;
+  color: var(--card-accent);
+  font-size: 11.5px;
+  text-align: start;
+  cursor: copy;
+}
+.cd-card .cd-locs__copy:hover {
+  background: var(--card-bg-2);
+}
+.cd-locs__icon {
+  flex: none;
+}
+.cd-locs__label {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cd-card .cd-locs__copy:hover .cd-locs__label {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.cd-locs__coords {
+  flex: none;
+  margin-inline-start: auto;
+  color: var(--card-muted);
+  font-family: var(--board-font-mono);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.cd-card .cd-icon-btn {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  color: var(--card-muted);
+}
+.cd-card .cd-icon-btn:hover {
+  background: var(--card-bg-2);
+  color: var(--card-text);
+}
+.cd-card .cd-icon-btn--sm {
+  width: 18px;
+  height: 18px;
+  margin-block: -2px;
+  border-radius: 4px;
+}
+[data-board-theme='hacker'] .cd-card .cd-icon-btn,
+[data-board-theme='hacker'] .cd-card .cd-locs__copy {
+  border-radius: 2px;
+}
+
+.cd-more-count {
+  padding-inline-start: 4px;
+  color: var(--card-muted);
+  font-size: 10.5px;
+}
+
+/* ---------- Notes, tags, footer ---------- */
+
+.cd-clamp {
+  max-height: calc(var(--cd-lines) * 1.45em);
+  overflow: hidden;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+.cd-clamp[data-overflow] {
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 1.7em), transparent);
+}
+.cd-notes {
+  font-family: var(--board-font-card);
+  font-size: 11.5px;
+}
+[data-board-theme='detective'] .cd-notes {
+  color: #2b3159;
+  font-family: var(--board-font-note);
+  font-size: 12.5px;
+}
+
+.cd-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cd-tag {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0 7px;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  color: var(--card-muted);
+  font-size: 10.5px;
+  line-height: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cd-tag:not(.cd-tag--more)::before {
+  content: '#';
+  opacity: 0.6;
+}
+.cd-tag--more {
+  border-style: dashed;
+}
+[data-board-theme='hacker'] .cd-tag {
+  border-radius: 2px;
+  color: var(--card-accent);
+  font-family: var(--board-font-mono);
+}
+[data-board-theme='detective'] .cd-tag {
+  border-color: rgb(60 40 20 / 0.25);
+  border-radius: 2px;
+  background: rgb(60 40 20 / 0.05);
+  font-family: var(--font-type);
+}
+
+.cd-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--card-border);
+  color: var(--card-muted);
+  font-size: 10.5px;
+}
+.cd-foot__source {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+[data-board-theme='hacker'] .cd-foot {
+  border-top-style: dashed;
+  font-family: var(--board-font-mono);
+}
+[data-board-theme='detective'] .cd-foot {
+  border-top-color: rgb(60 40 20 / 0.22);
+  font-family: var(--font-type);
+}
+
+/* Arabic is a joined script: no letter spacing or slanted (synthetic italic) text. */
+[data-board-theme] .cd-card:lang(ar),
+[data-board-theme] .cd-card:lang(ar) * {
+  letter-spacing: normal;
+  font-style: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cd-card,
+  .cd-more__chev {
+    transition: none;
+  }
+  .cd-expand {
+    animation: none;
+  }
+}

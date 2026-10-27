@@ -1,0 +1,183 @@
+/* Board controls inside the app header (app-themed). */
+
+/* ---------- Theme switcher ---------- */
+
+.bh-themes {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+}
+
+.bh-theme {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    box-shadow 0.15s;
+}
+.bh-theme:hover:not(.is-active) {
+  background: var(--surface-3);
+  color: var(--text);
+}
+.bh-theme:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+.bh-theme.is-active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.16),
+    0 0 0 1px var(--border);
+}
+
+/* Each option previews its theme's signature colour. */
+.bh-theme--normal.is-active svg {
+  color: #3b6fd8;
+}
+.bh-theme--hacker.is-active svg {
+  color: #19e27a;
+}
+.bh-theme--detective.is-active svg {
+  color: #c3262b;
+}
+.bh-theme--hacker .bh-theme__label {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+.bh-theme--detective .bh-theme__label {
+  font-family: var(--font-type);
+  font-weight: 600;
+}
+
+@media (max-width: 1180px) {
+  .bh-theme {
+    padding: 0 9px;
+  }
+  .bh-theme__label {
+    display: none;
+  }
+}
+
+/* ---------- Actions ---------- */
+
+.bh-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.bh-actions .icon-btn:disabled {
+  opacity: 0.38;
+  cursor: default;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.bh-sep {
+  width: 1px;
+  height: 20px;
+  margin: 0 6px;
+  background: var(--border);
+}
+
+.bh-save-wrap {
+  display: flex;
+  align-items: center;
+  min-width: 92px;
+}
+
+.bh-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-faint);
+  font: inherit;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+.bh-save.is-saved svg {
+  color: var(--success);
+}
+.bh-save.is-saving {
+  color: var(--text-muted);
+}
+.bh-save.is-error {
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-weight: 600;
+  cursor: pointer;
+}
+.bh-save.is-error:hover {
+  filter: brightness(1.1);
+}
+.bh-save.is-error:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.bh-spin {
+  animation: spin 0.9s linear infinite;
+}
+
+@media (max-width: 900px) {
+  .bh-save span {
+    display: none;
+  }
+  .bh-save-wrap {
+    min-width: 0;
+  }
+}
+
+/* ---------- Inline rename ---------- */
+
+.bh-rename {
+  position: fixed;
+  z-index: 60;
+  animation: fade-in 0.1s var(--ease);
+}
+
+.bh-rename__input {
+  height: 32px;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+}
+.bh-rename__input.is-invalid {
+  border-color: var(--danger);
+}
+
+.bh-rename__error {
+  position: absolute;
+  top: calc(100% + 6px);
+  inset-inline-start: 0;
+  padding: 5px 10px;
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--danger);
+  font-size: 12.5px;
+  white-space: nowrap;
+  box-shadow: var(--shadow);
+}

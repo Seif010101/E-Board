@@ -1,0 +1,47 @@
+{
+  "items": {
+    "note": "ملاحظة",
+    "text": "نص",
+    "stroke": "رسم",
+    "shape": {
+      "rect": "مستطيل",
+      "roundRect": "مستطيل بزوايا مستديرة",
+      "ellipse": "شكل بيضاوي",
+      "triangle": "مثلث",
+      "diamond": "معيّن",
+      "line": "خط",
+      "arrow": "سهم"
+    },
+    "placeholder": {
+      "note": "انقر مرتين للكتابة",
+      "text": "نص فارغ",
+      "typing": "اكتب هنا…",
+      "shape": "أضف تسمية"
+    },
+    "editor": {
+      "note": "نص الملاحظة",
+      "text": "النص",
+      "shape": "تسمية الشكل"
+    },
+    "inspector": {
+      "color": "اللون",
+      "paper": "لون الورقة",
+      "size": "السُّمك",
+      "font_size": "حجم الخط",
+      "style": "نمط الخط",
+      "shape": "الشكل",
+      "stroke": "لون الإطار",
+      "fill": "التعبئة",
+      "no_fill": "بلا تعبئة",
+      "stroke_width": "عرض الإطار",
+      "text": "النص",
+      "label": "التسمية",
+      "weight": "السماكة",
+      "bold": "عريض",
+      "align": "المحاذاة",
+      "align_start": "البداية",
+      "align_center": "الوسط",
+      "align_end": "النهاية"
+    }
+  }
+}

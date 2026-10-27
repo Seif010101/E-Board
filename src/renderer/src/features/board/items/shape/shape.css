@@ -1,0 +1,63 @@
+/* Shapes. The frame lets pointer events through (passThrough): closed shapes catch them over their
+   whole box, lines only along an invisible hit band. */
+
+.shp {
+  position: absolute;
+  inset: 0;
+}
+.shp--closed {
+  pointer-events: auto;
+}
+.shp--line {
+  pointer-events: none;
+}
+
+.shp-svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.shp--line .shp-ink {
+  pointer-events: visiblePainted;
+}
+.shp-hit {
+  pointer-events: stroke;
+}
+
+[data-board-theme='hacker'] .shp-svg {
+  filter: drop-shadow(0 0 3px color-mix(in srgb, currentColor 50%, transparent));
+}
+
+/* ---------- Centred label ---------- */
+
+.shp__label {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: safe center;
+  overflow: hidden;
+  color: var(--board-text);
+  font-family: var(--board-font-card);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+}
+.shp__label.is-editing {
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+.shp__text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+[data-board-theme='hacker'] .shp__label {
+  text-shadow: 0 0 6px color-mix(in srgb, currentColor 40%, transparent);
+}
+[data-board-theme='detective'] .shp__label {
+  font-family: var(--board-font-title);
+}

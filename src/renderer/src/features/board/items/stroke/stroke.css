@@ -1,0 +1,25 @@
+/* Freehand strokes. The item frame lets pointer events through (passThrough); only the painted
+   ink and an invisible hit band along the line catch them. */
+
+.stk {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.stk-ink {
+  pointer-events: visiblePainted;
+}
+.stk-hit {
+  pointer-events: stroke;
+}
+
+/* Highlighter ink blends with what lies beneath, like a real marker. Blending has to happen on the
+   frame: it is the element that composites against the other items. */
+.bc-frame:has(> .stk--highlighter) {
+  mix-blend-mode: multiply;
+}
+[data-board-theme='hacker'] .bc-frame:has(> .stk--highlighter) {
+  mix-blend-mode: screen;
+}

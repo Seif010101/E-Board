@@ -1,0 +1,214 @@
+/* App header: brand + breadcrumbs (inline-start), optional centre slot, actions + profile. */
+
+.hdr {
+  position: relative;
+  z-index: 50;
+  flex: none;
+  display: grid;
+  /* The start column never gets narrower than brand + profile (crumbs report no intrinsic width). */
+  grid-template-columns: minmax(min-content, 1fr) max-content;
+  align-items: center;
+  column-gap: 16px;
+  height: var(--header-h);
+  padding-inline: 10px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 rgb(0 0 0 / 0.02);
+}
+
+/* Symmetric side columns keep the centre slot centred on the window. Neither side column shrinks
+   below its fixed content: when space runs out the breadcrumbs truncate first, then the centre
+   slot narrows (it clips its own overflow), so nothing ever overlaps. */
+.hdr--centered {
+  grid-template-columns: minmax(min-content, 1fr) minmax(0, auto) minmax(max-content, 1fr);
+}
+
+.hdr__start {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.hdr__center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  max-width: min(520px, 42vw);
+  overflow: hidden;
+}
+
+.hdr__end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.hdr__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+
+.hdr__profile {
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: 30px;
+}
+.hdr__profile--lead {
+  padding-inline-end: 8px;
+  margin-inline-end: 2px;
+  border-inline-end: 1px solid var(--border);
+}
+.hdr__actions + .hdr__profile--trail {
+  padding-inline-start: 8px;
+  border-inline-start: 1px solid var(--border);
+}
+
+/* ---------- Brand ---------- */
+
+.hdr__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  flex: none;
+  height: 38px;
+  padding-block: 0;
+  padding-inline: 4px 10px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.hdr__brand:hover {
+  background: var(--surface-2);
+}
+
+.hdr__brand-name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.hdr__logo {
+  flex: none;
+  display: block;
+}
+.hdr__logo-tile {
+  fill: var(--accent-soft);
+  stroke: color-mix(in srgb, var(--accent) 35%, transparent);
+  stroke-width: 1;
+}
+.hdr__logo-string {
+  fill: none;
+  stroke: #d23a3f;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+.hdr__logo-shadow {
+  fill: rgb(0 0 0 / 0.22);
+}
+.hdr__logo-pin {
+  fill: var(--accent);
+}
+.hdr__logo-shine {
+  fill: #fff;
+  opacity: 0.6;
+}
+
+/* ---------- Breadcrumbs ---------- */
+
+.hdr__crumbs {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  /* Report no intrinsic width so the grid sizes the column by the brand/profile alone. */
+  contain: inline-size;
+  height: 26px;
+  padding-inline-start: 10px;
+  margin-inline-start: 4px;
+  border-inline-start: 1px solid var(--border);
+}
+
+.hdr__crumb-list {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hdr__crumb-item {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  flex: 0 4 auto;
+  max-width: 260px;
+}
+.hdr__crumb-item--current {
+  flex: 0 1 auto;
+  max-width: none;
+}
+
+.hdr__chev {
+  flex: none;
+  color: var(--text-faint);
+}
+[dir='rtl'] .hdr__chev {
+  transform: scaleX(-1);
+}
+
+.hdr__crumb {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.hdr__crumb--link {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.hdr__crumb--link:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.hdr__crumb--plain {
+  color: var(--text-muted);
+}
+
+.hdr__crumb--current {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* The root crumb ("Cases") is short and always worth reading in full; long titles truncate instead. */
+.hdr__crumb-item:first-child {
+  flex-shrink: 0;
+}

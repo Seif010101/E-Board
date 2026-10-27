@@ -1,0 +1,157 @@
+/* Generic investigative entity cards: header strip in the kind's accent colour, title, key fields. */
+
+.cd-entity__head {
+  display: grid;
+  /* The middle column keeps the pin clear of the text. */
+  grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr);
+  align-items: center;
+  height: 26px;
+  padding-inline: 9px;
+  border-radius: calc(var(--board-radius-card) - 1px) calc(var(--board-radius-card) - 1px) 0 0;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--cd-accent) 88%, #fff), var(--cd-accent));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+.cd-entity__kind {
+  display: flex;
+  grid-column: 1;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+.cd-entity__kind > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cd-entity__kind svg {
+  flex: none;
+}
+.cd-entity__ref {
+  display: none;
+  grid-column: 3;
+  justify-self: end;
+}
+
+.cd-entity__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 9px 11px 11px;
+}
+.cd-entity__title {
+  font-family: var(--board-font-title);
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.cd-entity__title.is-mono {
+  font-family: var(--board-font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  word-break: break-all;
+}
+.cd-entity__title.is-placeholder {
+  color: var(--card-muted);
+  font-weight: 600;
+  font-style: italic;
+}
+
+.cd-entity__media {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--card-bg-2);
+}
+.cd-entity__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cd-entity__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  color: var(--card-muted);
+  font-size: 10.5px;
+}
+
+/* ---------- Hacker ---------- */
+
+[data-board-theme='hacker'] .cd-entity {
+  border-color: color-mix(in srgb, var(--cd-accent) 30%, var(--card-border));
+}
+[data-board-theme='hacker'] .cd-entity__head {
+  grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr);
+  height: 24px;
+  padding-inline: 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--cd-accent) 50%, transparent);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--cd-accent) 22%, transparent),
+    color-mix(in srgb, var(--cd-accent) 8%, transparent)
+  );
+  color: color-mix(in srgb, var(--cd-accent) 45%, #fff);
+  font-family: var(--board-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+[data-board-theme='hacker'] .cd-entity__ref {
+  display: block;
+  color: rgb(25 226 122 / 0.55);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+[data-board-theme='hacker'] .cd-entity__title {
+  font-size: 13.5px;
+  text-shadow: 0 0 10px rgb(25 226 122 / 0.3);
+}
+[data-board-theme='hacker'] .cd-entity__title.is-mono {
+  font-size: 12.5px;
+}
+[data-board-theme='hacker'] .cd-entity__media {
+  border: 1px solid var(--card-border);
+  border-radius: 2px;
+}
+[data-board-theme='hacker'] .cd-entity__media img {
+  filter: grayscale(1) sepia(1) hue-rotate(75deg) saturate(2.2) brightness(0.85) contrast(1.1);
+}
+
+/* ---------- Detective: index card, pin in the paper margin above a coloured label band ---------- */
+
+[data-board-theme='detective'] .cd-entity {
+  padding-top: 24px;
+}
+[data-board-theme='detective'] .cd-entity__head {
+  grid-template-columns: minmax(0, 1fr);
+  height: 22px;
+  border-radius: 0;
+  background:
+    linear-gradient(to bottom, rgb(255 255 255 / 0.08), rgb(0 0 0 / 0.1)),
+    color-mix(in srgb, var(--cd-accent) 78%, #4a2e14);
+  color: #fbf3e2;
+  font-family: var(--font-type);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+[data-board-theme='detective'] .cd-entity__title {
+  font-family: var(--font-type);
+  font-size: 14.5px;
+}
+[data-board-theme='detective'] .cd-entity__media {
+  border-radius: 0;
+  box-shadow: 0 0 0 1px rgb(60 40 20 / 0.25);
+}
+[data-board-theme='detective'] .cd-entity__media img {
+  filter: sepia(0.35) saturate(0.85) contrast(1.05);
+}

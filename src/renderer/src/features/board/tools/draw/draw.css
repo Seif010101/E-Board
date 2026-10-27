@@ -1,0 +1,42 @@
+/* Live previews of the drawing tools, rendered in world coordinates above the items. */
+
+.drw-live {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.drw-live--highlighter {
+  mix-blend-mode: multiply;
+}
+[data-board-theme='hacker'] .drw-live--highlighter {
+  mix-blend-mode: screen;
+}
+
+/* Eraser cursor: constant size on screen (its world size is divided by the zoom). */
+.drw-eraser {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  border: calc(1.5px * var(--bc-inv)) solid var(--board-ui-text);
+  background: color-mix(in srgb, var(--board-ui-bg) 35%, transparent);
+  box-shadow:
+    0 0 0 calc(1px * var(--bc-inv)) color-mix(in srgb, var(--board-ui-bg) 80%, transparent),
+    inset 0 0 0 calc(1px * var(--bc-inv)) color-mix(in srgb, var(--board-ui-bg) 60%, transparent);
+  pointer-events: none;
+}
+.drw-eraser--pixel {
+  border-style: dashed;
+}
+[data-board-theme='hacker'] .drw-eraser {
+  border-color: var(--board-ui-accent);
+  background: rgb(25 226 122 / 0.08);
+  box-shadow: 0 0 calc(10px * var(--bc-inv)) rgb(25 226 122 / 0.35);
+}
+[data-board-theme='detective'] .drw-eraser {
+  border-color: #fff4dc;
+  background: rgb(255 244 220 / 0.18);
+  box-shadow: 0 0 0 calc(1px * var(--bc-inv)) rgb(40 22 8 / 0.5);
+}

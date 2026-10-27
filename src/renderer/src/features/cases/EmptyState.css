@@ -1,0 +1,145 @@
+.cases-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 470px;
+  margin: 0 auto;
+  padding: 40px 24px 64px;
+  text-align: center;
+  animation: cases-state-in 0.3s var(--ease) backwards;
+}
+
+.cases-state__art {
+  margin-bottom: 10px;
+}
+.cases-state__art svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.cases-state__title {
+  font-size: 19px;
+  font-weight: 650;
+}
+
+.cases-state__text {
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.cases-state__action {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* ---------- Illustration palette (follows the app theme) ---------- */
+
+.cases-art__board {
+  fill: var(--surface-2);
+  stroke: var(--border);
+  stroke-width: 1.5;
+}
+.cases-art__sheet {
+  fill: var(--surface);
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+}
+.cases-art__fold {
+  fill: var(--surface-3);
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.cases-art__card {
+  fill: var(--surface-2);
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+}
+.cases-art__avatar {
+  fill: var(--accent-soft);
+  stroke: color-mix(in srgb, var(--accent) 45%, transparent);
+  stroke-width: 1.2;
+}
+.cases-art__folder-back {
+  fill: #d6bd8a;
+}
+.cases-art__folder-front {
+  fill: #ecdcb3;
+  stroke: rgb(90 60 20 / 0.18);
+}
+.cases-art__paper {
+  fill: #fbf8f0;
+  stroke: rgb(70 50 20 / 0.15);
+}
+.cases-art__rule {
+  fill: none;
+  stroke: rgb(70 100 150 / 0.35);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.cases-art__sheet ~ .cases-art__rule,
+.cases-art__card ~ .cases-art__rule {
+  stroke: var(--border-strong);
+}
+.cases-art__stamp {
+  fill: none;
+  stroke: #b3262c;
+  stroke-width: 1.8;
+  opacity: 0.7;
+}
+.cases-art__stamp-line {
+  stroke: #b3262c;
+  stroke-width: 2.4;
+  stroke-dasharray: 4 3;
+  opacity: 0.6;
+}
+.cases-art__string {
+  fill: none;
+  stroke: #c9302f;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+.cases-art__pin {
+  fill: var(--accent);
+}
+.cases-art__pin-shadow {
+  fill: rgb(0 0 0 / 0.2);
+}
+.cases-art__lens {
+  fill: color-mix(in srgb, var(--accent) 10%, transparent);
+  stroke: var(--text-muted);
+  stroke-width: 4;
+}
+.cases-art__handle {
+  stroke: var(--text-muted);
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+.cases-art__cross {
+  stroke: var(--text-faint);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.cases-art__badge {
+  fill: var(--accent);
+}
+.cases-art__badge-plus {
+  stroke: var(--accent-contrast);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.cases-art__spark {
+  stroke: var(--danger);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+@keyframes cases-state-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}

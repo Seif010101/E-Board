@@ -1,0 +1,326 @@
+/*
+ * Infinite canvas: themed background, world layer, item frames, selection overlay.
+ *
+ * The background pans/zooms with the world through custom properties written straight to the
+ * canvas element on every viewport change (see applyViewport in BoardCanvas.tsx). The per-frame
+ * ones are registered as non-inherited so updating them never restyles the item subtree.
+ */
+
+@property --bc-x {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@property --bc-y {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@property --bc-grid {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 24px;
+}
+@property --bc-cork {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 512px;
+}
+@property --bc-cork-m {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 1418px;
+}
+
+.bc-canvas {
+  /* Counter-scale factor for screen-constant strokes inside the world (1 / zoom). */
+  --bc-inv: 1;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  contain: strict;
+  outline: none;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  background-color: var(--board-bg);
+  color: var(--board-text);
+}
+
+/* ---------- Normal: dot grid ---------- */
+
+[data-board-theme='normal'] .bc-canvas.has-grid {
+  background-image: radial-gradient(circle at center, var(--board-grid) 0 1.1px, transparent 1.6px);
+  background-size: var(--bc-grid) var(--bc-grid);
+  background-position: calc(var(--bc-x) - var(--bc-grid) / 2) calc(var(--bc-y) - var(--bc-grid) / 2);
+}
+
+/* ---------- Hacker: fine terminal grid, glow, scanlines, vignette ---------- */
+
+[data-board-theme='hacker'] .bc-canvas {
+  --bc-grid-major: rgb(25 226 122 / 0.11);
+}
+[data-board-theme='hacker'] .bc-canvas.has-grid {
+  background-image:
+    linear-gradient(to right, var(--bc-grid-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--bc-grid-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--board-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--board-grid) 1px, transparent 1px);
+  background-size:
+    calc(var(--bc-grid) * 5) calc(var(--bc-grid) * 5),
+    calc(var(--bc-grid) * 5) calc(var(--bc-grid) * 5),
+    var(--bc-grid) var(--bc-grid),
+    var(--bc-grid) var(--bc-grid);
+  background-position: var(--bc-x) var(--bc-y);
+}
+
+/* ---------- Detective: cork board under a desk lamp ---------- */
+
+[data-board-theme='detective'] .bc-canvas {
+  background-color: #8a5f38;
+  background-image: var(--bc-cork-img, none);
+  background-size:
+    var(--bc-cork-m) var(--bc-cork-m),
+    var(--bc-cork) var(--bc-cork);
+  background-position: var(--bc-x) var(--bc-y);
+}
+
+/* Screen-space atmosphere below the items. */
+.bc-ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+[data-board-theme='hacker'] .bc-ambient {
+  background: radial-gradient(ellipse 70% 60% at 50% 42%, rgb(25 226 122 / 0.075), transparent 72%);
+}
+[data-board-theme='detective'] .bc-ambient {
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 18%, rgb(255 196 128 / 0.16), transparent 70%),
+    linear-gradient(to bottom, rgb(70 38 14 / 0) 55%, rgb(48 24 8 / 0.28));
+}
+
+/* Screen-space atmosphere above the items (lighting, scanlines, vignette). */
+.bc-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+[data-board-theme='hacker'] .bc-shade {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 2px, rgb(0 0 0 / 0.1) 2px 3px),
+    radial-gradient(ellipse 85% 80% at 50% 50%, transparent 58%, rgb(0 0 0 / 0.55) 100%);
+}
+[data-board-theme='hacker'] .bc-shade::after {
+  /* A faint phosphor band drifting down the screen. */
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 18%;
+  background: linear-gradient(to bottom, transparent, rgb(25 226 122 / 0.035) 60%, transparent);
+  animation: bc-sweep 9s linear infinite;
+}
+[data-board-theme='detective'] .bc-shade {
+  background:
+    radial-gradient(ellipse 70% 80% at 50% -8%, rgb(255 214 150 / 0.13), rgb(255 200 130 / 0.04) 45%, transparent 68%),
+    radial-gradient(ellipse 115% 105% at 50% 30%, transparent 48%, rgb(20 9 2 / 0.32) 78%, rgb(12 5 1 / 0.62) 100%);
+}
+
+.bc-canvas.no-anim .bc-shade::after {
+  animation: none;
+  display: none;
+}
+
+@keyframes bc-sweep {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(560%);
+  }
+}
+
+/* ---------- World ---------- */
+
+.bc-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+}
+.bc-world.is-moving {
+  will-change: transform;
+}
+
+.bc-items,
+.bc-threads,
+.bc-tool-overlay,
+.bc-selection {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+.bc-items {
+  /* Item z-indexes (possibly negative) stay inside this layer. */
+  isolation: isolate;
+}
+.bc-tool-overlay,
+.bc-selection {
+  pointer-events: none;
+}
+
+.bc-frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 50% 50%;
+}
+
+/* Hover feedback of the select tool. */
+.bc-canvas[data-tool='select'] .bc-frame:not(.is-locked):not(.is-editing) {
+  cursor: move;
+}
+/* While a gesture runs (pan, move, resize) its cursor wins over every hover cursor. */
+.bc-canvas.is-forced-cursor,
+.bc-canvas.is-forced-cursor * {
+  cursor: inherit !important;
+}
+
+/* ---------- Selection ---------- */
+
+.bc-sel-outline {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 50% 50%;
+  outline: calc(1.5px * var(--bc-inv)) solid var(--selection);
+  outline-offset: calc(3px * var(--bc-inv));
+  border-radius: calc(var(--board-radius-card) + 3px * var(--bc-inv));
+}
+.bc-sel-outline.is-locked {
+  outline-style: dashed;
+  outline-color: color-mix(in srgb, var(--selection) 70%, transparent);
+}
+
+.bc-sel-group {
+  position: absolute;
+  left: 0;
+  top: 0;
+  outline: calc(1px * var(--bc-inv)) dashed var(--selection);
+  outline-offset: calc(9px * var(--bc-inv));
+  background: var(--selection-fill);
+}
+
+.bc-handle {
+  position: absolute;
+  width: calc(10px * var(--bc-inv));
+  height: calc(10px * var(--bc-inv));
+  transform: translate(-50%, -50%);
+  border: calc(1.5px * var(--bc-inv)) solid var(--selection);
+  border-radius: calc(2.5px * var(--bc-inv));
+  background: #fff;
+  box-shadow: 0 0 0 calc(1px * var(--bc-inv)) rgb(0 0 0 / 0.14);
+  pointer-events: auto;
+}
+.bc-handle::before {
+  /* Generous hit area around the small visual handle. */
+  content: '';
+  position: absolute;
+  inset: calc(-6px * var(--bc-inv));
+}
+.bc-handle[data-handle='n'],
+.bc-handle[data-handle='s'] {
+  width: calc(18px * var(--bc-inv));
+  height: calc(7px * var(--bc-inv));
+  border-radius: 999px;
+  cursor: ns-resize;
+}
+.bc-handle[data-handle='e'],
+.bc-handle[data-handle='w'] {
+  width: calc(7px * var(--bc-inv));
+  height: calc(18px * var(--bc-inv));
+  border-radius: 999px;
+  cursor: ew-resize;
+}
+.bc-handle[data-handle='nw'],
+.bc-handle[data-handle='se'] {
+  cursor: nwse-resize;
+}
+.bc-handle[data-handle='ne'],
+.bc-handle[data-handle='sw'] {
+  cursor: nesw-resize;
+}
+[data-board-theme='hacker'] .bc-handle {
+  background: #04110a;
+  border-radius: 0;
+}
+[data-board-theme='detective'] .bc-handle {
+  background: #fff8e6;
+}
+
+.bc-sel-lock {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: calc(22px * var(--bc-inv));
+  height: calc(22px * var(--bc-inv));
+  transform: translate(-50%, -50%);
+  border: calc(1px * var(--bc-inv)) solid var(--board-ui-border);
+  border-radius: 50%;
+  background: var(--board-ui-bg);
+  color: var(--board-ui-muted);
+  box-shadow: var(--board-ui-shadow);
+}
+.bc-sel-lock svg {
+  width: calc(12px * var(--bc-inv));
+  height: calc(12px * var(--bc-inv));
+}
+
+.bc-marquee {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border: calc(1px * var(--bc-inv)) solid var(--selection);
+  border-radius: calc(2px * var(--bc-inv));
+  background: var(--selection-fill);
+}
+
+/* ---------- Drop target ---------- */
+
+.bc-drop {
+  position: absolute;
+  inset: 12px;
+  display: grid;
+  place-items: center;
+  border: 2px dashed var(--board-ui-accent);
+  border-radius: 18px;
+  background: var(--board-ui-accent-soft);
+  pointer-events: none;
+  animation: fade-in 0.12s var(--ease);
+}
+.bc-drop__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border: 1px solid var(--board-ui-border);
+  border-radius: 999px;
+  background: var(--board-ui-bg);
+  color: var(--board-ui-text);
+  box-shadow: var(--board-ui-shadow);
+  font-weight: 600;
+}
+.bc-drop__label svg {
+  color: var(--board-ui-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-board-theme='hacker'] .bc-shade::after {
+    display: none;
+  }
+}

@@ -1,0 +1,30 @@
+/* Settings page specifics; the shell, sections and rows come from accountPage.css. */
+
+.acct-set__wide {
+  width: 100%;
+}
+
+.acct-set__lock {
+  flex-wrap: wrap;
+}
+
+.acct-set__path {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  padding-block: 6px;
+  padding-inline: 12px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.acct-set__path code {
+  flex: 1;
+  min-width: 0;
+  user-select: text;
+}
+.acct-set__path .icon-btn {
+  flex: none;
+}

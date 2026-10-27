@@ -1,0 +1,260 @@
+/*
+ * Mini board previews. These are pictures of the board themes, so they use fixed colours
+ * (independent of the app theme) and physical geometry. The container keeps a fixed aspect
+ * ratio, which keeps the pre-computed thread angles exact at any size.
+ */
+
+.cases-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  isolation: isolate;
+  direction: ltr;
+  border-radius: 7px;
+  background: var(--pv-bg);
+}
+
+.cases-preview__card,
+.cases-preview__note,
+.cases-preview__pin,
+.cases-preview__thread {
+  position: absolute;
+  display: block;
+}
+
+.cases-preview__card {
+  z-index: 2;
+  background: var(--pv-card);
+  border: 1px solid var(--pv-card-border);
+  box-shadow: var(--pv-card-shadow);
+  border-radius: var(--pv-radius);
+}
+.cases-preview__card--a {
+  left: 12%;
+  top: 18%;
+  width: 28%;
+  height: 38%;
+}
+.cases-preview__card--b {
+  left: 56%;
+  top: 44%;
+  width: 30%;
+  height: 40%;
+}
+
+/* Avatar / photo block and two text lines inside each card. */
+.cases-preview__card::before {
+  content: '';
+  position: absolute;
+  left: 10%;
+  top: 12%;
+  width: 32%;
+  aspect-ratio: 1;
+  border-radius: var(--pv-avatar-radius);
+  background: var(--pv-avatar);
+  border: var(--pv-avatar-border);
+}
+.cases-preview__card::after {
+  content: '';
+  position: absolute;
+  left: 10%;
+  right: 12%;
+  bottom: 14%;
+  height: 26%;
+  background:
+    linear-gradient(var(--pv-line) 0 0) left top / 100% 30% no-repeat,
+    linear-gradient(var(--pv-line) 0 0) left bottom / 62% 30% no-repeat;
+}
+
+.cases-preview__note {
+  z-index: 2;
+  left: 66%;
+  top: 9%;
+  width: 17%;
+  height: 25%;
+  background: var(--pv-note);
+  border: 1px solid var(--pv-note-border);
+  box-shadow: var(--pv-card-shadow);
+  transform: rotate(3deg);
+}
+.cases-preview__note::after {
+  content: '';
+  position: absolute;
+  inset: 22% 16% 30%;
+  background:
+    linear-gradient(var(--pv-note-line) 0 0) left top / 100% 18% no-repeat,
+    linear-gradient(var(--pv-note-line) 0 0) left 50% / 80% 18% no-repeat,
+    linear-gradient(var(--pv-note-line) 0 0) left bottom / 56% 18% no-repeat;
+}
+
+/* Thread between the two card centres: (26%, 37%) → (71%, 64%). */
+.cases-preview__thread {
+  z-index: 1;
+  left: 26%;
+  top: calc(37% - max(0.75px, 0.7%));
+  width: 48.06%;
+  height: max(1.5px, 1.4%);
+  transform-origin: 0 50%;
+  transform: rotate(20.556deg);
+  background: var(--pv-thread);
+}
+.cases-preview__thread--alt {
+  display: none;
+}
+
+.cases-preview__pin {
+  display: none;
+  z-index: 4;
+  width: 6.5%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 34% 30%, #ff9a9a 0 14%, #d02d33 34%, #8e1218 100%);
+  box-shadow: 1px 2px 2px rgb(0 0 0 / 0.45);
+}
+.cases-preview__pin--a {
+  left: 26%;
+  top: 22%;
+}
+.cases-preview__pin--b {
+  left: 71%;
+  top: 48%;
+}
+.cases-preview__pin--c {
+  left: 74.5%;
+  top: 12.5%;
+}
+
+/* ---------- Normal ---------- */
+
+.cases-preview--normal {
+  --pv-bg: #f6f6f3;
+  --pv-card: #ffffff;
+  --pv-card-border: #e2e4e9;
+  --pv-card-shadow: 0 1px 2px rgb(16 24 40 / 0.08), 0 3px 8px rgb(16 24 40 / 0.08);
+  --pv-radius: 4px;
+  --pv-avatar: #dbe5f7;
+  --pv-avatar-radius: 50%;
+  --pv-avatar-border: 0;
+  --pv-line: #d7dbe2;
+  --pv-note: #fde68a;
+  --pv-note-border: rgb(180 140 20 / 0.25);
+  --pv-note-line: rgb(120 90 10 / 0.22);
+  --pv-thread: #5b6b80;
+  background-image: radial-gradient(rgb(30 30 40 / 0.2) 1px, transparent 1.3px);
+  background-size: 9px 9px;
+  box-shadow: inset 0 0 0 1px rgb(16 24 40 / 0.08);
+}
+
+/* ---------- Hacker ---------- */
+
+.cases-preview--hacker {
+  --pv-bg: #050a08;
+  --pv-card: rgb(7 20 14 / 0.96);
+  --pv-card-border: rgb(25 226 122 / 0.45);
+  --pv-card-shadow: 0 0 8px rgb(25 226 122 / 0.16);
+  --pv-radius: 2px;
+  --pv-avatar: transparent;
+  --pv-avatar-radius: 1px;
+  --pv-avatar-border: 1px solid rgb(25 226 122 / 0.6);
+  --pv-line: rgb(25 226 122 / 0.5);
+  --pv-note: rgb(4 14 9 / 0.96);
+  --pv-note-border: rgb(25 226 122 / 0.3);
+  --pv-note-line: rgb(25 226 122 / 0.45);
+  background-image:
+    linear-gradient(rgb(25 226 122 / 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(25 226 122 / 0.09) 1px, transparent 1px);
+  background-size: 12px 12px;
+  box-shadow:
+    inset 0 0 0 1px rgb(25 226 122 / 0.18),
+    inset 0 0 26px rgb(0 0 0 / 0.85);
+}
+.cases-preview--hacker .cases-preview__note {
+  transform: none;
+}
+.cases-preview--hacker .cases-preview__thread {
+  top: calc(37% - max(1px, 0.9%));
+  height: max(2px, 1.8%);
+  background: repeating-linear-gradient(90deg, #19e27a 0 3px, transparent 3px 7px);
+  filter: drop-shadow(0 0 2px rgb(25 226 122 / 0.85));
+  animation: cases-preview-flow 0.9s linear infinite;
+}
+.cases-preview--hacker.cases-preview--still .cases-preview__thread {
+  animation: none;
+}
+
+@keyframes cases-preview-flow {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 7px 0;
+  }
+}
+
+/* ---------- Detective ---------- */
+
+.cases-preview--detective {
+  --pv-bg: #9a6a3f;
+  --pv-card: #f2ecdf;
+  --pv-card-border: rgb(60 40 20 / 0.15);
+  --pv-card-shadow: 1px 2px 2px rgb(0 0 0 / 0.3), 2px 5px 8px rgb(0 0 0 / 0.3);
+  --pv-radius: 1px;
+  --pv-avatar: linear-gradient(160deg, #8f8b84, #4d4a45);
+  --pv-avatar-radius: 0;
+  --pv-avatar-border: 0;
+  --pv-line: rgb(60 45 30 / 0.32);
+  --pv-note: #f6e27f;
+  --pv-note-border: rgb(120 90 10 / 0.2);
+  --pv-note-line: rgb(90 60 10 / 0.3);
+  background-image:
+    radial-gradient(rgb(60 35 15 / 0.38) 1px, transparent 1.6px),
+    radial-gradient(rgb(255 222 170 / 0.2) 1px, transparent 1.6px),
+    radial-gradient(rgb(40 20 5 / 0.25) 1.6px, transparent 2.2px);
+  background-size:
+    7px 7px,
+    11px 11px,
+    17px 17px;
+  background-position:
+    0 0,
+    3px 5px,
+    8px 2px;
+  box-shadow:
+    inset 0 0 0 3px #5b3b1f,
+    inset 0 0 0 4px rgb(255 220 170 / 0.15),
+    inset 0 0 18px rgb(0 0 0 / 0.45);
+}
+.cases-preview--detective .cases-preview__card--a {
+  transform: rotate(-4deg);
+}
+.cases-preview--detective .cases-preview__card--b {
+  transform: rotate(3deg);
+}
+.cases-preview--detective .cases-preview__card::before {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+.cases-preview--detective .cases-preview__note {
+  transform: rotate(-3deg);
+}
+.cases-preview--detective .cases-preview__pin {
+  display: block;
+}
+
+/* Twisted red yarn, pin to pin: (26%, 22%) → (71%, 48%) and (26%, 22%) → (74.5%, 12.5%). */
+.cases-preview--detective .cases-preview__thread {
+  z-index: 3;
+  top: calc(22% - max(1px, 0.95%));
+  width: 47.85%;
+  height: max(2px, 1.9%);
+  transform: rotate(19.855deg);
+  border-radius: 2px;
+  background: repeating-linear-gradient(60deg, #9e1117 0 2px, #d22b31 2px 3.5px, #b3151b 3.5px 5px);
+  box-shadow: 0 1.5px 1.5px rgb(0 0 0 / 0.4);
+}
+.cases-preview--detective .cases-preview__thread--alt {
+  display: block;
+  width: 48.86%;
+  transform: rotate(-6.98deg);
+}

@@ -1,0 +1,59 @@
+/* Inline text editor shared by notes, text boxes and shape labels. It inherits font and colour
+   from the item, so editing looks exactly like the rendered text. */
+
+.ite {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.ite-input {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  resize: none;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  caret-color: currentColor;
+  scrollbar-width: thin;
+}
+.ite-input::placeholder {
+  color: currentColor;
+  opacity: 0.42;
+}
+.ite-input::selection {
+  background: color-mix(in srgb, var(--selection) 32%, transparent);
+}
+
+/* Auto-growing variant: the textarea sits on top of an invisible copy of its text. */
+.ite--grow {
+  display: grid;
+  height: auto;
+}
+.ite--grow > .ite-mirror,
+.ite--grow > .ite-input {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+.ite-mirror {
+  visibility: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+.ite-input--grow {
+  height: 100%;
+  overflow: hidden;
+}

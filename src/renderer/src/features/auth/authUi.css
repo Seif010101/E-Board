@@ -1,0 +1,203 @@
+/* Shared form widgets used by the auth and account features. */
+
+/* ---------- Password input ---------- */
+
+.auth-pw {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.auth-pw__wrap {
+  position: relative;
+}
+.auth-pw__input {
+  padding-inline-end: 40px;
+}
+.auth-pw__toggle {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 5px;
+  transform: translateY(-50%);
+}
+.auth-pw__caps {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+/* ---------- Strength meter ---------- */
+
+.auth-meter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  --auth-meter-color: var(--border-strong);
+}
+.auth-meter--0,
+.auth-meter--1 {
+  --auth-meter-color: var(--danger);
+}
+.auth-meter--2 {
+  --auth-meter-color: #e5862d;
+}
+.auth-meter--3 {
+  --auth-meter-color: #c9b020;
+}
+.auth-meter--4 {
+  --auth-meter-color: var(--success);
+}
+.auth-meter__bars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  flex: 1;
+}
+.auth-meter__bar {
+  height: 4px;
+  border-radius: 4px;
+  background: var(--surface-3);
+  transition: background 0.2s var(--ease);
+}
+.auth-meter__bar.is-on {
+  background: var(--auth-meter-color);
+}
+.auth-meter__label {
+  min-width: 64px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--auth-meter-color);
+  text-align: end;
+}
+.auth-meter.is-empty .auth-meter__label {
+  color: var(--text-faint);
+  font-weight: 500;
+}
+
+/* ---------- 6-digit code ---------- */
+
+.auth-code {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+}
+.auth-code__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: 0;
+  padding: 0;
+  font-size: 16px;
+  cursor: text;
+  z-index: 1;
+}
+.auth-code__cells {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) 14px repeat(3, 1fr);
+  gap: 8px;
+}
+.auth-code__gap {
+  align-self: center;
+  justify-self: center;
+  width: 8px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--border-strong);
+}
+.auth-code__cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 52px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 600;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background 0.15s;
+}
+.auth-code__cell.is-filled {
+  background: var(--surface-2);
+}
+.auth-code:focus-within .auth-code__cell.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.auth-code:focus-within .auth-code__cell.is-active:not(.is-filled)::after {
+  content: '';
+  width: 2px;
+  height: 22px;
+  border-radius: 1px;
+  background: var(--accent);
+  animation: auth-caret 1s steps(1) infinite;
+}
+.auth-code.is-invalid .auth-code__cell {
+  border-color: var(--danger);
+}
+.auth-code.is-invalid {
+  animation: auth-shake 0.32s var(--ease);
+}
+.auth-code.is-busy .auth-code__cell {
+  opacity: 0.6;
+}
+
+@keyframes auth-caret {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes auth-shake {
+  20%,
+  60% {
+    transform: translateX(-5px);
+  }
+  40%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+/* ---------- Alerts & button spinner ---------- */
+
+.auth-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
+  background: var(--danger-soft);
+  color: var(--text);
+  font-size: 13px;
+  animation: pop-in 0.18s var(--ease);
+}
+.auth-alert svg {
+  flex: none;
+  margin-top: 1px;
+  color: var(--danger);
+}
+.auth-alert--info {
+  border-color: color-mix(in srgb, var(--info) 45%, transparent);
+  background: color-mix(in srgb, var(--info) 12%, transparent);
+}
+.auth-alert--info svg {
+  color: var(--info);
+}
+
+.auth-btn-spinner {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+  border-color: currentColor;
+  border-top-color: transparent;
+  opacity: 0.85;
+}

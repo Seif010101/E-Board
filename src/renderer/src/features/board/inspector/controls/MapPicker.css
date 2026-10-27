@@ -1,0 +1,136 @@
+/* Map picker dialog. It is portalled to <body>, so it uses the app theme tokens. */
+
+.insp-map {
+  display: flex;
+  flex-direction: column;
+}
+.insp-map .insp-field {
+  margin-bottom: 10px;
+}
+
+.insp-map__frame {
+  position: relative;
+  height: 340px;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.insp-map__frame.is-invalid {
+  border-color: var(--danger);
+}
+
+.insp-map__canvas {
+  width: 100%;
+  height: 100%;
+  background: var(--surface-2);
+  font-family: var(--font-ui);
+}
+/* Clicking drops the pin, so the idle cursor is a crosshair (dragging still shows "grabbing"). */
+.insp-map__canvas.leaflet-grab {
+  cursor: crosshair;
+}
+.insp-map__canvas.leaflet-dragging .leaflet-grab {
+  cursor: grabbing;
+}
+
+.insp-map__overlay {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  z-index: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgb(15 17 21 / 0.8);
+  color: #ffffff;
+  font-size: 12.5px;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.3);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.insp-map__msg {
+  margin: 5px 0 12px;
+}
+
+.insp-map__readout {
+  align-self: center;
+  margin-inline-end: auto;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: text;
+}
+
+.insp-map__suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 7px;
+}
+
+.insp-suggest {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 13px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
+}
+.insp-suggest:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.insp-suggest.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* Push-pin marker drawn in CSS: a red teardrop with a white centre, tip at the icon anchor. */
+.insp-map-pin {
+  cursor: grab;
+}
+.insp-map-pin::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #ffffff;
+  border-radius: 50% 50% 50% 0;
+  background: radial-gradient(circle at 35% 35%, #ff8a8a, #d0262c 58%, #8f1519);
+  box-shadow: -1px 3px 5px rgb(0 0 0 / 0.38);
+  transform: rotate(-45deg);
+}
+.insp-map-pin::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 11px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+.leaflet-dragging .insp-map-pin {
+  cursor: grabbing;
+}

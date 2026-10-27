@@ -1,0 +1,98 @@
+{
+  "auth": {
+    "hero": {
+      "tagline": "Connect the evidence. Expose the network.",
+      "lead": "A private evidence board for digital forensic and cyber investigations: people, companies, accounts and locations, linked by the threads that matter.",
+      "features": {
+        "local": {
+          "title": "Private by design",
+          "text": "Encrypted local storage. Nothing leaves this device."
+        },
+        "boards": {
+          "title": "Infinite evidence boards",
+          "text": "Cases, boards, cards and threads on an endless canvas."
+        },
+        "twofa": {
+          "title": "Two-factor sign-in",
+          "text": "Protect your account with an authenticator app."
+        }
+      }
+    },
+    "prefs": {
+      "language": "Language",
+      "languages": {
+        "en": "English",
+        "ar": "العربية"
+      },
+      "toLight": "Switch to light theme",
+      "toDark": "Switch to dark theme"
+    },
+    "tabs": {
+      "label": "Account access",
+      "signin": "Sign in",
+      "signup": "Create account"
+    },
+    "fields": {
+      "username": "Username",
+      "usernamePlaceholder": "e.g. analyst_01",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "displayName": "Display name",
+      "displayNamePlaceholder": "e.g. Sara Al-Mansouri"
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password",
+      "capsLock": "Caps Lock is on"
+    },
+    "strength": {
+      "label": "Password strength",
+      "empty": "Enter a password",
+      "tooWeak": "Too weak",
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "strong": "Strong"
+    },
+    "signin": {
+      "title": "Welcome back, investigator",
+      "subtitle": "Sign in to open your cases.",
+      "submit": "Sign in",
+      "codeTitle": "Two-factor verification",
+      "codeHint": "Enter the 6-digit code from your authenticator app.",
+      "codeLabel": "Authentication code",
+      "verify": "Verify",
+      "useAnother": "Back to sign in"
+    },
+    "signup": {
+      "title": "Create your investigator account",
+      "subtitle": "A local account. No e-mail required.",
+      "usernameHint": "3–32 characters: English letters, numbers, _ or .",
+      "displayNameHint": "Shown on your profile and lock screen.",
+      "storage": "Where your data is stored",
+      "storageLocal": "Local",
+      "storageLocalDesc": "Data stays encrypted on this device.",
+      "storageCloud": "Cloud database",
+      "storageCloudDesc": "Sync across devices.",
+      "comingSoon": "Coming soon",
+      "totp": "Set up two-factor authentication now",
+      "totpDesc": "Uses an authenticator app such as Google Authenticator, Microsoft Authenticator or Authy.",
+      "submit": "Create account"
+    },
+    "enroll": {
+      "title": "Secure your account",
+      "text": "Link an authenticator app so a code is required at every sign-in.",
+      "skip": "Skip for now"
+    },
+    "lock": {
+      "badge": "Locked",
+      "text": "E-Board is locked. Enter your password to continue.",
+      "unlock": "Unlock",
+      "wrongPassword": "Wrong password",
+      "notYou": "Not you?",
+      "signOut": "Sign out"
+    },
+    "retryIn": "Try again in {{seconds}}s",
+    "footer": "Your cases are stored encrypted on this device."
+  }
+}

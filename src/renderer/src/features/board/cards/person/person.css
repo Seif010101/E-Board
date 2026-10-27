@@ -1,0 +1,150 @@
+/* Person card: portrait, name, role / risk and the expandable dossier. */
+
+.cd-person {
+  /* The top margin leaves room for the pin above the photo. */
+  padding: 24px 10px 10px;
+}
+
+.cd-person__pic {
+  position: relative;
+  width: 100%;
+  max-height: 280px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 9px;
+  background: var(--card-bg-2);
+}
+.cd-person__pic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cd-person__pic::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+  pointer-events: none;
+}
+
+.cd-person__body {
+  padding: 10px 2px 0;
+  text-align: center;
+}
+.cd-person__name {
+  font-family: var(--board-font-title);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.cd-person__name.is-placeholder {
+  color: var(--card-muted);
+  font-weight: 600;
+  font-style: italic;
+}
+.cd-person__aka {
+  margin-top: 2px;
+  color: var(--card-muted);
+  font-size: 11px;
+}
+.cd-person__badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px 10px;
+  margin-top: 8px;
+}
+
+/* ---------- Hacker: terminal profile ---------- */
+
+[data-board-theme='hacker'] .cd-person {
+  padding: 0 0 10px;
+}
+[data-board-theme='hacker'] .cd-person__photo {
+  padding: 8px 8px 0;
+}
+[data-board-theme='hacker'] .cd-person__pic {
+  border: 1px solid var(--card-border);
+  border-radius: 2px;
+  background: #031409;
+}
+[data-board-theme='hacker'] .cd-person__pic img {
+  filter: grayscale(1) sepia(1) hue-rotate(75deg) saturate(2.4) brightness(0.8) contrast(1.15);
+}
+/* Scanlines and vignette over the photo… */
+[data-board-theme='hacker'] .cd-person__pic::after {
+  border-radius: 0;
+  background:
+    repeating-linear-gradient(to bottom, rgb(0 0 0 / 0) 0 2px, rgb(0 0 0 / 0.3) 2px 3px),
+    radial-gradient(ellipse at center, transparent 55%, rgb(0 0 0 / 0.5));
+  box-shadow: none;
+}
+/* …and targeting brackets in the corners. */
+[data-board-theme='hacker'] .cd-person__pic::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  z-index: 1;
+  pointer-events: none;
+  --cd-b: rgb(25 226 122 / 0.75);
+  background:
+    linear-gradient(var(--cd-b), var(--cd-b)) left top / 10px 1.5px no-repeat,
+    linear-gradient(var(--cd-b), var(--cd-b)) left top / 1.5px 10px no-repeat,
+    linear-gradient(var(--cd-b), var(--cd-b)) right top / 10px 1.5px no-repeat,
+    linear-gradient(var(--cd-b), var(--cd-b)) right top / 1.5px 10px no-repeat,
+    linear-gradient(var(--cd-b), var(--cd-b)) left bottom / 10px 1.5px no-repeat,
+    linear-gradient(var(--cd-b), var(--cd-b)) left bottom / 1.5px 10px no-repeat,
+    linear-gradient(var(--cd-b), var(--cd-b)) right bottom / 10px 1.5px no-repeat,
+    linear-gradient(var(--cd-b), var(--cd-b)) right bottom / 1.5px 10px no-repeat;
+}
+[data-board-theme='hacker'] .cd-person__body {
+  padding: 9px 10px 0;
+}
+[data-board-theme='hacker'] .cd-person__name {
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 10px rgb(25 226 122 / 0.35);
+}
+[data-board-theme='hacker'] .cd-person__aka {
+  font-family: var(--board-font-mono);
+  font-size: 10.5px;
+}
+
+/* ---------- Detective: dossier photo on aged paper ---------- */
+
+[data-board-theme='detective'] .cd-person {
+  padding: 26px 12px 12px;
+}
+[data-board-theme='detective'] .cd-person__pic {
+  border-radius: 0;
+  background: #d8ccb2;
+  box-shadow:
+    0 0 0 1px rgb(60 40 20 / 0.25),
+    0 1px 2px rgb(60 40 20 / 0.2);
+}
+[data-board-theme='detective'] .cd-person__pic img {
+  filter: sepia(0.38) saturate(0.85) contrast(1.06) brightness(0.97);
+}
+[data-board-theme='detective'] .cd-person__pic::after {
+  border-radius: 0;
+  background: radial-gradient(ellipse at center, transparent 58%, rgb(70 45 15 / 0.3));
+  box-shadow: none;
+  mix-blend-mode: multiply;
+}
+[data-board-theme='detective'] .cd-person__name {
+  font-family: var(--font-type);
+  font-size: 17px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+[data-board-theme='detective'] .cd-person__aka {
+  font-family: var(--font-type);
+  font-style: italic;
+}
+[data-board-theme='detective'] .cd-person__badges {
+  gap: 8px 12px;
+  margin-top: 9px;
+}

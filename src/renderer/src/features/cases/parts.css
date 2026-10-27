@@ -1,0 +1,165 @@
+.cases-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Status ---------- */
+/* Colours can be re-inked by a container (e.g. the manila folder face) via --cases-ink-<status>. */
+
+.cases-status[data-status='open'],
+.cases-status-dot[data-status='open'] {
+  --cases-st: var(--cases-ink-open, var(--info));
+}
+.cases-status[data-status='active'],
+.cases-status-dot[data-status='active'] {
+  --cases-st: var(--cases-ink-active, var(--success));
+}
+.cases-status[data-status='closed'],
+.cases-status-dot[data-status='closed'] {
+  --cases-st: var(--cases-ink-closed, var(--text-muted));
+}
+.cases-status[data-status='archived'],
+.cases-status-dot[data-status='archived'] {
+  --cases-st: var(--cases-ink-archived, var(--text-faint));
+}
+
+.cases-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding-inline: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--cases-st) 34%, transparent);
+  background: color-mix(in srgb, var(--cases-st) 12%, transparent);
+  color: var(--cases-st);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.cases-status-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cases-st);
+}
+.cases-status-dot[data-status='active'] {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cases-st) 24%, transparent);
+}
+.cases-status-dot[data-status='archived'] {
+  background: transparent;
+  border: 1.5px solid var(--cases-st);
+}
+
+/* ---------- Priority ---------- */
+
+.cases-bars[data-priority='low'],
+.cases-priority[data-priority='low'] {
+  --cases-pr: #6f8fb3;
+}
+.cases-bars[data-priority='medium'],
+.cases-priority[data-priority='medium'] {
+  --cases-pr: #c4921f;
+}
+.cases-bars[data-priority='high'],
+.cases-priority[data-priority='high'] {
+  --cases-pr: #d8641c;
+}
+.cases-bars[data-priority='critical'],
+.cases-priority[data-priority='critical'] {
+  --cases-pr: #d23a36;
+}
+
+.cases-priority {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cases-ink-muted, var(--text-muted));
+  white-space: nowrap;
+}
+.cases-priority[data-priority='critical'] {
+  color: var(--cases-pr);
+}
+
+.cases-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+.cases-bars > span {
+  width: 3px;
+  border-radius: 1px;
+  background: currentColor;
+  opacity: 0.22;
+}
+.cases-bars > span:nth-child(1) {
+  height: 4px;
+}
+.cases-bars > span:nth-child(2) {
+  height: 6.5px;
+}
+.cases-bars > span:nth-child(3) {
+  height: 9px;
+}
+.cases-bars > span:nth-child(4) {
+  height: 12px;
+}
+.cases-bars > span.is-on {
+  background: var(--cases-pr);
+  opacity: 1;
+}
+
+/* ---------- Board theme swatch (menus) ---------- */
+
+.cases-theme-swatch {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--border-strong);
+  overflow: hidden;
+}
+.cases-theme-swatch::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-end: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+.cases-theme-swatch[data-theme='normal'] {
+  background: radial-gradient(rgb(30 30 40 / 0.25) 0.6px, transparent 0.9px) 0 0 / 4px 4px, #f6f6f3;
+}
+.cases-theme-swatch[data-theme='normal']::after {
+  background: #3b6fd8;
+}
+.cases-theme-swatch[data-theme='hacker'] {
+  background:
+    linear-gradient(rgb(25 226 122 / 0.25) 1px, transparent 1px) 0 0 / 4px 4px,
+    #050a08;
+}
+.cases-theme-swatch[data-theme='hacker']::after {
+  background: #19e27a;
+  box-shadow: 0 0 4px #19e27a;
+}
+.cases-theme-swatch[data-theme='detective'] {
+  background: radial-gradient(rgb(50 28 10 / 0.45) 0.7px, transparent 1px) 0 0 / 3px 3px, #9a6a3f;
+}
+.cases-theme-swatch[data-theme='detective']::after {
+  background: #c3262b;
+}

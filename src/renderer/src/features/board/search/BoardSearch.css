@@ -1,0 +1,221 @@
+/* Floating board search, themed with the board UI tokens. */
+
+.bsr {
+  --bsr-gap: 14px;
+  /* Room left for a toolbar docked on the top edge. */
+  --bsr-dock: 72px;
+  position: absolute;
+  top: var(--bsr-gap);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  width: min(380px, calc(100% - 2 * var(--bsr-gap)));
+  max-height: calc(100% - 2 * var(--bsr-gap));
+  border: 1px solid var(--board-ui-border);
+  border-radius: 12px;
+  background: var(--board-ui-bg);
+  color: var(--board-ui-text);
+  box-shadow: var(--board-ui-shadow);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  font-family: var(--font-ui);
+  overflow: hidden;
+  animation: bsr-in 0.16s var(--ease);
+}
+.bsr--left {
+  left: var(--bsr-gap);
+}
+.bsr--right {
+  right: var(--bsr-gap);
+}
+.bsr.is-lowered {
+  top: calc(var(--bsr-gap) + var(--bsr-dock));
+  max-height: calc(100% - 2 * var(--bsr-gap) - var(--bsr-dock));
+}
+[data-board-theme='hacker'] .bsr {
+  border-radius: 4px;
+  font-family: var(--font-mono);
+}
+
+/* ---------- Bar ---------- */
+
+.bsr__bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  height: 44px;
+  padding-inline: 12px 5px;
+}
+
+.bsr__icon {
+  flex: none;
+  color: var(--board-ui-muted);
+}
+
+.bsr__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding-inline: 8px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--board-ui-text);
+  font: inherit;
+  font-size: 14px;
+}
+.bsr__input::placeholder {
+  color: var(--board-ui-muted);
+  opacity: 0.85;
+}
+
+.bsr__count {
+  flex: none;
+  padding-inline: 4px 6px;
+  color: var(--board-ui-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.bsr__btn {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--board-ui-muted);
+  cursor: pointer;
+}
+.bsr__btn:hover:not(:disabled) {
+  background: var(--board-ui-hover);
+  color: var(--board-ui-text);
+}
+.bsr__btn:focus-visible {
+  outline: 2px solid var(--board-ui-accent);
+  outline-offset: -2px;
+}
+.bsr__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+[data-board-theme='hacker'] .bsr__btn {
+  border-radius: 2px;
+}
+
+/* ---------- Results ---------- */
+
+.bsr__results {
+  min-height: 0;
+  border-top: 1px solid var(--board-ui-border);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.bsr__list {
+  margin: 0;
+  padding: 5px;
+  list-style: none;
+}
+
+.bsr__option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 6px 8px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.bsr__option.is-active {
+  background: var(--board-ui-hover);
+  box-shadow: inset 0 0 0 1px var(--board-ui-accent-soft);
+}
+[data-board-theme='hacker'] .bsr__option {
+  border-radius: 2px;
+}
+
+.bsr__type-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--board-ui-accent-soft);
+  color: var(--board-ui-accent);
+}
+[data-board-theme='hacker'] .bsr__type-icon {
+  border-radius: 2px;
+}
+
+.bsr__text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.bsr__name,
+.bsr__detail {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* Names may be Arabic or Latin regardless of the UI language. */
+  unicode-bidi: plaintext;
+  text-align: start;
+}
+.bsr__name {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.bsr__detail {
+  margin-top: 1px;
+  color: var(--board-ui-muted);
+  font-size: 12px;
+}
+
+.bsr__type {
+  flex: none;
+  max-width: 34%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--board-ui-muted);
+  font-size: 11.5px;
+}
+
+.bsr-mark {
+  border-radius: 3px;
+  background: var(--board-ui-accent-soft);
+  color: var(--board-ui-accent);
+  box-shadow: 0 0 0 1px var(--board-ui-accent-soft);
+}
+
+.bsr__more {
+  padding: 8px 10px 6px;
+  color: var(--board-ui-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.bsr__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 18px 12px;
+  color: var(--board-ui-muted);
+  font-size: 13px;
+}
+
+@keyframes bsr-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}

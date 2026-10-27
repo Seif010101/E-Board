@@ -1,0 +1,125 @@
+/* Image card: a pinned photo with a caption strip; the item keeps its aspect ratio when resized. */
+
+.cd-image {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+  padding: 6px 6px 0;
+}
+.cd-image__photo {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--card-bg-2);
+}
+.cd-image__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cd-image__photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.07);
+  pointer-events: none;
+}
+.cd-image__caption {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding-inline: 6px;
+  overflow: hidden;
+  color: var(--card-text);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+.cd-image__text,
+.cd-image__file {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cd-image__file {
+  display: none;
+}
+
+/* ---------- Detective: polaroid with a handwritten caption ---------- */
+
+[data-board-theme='detective'] .cd-image {
+  padding: 10px 10px 0;
+  border-color: rgb(60 40 20 / 0.12);
+  background-color: #f8f6ef;
+  background-image:
+    linear-gradient(to bottom, rgb(255 255 255 / 0.45), transparent 35%),
+    radial-gradient(ellipse 130% 100% at 50% 40%, transparent 65%, rgb(120 90 50 / 0.12) 100%);
+}
+[data-board-theme='detective'] .cd-image__photo {
+  border-radius: 0;
+  background: #2a2420;
+}
+[data-board-theme='detective'] .cd-image__photo img {
+  filter: sepia(0.14) contrast(1.04) saturate(0.92);
+}
+[data-board-theme='detective'] .cd-image__photo::after {
+  border-radius: 0;
+  box-shadow:
+    inset 0 0 0 1px rgb(0 0 0 / 0.18),
+    inset 0 0 18px rgb(40 25 10 / 0.25);
+}
+[data-board-theme='detective'] .cd-image__caption {
+  height: 32px;
+  color: #1f2a5a;
+  font-family: var(--font-hand);
+  font-size: 15px;
+  font-weight: 400;
+}
+
+/* ---------- Hacker: framed capture with a mono caption ---------- */
+
+[data-board-theme='hacker'] .cd-image {
+  border-color: rgb(25 226 122 / 0.4);
+}
+[data-board-theme='hacker'] .cd-image__photo {
+  border: 1px solid var(--card-border);
+  border-radius: 2px;
+  background: #031409;
+}
+[data-board-theme='hacker'] .cd-image__photo img {
+  filter: grayscale(1) sepia(1) hue-rotate(75deg) saturate(2.2) brightness(0.85) contrast(1.12);
+}
+[data-board-theme='hacker'] .cd-image__photo::after {
+  border-radius: 0;
+  background:
+    repeating-linear-gradient(to bottom, rgb(0 0 0 / 0) 0 2px, rgb(0 0 0 / 0.28) 2px 3px),
+    radial-gradient(ellipse at center, transparent 60%, rgb(0 0 0 / 0.45));
+  box-shadow: none;
+}
+[data-board-theme='hacker'] .cd-image__caption {
+  justify-content: flex-start;
+  color: var(--card-accent);
+  font-family: var(--board-font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-align: start;
+}
+[data-board-theme='hacker'] .cd-image__caption::before {
+  content: '$';
+  flex: none;
+  margin-inline-end: 6px;
+  color: var(--card-muted);
+}
+[data-board-theme='hacker'] .cd-image__file {
+  display: block;
+  color: var(--card-muted);
+  letter-spacing: 0.06em;
+}

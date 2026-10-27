@@ -1,0 +1,197 @@
+{
+  "header": {
+    "home": "Go to the case library",
+    "breadcrumbs": "Breadcrumb"
+  },
+  "cases": {
+    "fileNo": "File {{no}}",
+    "uncategorized": "Uncategorised",
+    "boardCount_zero": "No boards",
+    "boardCount_one": "{{count}} board",
+    "boardCount_other": "{{count}} boards",
+    "status": {
+      "open": "Open",
+      "active": "Active",
+      "closed": "Closed",
+      "archived": "Archived"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "stamp": {
+      "open": "Case file",
+      "active": "Confidential",
+      "closed": "Closed",
+      "archived": "Archived"
+    },
+    "fields": {
+      "title": "Case title",
+      "category": "Category",
+      "description": "Description",
+      "status": "Status",
+      "priority": "Priority",
+      "color": "Folder colour"
+    },
+    "categories": {
+      "fraud": "Fraud",
+      "social_engineering": "Social engineering",
+      "phishing": "Phishing",
+      "identity_theft": "Identity theft",
+      "extortion": "Extortion",
+      "cyberbullying": "Cyberbullying",
+      "data_breach": "Data breach",
+      "money_laundering": "Money laundering",
+      "online_scam": "Online scam",
+      "missing_person": "Missing person",
+      "other": "Other"
+    },
+    "colors": {
+      "manila": "Manila",
+      "rust": "Rust",
+      "red": "Red",
+      "plum": "Plum",
+      "blue": "Blue",
+      "teal": "Teal",
+      "olive": "Olive",
+      "slate": "Slate"
+    },
+    "sort": {
+      "updated": "Recently updated",
+      "newest": "Newest first",
+      "title": "Title (A–Z)",
+      "priority": "Priority (highest first)"
+    },
+    "themes": {
+      "normal": "Normal",
+      "hacker": "Hacker",
+      "detective": "Detective"
+    },
+    "themeDescriptions": {
+      "normal": "Light, clean and modern. Ideal for reports and screen sharing.",
+      "hacker": "Dark terminal green with animated dotted threads.",
+      "detective": "Classic cork board with push pins and red string."
+    },
+    "library": {
+      "crumb": "Cases",
+      "eyebrow": "Case library",
+      "title": "Your investigations",
+      "subtitle": "Open a case folder to work on its evidence boards.",
+      "total_one": "{{count}} case",
+      "total_other": "{{count}} cases",
+      "inProgress_zero": "none in progress",
+      "inProgress_one": "{{count}} in progress",
+      "inProgress_other": "{{count}} in progress",
+      "new": "New case",
+      "newHint": "New case (Ctrl+N)",
+      "searchLabel": "Search cases",
+      "searchPlaceholder": "Search title, category or description…",
+      "clearSearch": "Clear search",
+      "statusFilter": "Filter by status",
+      "allStatuses": "All",
+      "sortLabel": "Sort cases",
+      "gridLabel": "Case folders",
+      "showing": "Showing {{count}} of {{total}} cases",
+      "emptyTitle": "No cases yet",
+      "emptyText": "Create your first case folder, then add evidence boards to map the people, companies and threads between them.",
+      "emptyCta": "Create first case",
+      "noResultsTitle": "No matching cases",
+      "noResultsText": "Try another search term or status filter.",
+      "clearFilters": "Clear filters",
+      "errorTitle": "Couldn't load your cases",
+      "errorText": "The case library could not be read. Please try again.",
+      "retry": "Try again"
+    },
+    "menu": {
+      "label": "Actions for “{{title}}”",
+      "open": "Open case",
+      "edit": "Edit details",
+      "status": "Change status",
+      "delete": "Delete case"
+    },
+    "editor": {
+      "createTitle": "New case",
+      "editTitle": "Edit case",
+      "titlePlaceholder": "e.g. Fraud & social engineering by a fake company",
+      "categoryPlaceholder": "Type a category or pick a suggestion",
+      "suggestions": "Category suggestions",
+      "descriptionPlaceholder": "Scope, sources, key leads and next steps…",
+      "counter": "{{used}} / {{max}}",
+      "create": "Create case",
+      "save": "Save changes"
+    },
+    "case": {
+      "eyebrow": "Case file",
+      "summaryLabel": "Case summary",
+      "created": "Opened",
+      "updated": "Last activity",
+      "boards": "Boards",
+      "fileNumber": "File number",
+      "noDescription": "No description yet. Edit the case to record its scope, sources and key leads.",
+      "showMore": "Show more",
+      "showLess": "Show less",
+      "edit": "Edit case",
+      "delete": "Delete case",
+      "boardsEyebrow": "Evidence",
+      "boardsTitle": "Evidence boards",
+      "boardsSubtitle": "Each board is an infinite canvas for people, companies, evidence and the threads that connect them.",
+      "gridLabel": "Evidence boards",
+      "newBoard": "New evidence board",
+      "newBoardHint": "Start a blank canvas for this investigation.",
+      "newBoardShortcut": "New evidence board (Ctrl+N)",
+      "emptyTitle": "No evidence boards yet",
+      "emptyText": "Create a board to pin people, companies and evidence, then connect them with threads.",
+      "emptyCta": "Create first board",
+      "errorTitle": "Couldn't open this case",
+      "errorText": "The case could not be loaded. Please try again.",
+      "backToLibrary": "Back to cases",
+      "boardsErrorTitle": "Couldn't load the boards",
+      "boardsErrorText": "The evidence boards of this case could not be loaded. Please try again.",
+      "notFound": "This case no longer exists"
+    },
+    "board": {
+      "open": "Open board",
+      "rename": "Rename",
+      "theme": "Board theme",
+      "delete": "Delete board",
+      "menuLabel": "Actions for “{{title}}”",
+      "itemCount_zero": "Empty",
+      "itemCount_one": "{{count}} item",
+      "itemCount_other": "{{count}} items"
+    },
+    "boardEditor": {
+      "createTitle": "New evidence board",
+      "renameTitle": "Rename board",
+      "titleLabel": "Board title",
+      "titlePlaceholder": "e.g. Suspect network, Money trail",
+      "themeLabel": "Board theme",
+      "create": "Create board",
+      "save": "Save"
+    },
+    "confirm": {
+      "deleteCaseTitle": "Delete this case?",
+      "deleteCaseText_zero": "“{{title}}” will be permanently deleted. This cannot be undone.",
+      "deleteCaseText_one": "“{{title}}” and its evidence board will be permanently deleted, including every card, note, image and thread on it. This cannot be undone.",
+      "deleteCaseText_other": "“{{title}}” and all {{count}} evidence boards inside it will be permanently deleted, including every card, note, image and thread on them. This cannot be undone.",
+      "deleteCase": "Delete case",
+      "deleteBoardTitle": "Delete this board?",
+      "deleteBoardText_zero": "The empty board “{{title}}” will be permanently deleted.",
+      "deleteBoardText_one": "“{{title}}” and the item on it will be permanently deleted, together with its threads. This cannot be undone.",
+      "deleteBoardText_other": "“{{title}}” and all {{count}} items on it will be permanently deleted, together with their threads. This cannot be undone.",
+      "deleteBoard": "Delete board",
+      "deleting": "Deleting…"
+    },
+    "toast": {
+      "created": "Case “{{title}}” created",
+      "updated": "Case details saved",
+      "statusChanged": "Status changed to {{status}}",
+      "deleted": "Case “{{title}}” deleted",
+      "boardCreated": "Board “{{title}}” created",
+      "boardRenamed": "Board renamed",
+      "themeChanged": "Theme changed to {{theme}}",
+      "boardDeleted": "Board “{{title}}” deleted"
+    }
+  }
+}

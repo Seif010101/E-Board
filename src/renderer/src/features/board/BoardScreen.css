@@ -1,0 +1,68 @@
+/* Board screen layout: app header above a full-bleed board. */
+
+.bs-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--bg);
+}
+
+.bs-head {
+  flex: none;
+}
+/* The board title crumb is renamed by double-clicking it. */
+.bs-head.is-ready [aria-current='page'] {
+  cursor: text;
+}
+
+.bs-board {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--board-bg);
+  color: var(--board-text);
+}
+
+/* ---------- Loading / error ---------- */
+
+.bs-state {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 0;
+  padding: 24px;
+  color: var(--text-muted);
+  text-align: center;
+  animation: fade-in 0.2s var(--ease);
+}
+
+.bs-state__icon {
+  color: var(--danger);
+}
+
+.bs-state__title {
+  color: var(--text);
+  font-size: 18px;
+}
+
+.bs-state__text {
+  max-width: 460px;
+}
+
+.bs-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* Arrow icons point backwards in the reading direction. */
+[dir='rtl'] .bs-flip {
+  transform: scaleX(-1);
+}

@@ -1,0 +1,203 @@
+/* Header avatar button + account dropdown (portalled to <body>, positioned with fixed coordinates). */
+
+.acct-menu-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    box-shadow 0.15s var(--ease),
+    transform 0.1s;
+}
+.acct-menu-btn:hover,
+.acct-menu-btn.is-open {
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.acct-menu-btn:active {
+  transform: scale(0.96);
+}
+.acct-menu-btn:focus-visible {
+  outline-offset: 1px;
+}
+
+.acct-menu {
+  position: fixed;
+  z-index: 1500;
+  width: 284px;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100vh - var(--header-h) - 16px);
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  transform-origin: top right;
+  animation: acct-menu-in 0.14s var(--ease);
+}
+
+.acct-menu__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px 8px;
+}
+.acct-menu__who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.acct-menu__name {
+  font-weight: 600;
+  font-size: 14.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acct-menu__user {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Keeps the LTR handle aligned with the name in RTL. */
+[dir='rtl'] .acct-menu__user {
+  text-align: right;
+}
+
+.acct-menu__sep {
+  height: 1px;
+  margin: 5px 6px;
+  background: var(--border);
+}
+
+.acct-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.acct-menu__item > span {
+  flex: 1;
+  min-width: 0;
+}
+.acct-menu__item svg {
+  flex: none;
+  color: var(--text-muted);
+}
+.acct-menu__item:hover,
+.acct-menu__item:focus-visible {
+  background: var(--surface-2);
+}
+.acct-menu__item:focus-visible,
+.acct-menu__seg-opt:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+.acct-menu__item--danger,
+.acct-menu__item--danger svg {
+  color: var(--danger);
+}
+.acct-menu__item--danger:hover,
+.acct-menu__item--danger:focus-visible {
+  background: var(--danger-soft);
+}
+
+.acct-menu__kbd {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 5px;
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* ---------- Inline segmented rows (language / theme) ---------- */
+
+.acct-menu__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 40px;
+  padding: 2px 6px 2px 10px;
+}
+.acct-menu__row-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--text);
+}
+.acct-menu__row-label svg {
+  flex: none;
+  color: var(--text-muted);
+}
+.acct-menu__seg {
+  display: inline-flex;
+  flex: none;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.acct-menu__seg-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.acct-menu__seg-opt:hover {
+  color: var(--text);
+}
+.acct-menu__seg-opt[aria-checked='true'] {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow:
+    inset 0 0 0 1px var(--border-strong),
+    var(--shadow-sm);
+}
+.acct-menu__seg-opt[aria-checked='true'] svg {
+  color: var(--accent);
+}
+
+@keyframes acct-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}

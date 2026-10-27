@@ -1,0 +1,136 @@
+/*
+ * Board theme tokens. The board root element carries data-board-theme="normal|hacker|detective".
+ * Every board feature (canvas, cards, notes, toolbar, threads, inspector) styles itself ONLY through
+ * these variables, plus theme-specific selectors like `[data-board-theme='detective'] .x` where a
+ * token is not enough (e.g. push pins, string texture, scanlines).
+ */
+
+[data-board-theme] {
+  --board-radius-card: 10px;
+  --board-font-card: var(--font-ui);
+  --board-font-title: var(--font-ui);
+  --board-font-note: var(--font-hand);
+  --board-font-mono: var(--font-mono);
+}
+
+/* ---------- Normal: clean, light, modern ---------- */
+[data-board-theme='normal'] {
+  --board-bg: #f6f6f3;
+  --board-grid: rgb(30 30 40 / 0.13);
+  --board-text: #1f2328;
+
+  --card-bg: #ffffff;
+  --card-bg-2: #f4f5f7;
+  --card-border: #e2e4e9;
+  --card-text: #1f2328;
+  --card-muted: #667085;
+  --card-shadow: 0 1px 2px rgb(16 24 40 / 0.06), 0 6px 18px rgb(16 24 40 / 0.08);
+  --card-shadow-hover: 0 2px 4px rgb(16 24 40 / 0.08), 0 12px 28px rgb(16 24 40 / 0.14);
+  --card-accent: #3b6fd8;
+  --board-radius-card: 12px;
+
+  --pin-color: #3b6fd8;
+  --pin-shine: #9bb8f2;
+
+  --thread-color: #5b6b80;
+  --thread-hover: #3b6fd8;
+  --thread-width: 2px;
+
+  --selection: #3b82f6;
+  --selection-fill: rgb(59 130 246 / 0.08);
+
+  --board-ui-bg: rgb(255 255 255 / 0.96);
+  --board-ui-border: #e2e4e9;
+  --board-ui-text: #2b3037;
+  --board-ui-muted: #7a8394;
+  --board-ui-hover: #f0f2f5;
+  --board-ui-accent: #3b6fd8;
+  --board-ui-accent-soft: rgb(59 111 216 / 0.12);
+  --board-ui-shadow: 0 8px 28px rgb(16 24 40 / 0.14);
+}
+
+/* ---------- Hacker: dark, terminal green, restrained ---------- */
+[data-board-theme='hacker'] {
+  --board-bg: #050a08;
+  --board-grid: rgb(25 226 122 / 0.07);
+  --board-text: #b9f5d0;
+
+  --card-bg: rgb(7 20 14 / 0.94);
+  --card-bg-2: rgb(12 32 22 / 0.9);
+  --card-border: rgb(25 226 122 / 0.32);
+  --card-text: #c8f7da;
+  --card-muted: #5fae84;
+  --card-shadow: 0 0 0 1px rgb(25 226 122 / 0.08), 0 0 18px rgb(25 226 122 / 0.1);
+  --card-shadow-hover: 0 0 0 1px rgb(25 226 122 / 0.25), 0 0 26px rgb(25 226 122 / 0.22);
+  --card-accent: #19e27a;
+  --board-radius-card: 4px;
+  --board-font-card: var(--font-mono);
+  --board-font-title: var(--font-mono);
+  --board-font-note: var(--font-mono);
+
+  --pin-color: #19e27a;
+  --pin-shine: #b6ffd6;
+
+  --thread-color: #19e27a;
+  --thread-hover: #9dffc8;
+  --thread-width: 1.6px;
+
+  --selection: #19e27a;
+  --selection-fill: rgb(25 226 122 / 0.07);
+
+  --board-ui-bg: rgb(6 16 11 / 0.95);
+  --board-ui-border: rgb(25 226 122 / 0.28);
+  --board-ui-text: #b9f5d0;
+  --board-ui-muted: #4f9a72;
+  --board-ui-hover: rgb(25 226 122 / 0.1);
+  --board-ui-accent: #19e27a;
+  --board-ui-accent-soft: rgb(25 226 122 / 0.16);
+  --board-ui-shadow: 0 0 24px rgb(25 226 122 / 0.12), 0 10px 30px rgb(0 0 0 / 0.6);
+}
+
+/* ---------- Detective: cork board, paper, push pins, red string ---------- */
+[data-board-theme='detective'] {
+  --board-bg: #8a5f38;
+  --board-grid: transparent;
+  --board-text: #2a1d12;
+
+  --card-bg: #f2ecdf;
+  --card-bg-2: #e8dfcc;
+  --card-border: rgb(60 40 20 / 0.18);
+  --card-text: #2a2118;
+  --card-muted: #6e5d49;
+  --card-shadow: 1px 2px 2px rgb(0 0 0 / 0.25), 3px 8px 14px rgb(0 0 0 / 0.38);
+  --card-shadow-hover: 2px 4px 4px rgb(0 0 0 / 0.28), 6px 14px 22px rgb(0 0 0 / 0.42);
+  --card-accent: #8c2a1e;
+  --board-radius-card: 2px;
+  --board-font-title: var(--font-type);
+
+  --pin-color: #c3262b;
+  --pin-shine: #ff8a8a;
+
+  --thread-color: #b3151b;
+  --thread-hover: #e8343b;
+  --thread-width: 2.4px;
+
+  --selection: #ffd166;
+  --selection-fill: rgb(255 209 102 / 0.1);
+
+  --board-ui-bg: rgb(43 30 20 / 0.94);
+  --board-ui-border: rgb(232 196 140 / 0.25);
+  --board-ui-text: #f1e3c8;
+  --board-ui-muted: #bfa47d;
+  --board-ui-hover: rgb(232 196 140 / 0.12);
+  --board-ui-accent: #ffd166;
+  --board-ui-accent-soft: rgb(255 209 102 / 0.16);
+  --board-ui-shadow: 0 10px 30px rgb(0 0 0 / 0.5);
+}
+
+/* Arabic UI: the typewriter / terminal faces have poor or no Arabic glyphs, so card titles and
+   labels fall back to the UI face (Latin text keeps its theme feel through the other tokens). */
+:root[lang='ar'] [data-board-theme] {
+  --board-font-title: var(--font-ui);
+  --board-font-card: var(--font-ui);
+}
+:root[lang='ar'] [data-board-theme='hacker'] {
+  --board-font-note: var(--font-ui);
+}

@@ -1,0 +1,133 @@
+.auth-bd {
+  --auth-bd-base: #0b0e13;
+  --auth-bd-grid: rgb(120 160 220 / 0.045);
+  --auth-bd-grid-major: rgb(120 160 220 / 0.07);
+  --auth-bd-glow-a: rgb(232 163 61 / 0.09);
+  --auth-bd-glow-b: rgb(179 21 27 / 0.12);
+  --auth-bd-vignette: rgb(0 0 0 / 0.6);
+  --auth-bd-card: rgb(236 226 205 / 0.1);
+  --auth-bd-card-edge: rgb(236 226 205 / 0.16);
+  --auth-bd-ink: rgb(236 226 205 / 0.12);
+  --auth-bd-string: rgb(200 30 38 / 0.5);
+  --auth-bd-twist: rgb(60 0 4 / 0.55);
+  --auth-bd-web-opacity: 0.9;
+  --auth-bd-grain-opacity: 0.07;
+
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(1100px 700px at 18% 12%, var(--auth-bd-glow-a), transparent 62%),
+    radial-gradient(900px 640px at 86% 92%, var(--auth-bd-glow-b), transparent 60%),
+    linear-gradient(var(--auth-bd-grid-major) 1px, transparent 1px) 0 0 / 160px 160px,
+    linear-gradient(90deg, var(--auth-bd-grid-major) 1px, transparent 1px) 0 0 / 160px 160px,
+    linear-gradient(var(--auth-bd-grid) 1px, transparent 1px) 0 0 / 32px 32px,
+    linear-gradient(90deg, var(--auth-bd-grid) 1px, transparent 1px) 0 0 / 32px 32px,
+    var(--auth-bd-base);
+}
+.auth-bd::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 40%, var(--auth-bd-vignette));
+}
+
+:root[data-theme='light'] .auth-bd {
+  --auth-bd-base: #ece5d8;
+  --auth-bd-grid: rgb(60 80 120 / 0.05);
+  --auth-bd-grid-major: rgb(60 80 120 / 0.08);
+  --auth-bd-glow-a: rgb(181 101 29 / 0.12);
+  --auth-bd-glow-b: rgb(179 21 27 / 0.08);
+  --auth-bd-vignette: rgb(90 60 30 / 0.18);
+  --auth-bd-card: rgb(255 255 255 / 0.55);
+  --auth-bd-card-edge: rgb(90 60 30 / 0.12);
+  --auth-bd-ink: rgb(90 70 50 / 0.12);
+  --auth-bd-string: rgb(179 21 27 / 0.42);
+  --auth-bd-twist: rgb(90 5 10 / 0.35);
+  --auth-bd-web-opacity: 0.8;
+  --auth-bd-grain-opacity: 0.05;
+}
+
+.auth-bd__grain {
+  position: absolute;
+  inset: 0;
+  opacity: var(--auth-bd-grain-opacity);
+  mix-blend-mode: overlay;
+}
+
+.auth-bd__web {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: var(--auth-bd-web-opacity);
+  will-change: transform;
+}
+
+.auth-bd__card {
+  fill: var(--auth-bd-card);
+  stroke: var(--auth-bd-card-edge);
+  stroke-width: 1;
+}
+.auth-bd__photo {
+  fill: var(--auth-bd-ink);
+}
+.auth-bd__ink {
+  fill: var(--auth-bd-ink);
+}
+.auth-bd__line {
+  fill: var(--auth-bd-ink);
+}
+
+.auth-bd__string,
+.auth-bd__twist {
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+.auth-bd__string {
+  stroke: var(--auth-bd-string);
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: auth-bd-draw 1.8s var(--ease) forwards;
+}
+/* Short dark dashes over the base stroke read as twisted yarn. */
+.auth-bd__twist {
+  stroke: var(--auth-bd-twist);
+  stroke-dasharray: 1.2 3;
+  opacity: 0;
+  animation: auth-bd-fade 0.8s ease forwards;
+}
+
+.auth-bd__pin {
+  opacity: 0;
+  animation: auth-bd-fade 0.5s ease forwards;
+  animation-delay: 0.15s;
+}
+.auth-bd__pin-shadow {
+  fill: rgb(0 0 0 / 0.3);
+}
+
+/* The staggered delays are inline styles, so only !important can drop them. */
+@media (prefers-reduced-motion: reduce) {
+  .auth-bd__string,
+  .auth-bd__twist,
+  .auth-bd__pin {
+    animation-delay: 0s !important;
+  }
+}
+
+@keyframes auth-bd-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes auth-bd-fade {
+  60% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

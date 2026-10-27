@@ -1,0 +1,181 @@
+.cases-editor {
+  padding-top: 4px;
+}
+
+.cases-editor__description {
+  min-height: 96px;
+  max-height: 260px;
+}
+
+/* ---------- Category suggestion chips ---------- */
+
+.cases-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.cases-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+.cases-chip:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+.cases-chip[aria-pressed='true'] {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- Segmented radio choices (status, priority) ---------- */
+
+.cases-choice {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface-2);
+}
+
+.cases-choice__option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.cases-choice__option:hover {
+  background: var(--surface-3);
+  color: var(--text);
+}
+.cases-choice__option:has(:checked) {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  box-shadow:
+    0 0 0 1px var(--border-strong),
+    var(--shadow-sm);
+}
+.cases-choice__option:has(:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+.cases-choice__option > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cases-choice__input,
+.cases-swatch__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* ---------- Folder colour swatches ---------- */
+
+.cases-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cases-swatch {
+  position: relative;
+  display: block;
+  padding-top: 5px;
+  cursor: pointer;
+}
+
+/* A tiny folder: tab drawn with ::before. */
+.cases-swatch__folder {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 28px;
+  border-radius: 5px;
+  border-start-start-radius: 2px;
+  background: color-mix(in oklab, var(--folder) 62%, #e6d3a6);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    0 1px 2px rgb(0 0 0 / 0.25);
+  transition:
+    transform 0.15s var(--ease),
+    box-shadow 0.15s;
+}
+.cases-swatch__folder::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  inset-inline-start: 0;
+  width: 16px;
+  height: 5px;
+  border-radius: 3px 3px 0 0;
+  background: inherit;
+}
+
+.cases-swatch:hover .cases-swatch__folder {
+  transform: translateY(-2px);
+}
+.cases-swatch:has(:checked) .cases-swatch__folder {
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 4px var(--accent),
+    0 3px 8px rgb(0 0 0 / 0.25);
+}
+.cases-swatch:has(:focus-visible) .cases-swatch__folder {
+  outline: 2px solid var(--focus);
+  outline-offset: 5px;
+}
+
+.cases-swatch__check {
+  color: #fff;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.5));
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 0.15s,
+    transform 0.15s var(--ease);
+}
+.cases-swatch:has(:checked) .cases-swatch__check {
+  opacity: 1;
+  transform: none;
+}

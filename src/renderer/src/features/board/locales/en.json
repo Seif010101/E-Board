@@ -1,0 +1,159 @@
+{
+  "board": {
+    "save_failed": "Could not save changes",
+    "not_found": "This board no longer exists",
+    "loading": "Opening board…",
+    "load_failed": "The board could not be opened",
+    "back_to_case": "Back to case",
+    "retry": "Try again",
+    "crumb_cases": "Cases",
+    "canvas_label": "Evidence board",
+    "canvas_role": "Infinite canvas",
+    "locked_not_deleted": "Locked items were not deleted",
+    "images": {
+      "drop": "Drop PNG or JPG images to pin them to the board",
+      "too_many": "Only the first {{max}} images were added"
+    },
+    "theme": {
+      "label": "Board theme",
+      "normal": "Normal",
+      "hacker": "Hacker",
+      "detective": "Detective",
+      "normal_hint": "Normal: clean, light workspace",
+      "hacker_hint": "Hacker: dark terminal look with flowing green threads",
+      "detective_hint": "Detective: cork board, push pins and red string"
+    },
+    "save": {
+      "saving": "Saving…",
+      "saved": "Saved",
+      "saved_hint": "All changes are saved on this device",
+      "error": "Not saved",
+      "retry": "Changes could not be saved. Click to try again"
+    },
+    "actions": {
+      "undo": "Undo",
+      "redo": "Redo",
+      "search": "Search the board",
+      "shortcuts": "Keyboard shortcuts"
+    },
+    "rename": {
+      "label": "Board name"
+    },
+    "zoom": {
+      "label": "Zoom",
+      "in": "Zoom in",
+      "out": "Zoom out",
+      "reset": "Reset zoom to 100%",
+      "fit": "Fit everything in view",
+      "value": "{{value}}%"
+    },
+    "minimap": {
+      "label": "Board overview",
+      "show": "Show overview map",
+      "hide": "Hide overview map",
+      "hint": "Click or drag to move around the board"
+    },
+    "search": {
+      "label": "Search the board",
+      "placeholder": "Search names, notes, numbers…",
+      "count": "{{index}} of {{total}}",
+      "previous": "Previous result (Shift+Enter)",
+      "next": "Next result (Enter)",
+      "close": "Close search (Esc)",
+      "no_results": "No matching items on this board",
+      "results": "Search results",
+      "more": "{{n}} more results. Refine your search to see them",
+      "type": {
+        "person": "Person",
+        "company": "Company",
+        "entity": "Card",
+        "note": "Sticky note",
+        "text": "Text",
+        "image": "Image",
+        "shape": "Shape",
+        "stroke": "Drawing"
+      }
+    },
+    "menu": {
+      "label": "Board actions",
+      "open_details": "Open details",
+      "edit": "Edit",
+      "bring_front": "Bring to front",
+      "send_back": "Send to back",
+      "duplicate": "Duplicate",
+      "copy": "Copy",
+      "lock": "Lock",
+      "unlock": "Unlock",
+      "delete": "Delete",
+      "edit_link": "Edit relationship",
+      "delete_link": "Delete relationship",
+      "paste": "Paste here",
+      "add_note": "Add sticky note here",
+      "add_person": "Add person card here",
+      "select_all": "Select all",
+      "fit": "Fit to content",
+      "rename": "Rename board",
+      "shortcuts": "Keyboard shortcuts"
+    },
+    "keys": {
+      "mod": "Ctrl",
+      "shift": "Shift",
+      "alt": "Alt",
+      "del": "Delete",
+      "backspace": "Backspace",
+      "enter": "Enter",
+      "esc": "Esc",
+      "space": "Space",
+      "arrows": "Arrow keys",
+      "wheel": "Wheel",
+      "drag": "Drag",
+      "click": "Click",
+      "middle": "Middle-button drag"
+    },
+    "shortcuts": {
+      "title": "Keyboard shortcuts",
+      "or": "or",
+      "group": {
+        "tools": "Tools",
+        "edit": "Edit",
+        "view": "View",
+        "board": "Board"
+      },
+      "tool": {
+        "select": "Select",
+        "hand": "Hand (pan)",
+        "pen": "Pen",
+        "highlighter": "Highlighter",
+        "eraser": "Eraser",
+        "shape": "Shapes",
+        "note": "Sticky note",
+        "text": "Text",
+        "link": "Connect with a thread"
+      },
+      "undo": "Undo",
+      "redo": "Redo",
+      "select_all": "Select all",
+      "multi_select": "Add to selection",
+      "duplicate": "Duplicate",
+      "copy": "Copy",
+      "cut": "Cut",
+      "paste": "Paste",
+      "delete": "Delete selection",
+      "nudge": "Nudge (Shift: 10 px)",
+      "front": "Bring to front",
+      "back": "Send to back",
+      "details": "Open details / edit",
+      "escape": "Cancel, deselect and return to Select",
+      "pan": "Pan the board",
+      "zoom_wheel": "Zoom at the cursor",
+      "zoom_in": "Zoom in",
+      "zoom_out": "Zoom out",
+      "zoom_reset": "Zoom to 100%",
+      "fit": "Fit everything in view",
+      "search": "Search the board",
+      "rename": "Rename board",
+      "menu": "Open the context menu",
+      "shortcuts": "Show this list"
+    }
+  }
+}

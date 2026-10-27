@@ -1,0 +1,112 @@
+{
+  "toolbar": {
+    "label": "Board tools",
+    "grip": "Move toolbar",
+    "grip_hint": "Drag to dock on another edge, or click to choose one",
+    "edge_failed": "The toolbar position could not be saved",
+    "tool": {
+      "select": "Select",
+      "hand": "Hand (pan)",
+      "draw_current": "Drawing tools: {{tool}}",
+      "pen": "Pen",
+      "highlighter": "Highlighter",
+      "eraser": "Eraser",
+      "cards": "Add a card",
+      "shapes": "Shapes",
+      "note": "Sticky note",
+      "text": "Text",
+      "link": "Connect with a thread",
+      "undo": "Undo",
+      "redo": "Redo"
+    },
+    "dock": {
+      "title": "Toolbar position",
+      "edge": "Dock the toolbar on",
+      "top": "Top",
+      "bottom": "Bottom",
+      "left": "Left",
+      "right": "Right"
+    },
+    "draw": {
+      "title": "Drawing",
+      "tool": "Drawing tool",
+      "color": "Colour",
+      "size": "Size",
+      "style": "Line style",
+      "eraser_mode": "Erase",
+      "eraser_item": "Whole items",
+      "eraser_item_hint": "Removes every item the eraser touches",
+      "eraser_pixel": "Pixels (partial)",
+      "eraser_pixel_hint": "Erases only the parts of drawings the eraser passes over",
+      "eraser_size": "Eraser size"
+    },
+    "cards": {
+      "title": "Add a card",
+      "hint": "The card is placed in the middle of the view and its details form opens.",
+      "group": {
+        "primary": "People & organisations",
+        "digital": "Digital traces",
+        "physical": "Places & vehicles",
+        "financial": "Money",
+        "media": "Evidence & media"
+      }
+    },
+    "shapes": {
+      "title": "Shapes",
+      "shape": "Shape",
+      "stroke": "Outline colour",
+      "fill": "Fill",
+      "no_fill": "No fill",
+      "width": "Outline width",
+      "style": "Line style",
+      "hint": "Drag on the board to draw. Hold Shift for a square, a circle or 45° lines."
+    },
+    "note": {
+      "title": "Sticky note",
+      "color": "Paper colour",
+      "hint": "Click on the board to place a note and start writing."
+    },
+    "text": {
+      "title": "Text",
+      "color": "Colour",
+      "size": "Font size",
+      "hint": "Click on the board to start typing."
+    },
+    "link": {
+      "title": "Connect",
+      "kind": "Relationship of new threads",
+      "hint": "Drag from one card to another to tie them with a thread."
+    },
+    "line": {
+      "solid": "Solid",
+      "dashed": "Dashed",
+      "dotted": "Dotted"
+    },
+    "colors": {
+      "red": "Red",
+      "black": "Black",
+      "white": "White",
+      "blue": "Blue",
+      "green": "Green",
+      "yellow": "Yellow",
+      "orange": "Orange",
+      "purple": "Purple",
+      "pink": "Pink",
+      "grey": "Grey",
+      "light_yellow": "Light yellow",
+      "light_red": "Light red",
+      "light_orange": "Light orange",
+      "light_green": "Light green",
+      "light_blue": "Light blue",
+      "light_purple": "Light purple",
+      "light_grey": "Light grey",
+      "neon_green": "Neon green"
+    },
+    "custom_color": "Custom colour",
+    "chars": "{{count}} / {{max}}",
+    "value_px": "{{value}} px",
+    "errors": {
+      "range": "Enter a number from {{min}} to {{max}}"
+    }
+  }
+}

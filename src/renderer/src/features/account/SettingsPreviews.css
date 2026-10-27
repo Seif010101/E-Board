@@ -1,0 +1,252 @@
+/* Board theme swatches and the toolbar-position diagram on the settings page. */
+
+/* ---------- Board theme swatch ---------- */
+
+.acct-swatch {
+  position: relative;
+  display: block;
+  height: 78px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--board-bg);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
+}
+/* Swatch geometry (in % of the box) matches the 100 × 60 viewBox of the thread layer. */
+.acct-swatch__card {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 5px 5px 0;
+  border-radius: min(var(--board-radius-card), 4px);
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+}
+.acct-swatch__card--a {
+  left: 10%;
+  top: 20%;
+  width: 30%;
+  height: 62%;
+  transform: rotate(-3deg);
+}
+.acct-swatch__card--b {
+  left: 58%;
+  top: 12%;
+  width: 30%;
+  height: 58%;
+  transform: rotate(2.5deg);
+}
+.acct-swatch__photo {
+  height: 42%;
+  border-radius: 2px;
+  background:
+    radial-gradient(circle at 50% 42%, var(--card-muted) 0 18%, transparent 19%),
+    radial-gradient(ellipse at 50% 112%, var(--card-muted) 0 40%, transparent 41%),
+    var(--card-bg-2);
+  opacity: 0.7;
+}
+.acct-swatch__line {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--card-muted);
+  opacity: 0.45;
+}
+.acct-swatch__line--short {
+  width: 60%;
+}
+.acct-swatch__note {
+  position: absolute;
+  left: 41%;
+  top: 62%;
+  width: 17%;
+  height: 30%;
+  background: #fde68a;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.18);
+  transform: rotate(-4deg);
+}
+
+.acct-swatch__threads {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.acct-swatch__thread {
+  fill: none;
+  stroke: var(--thread-color);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.acct-swatch__thread--twist {
+  display: none;
+}
+
+.acct-swatch__pin {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 50%;
+  background: var(--pin-color);
+  box-shadow: 0 0 0 1.5px var(--card-bg);
+}
+.acct-swatch__pin--a {
+  left: 25%;
+  top: 26.67%;
+}
+.acct-swatch__pin--b {
+  left: 73%;
+  top: 18.33%;
+}
+.acct-swatch__pin--c {
+  left: 49%;
+  top: 68.33%;
+}
+
+/* Normal: light dotted grid. */
+.acct-swatch[data-board-theme='normal'] {
+  background:
+    radial-gradient(circle, var(--board-grid) 0 1px, transparent 1.4px) 0 0 / 9px 9px,
+    var(--board-bg);
+}
+
+/* Hacker: dark green grid, dotted threads flowing one way. */
+.acct-swatch[data-board-theme='hacker'] {
+  background:
+    linear-gradient(rgb(25 226 122 / 0.12) 1px, transparent 1px) 0 0 / 12px 12px,
+    linear-gradient(90deg, rgb(25 226 122 / 0.12) 1px, transparent 1px) 0 0 / 12px 12px,
+    radial-gradient(120% 90% at 50% 0%, rgb(25 226 122 / 0.08), transparent 70%),
+    var(--board-bg);
+  box-shadow: inset 0 0 0 1px rgb(25 226 122 / 0.22);
+}
+.acct-swatch[data-board-theme='hacker'] .acct-swatch__note {
+  background: rgb(25 226 122 / 0.12);
+  box-shadow: inset 0 0 0 1px rgb(25 226 122 / 0.45);
+}
+.acct-swatch[data-board-theme='hacker'] .acct-swatch__thread {
+  stroke-width: 2.2;
+  stroke-dasharray: 0 4.5;
+  filter: drop-shadow(0 0 1.5px rgb(25 226 122 / 0.8));
+}
+.acct-swatch[data-board-theme='hacker'].is-animated .acct-swatch__thread {
+  animation: acct-swatch-flow 0.9s linear infinite;
+}
+.acct-swatch[data-board-theme='hacker'] .acct-swatch__pin {
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  box-shadow: 0 0 6px var(--pin-color);
+}
+
+/* Detective: cork, glossy push pins, twisted red string. */
+.acct-swatch[data-board-theme='detective'] {
+  background:
+    radial-gradient(circle at 30% 30%, rgb(40 20 5 / 0.32) 0 0.8px, transparent 1.3px) 0 0 / 5px 5px,
+    radial-gradient(circle at 70% 60%, rgb(255 225 180 / 0.16) 0 0.9px, transparent 1.4px) 0 0 / 7px 7px,
+    radial-gradient(circle at 45% 80%, rgb(60 30 10 / 0.24) 0 1px, transparent 1.6px) 0 0 / 9px 9px,
+    radial-gradient(130% 100% at 50% 40%, transparent 55%, rgb(40 20 5 / 0.35)),
+    var(--board-bg);
+}
+.acct-swatch[data-board-theme='detective'] .acct-swatch__note {
+  background: #f3dc6b;
+}
+.acct-swatch[data-board-theme='detective'] .acct-swatch__thread {
+  stroke-width: 2;
+  filter: drop-shadow(1px 1.5px 0.6px rgb(0 0 0 / 0.35));
+}
+.acct-swatch[data-board-theme='detective'] .acct-swatch__thread--twist {
+  display: inline;
+  stroke: rgb(70 0 4 / 0.6);
+  stroke-dasharray: 1 2;
+  filter: none;
+}
+.acct-swatch[data-board-theme='detective'] .acct-swatch__pin {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  background: radial-gradient(circle at 35% 30%, var(--pin-shine), var(--pin-color) 45%, #6e0c10);
+  box-shadow: 1px 2px 2px rgb(0 0 0 / 0.45);
+}
+
+@keyframes acct-swatch-flow {
+  to {
+    stroke-dashoffset: -4.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acct-swatch[data-board-theme='hacker'].is-animated .acct-swatch__thread {
+    animation: none;
+  }
+}
+
+/* ---------- Toolbar dock diagram ---------- */
+
+.acct-dock {
+  position: relative;
+  display: block;
+  height: 58px;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  background:
+    radial-gradient(circle, var(--border) 0 0.8px, transparent 1.2px) 0 0 / 8px 8px,
+    var(--surface-2);
+}
+.acct-dock__header {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 8px;
+  background: var(--surface-3);
+  border-bottom: 1px solid var(--border);
+}
+.acct-dock__bar {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 4px;
+  background: var(--accent);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+}
+.acct-dock__bar i {
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  background: var(--accent-contrast);
+  opacity: 0.8;
+}
+.acct-dock--top .acct-dock__bar,
+.acct-dock--bottom .acct-dock__bar {
+  left: 50%;
+  translate: -50% 0;
+}
+.acct-dock--top .acct-dock__bar {
+  top: 12px;
+}
+.acct-dock--bottom .acct-dock__bar {
+  bottom: 4px;
+}
+.acct-dock--left .acct-dock__bar,
+.acct-dock--right .acct-dock__bar {
+  flex-direction: column;
+  top: calc(50% + 4px);
+  translate: 0 -50%;
+}
+.acct-dock--left .acct-dock__bar {
+  left: 4px;
+}
+.acct-dock--right .acct-dock__bar {
+  right: 4px;
+}
+.acct-cards__opt[aria-checked='false'] .acct-dock__bar {
+  background: var(--text-faint);
+}
+.acct-cards__opt[aria-checked='false'] .acct-dock__bar i {
+  background: var(--surface);
+}
