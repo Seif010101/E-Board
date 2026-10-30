@@ -19,7 +19,7 @@ import { ContextMenu } from './canvas/ContextMenu'
 import { ZoomControls } from './canvas/ZoomControls'
 import { Minimap } from './canvas/Minimap'
 import { ShortcutsDialog } from './canvas/ShortcutsDialog'
-import { BoardActions, BoardTitleEditor, ThemeSwitcher } from './canvas/BoardChrome'
+import { BoardActions, BoardTitleEditor } from './canvas/BoardChrome'
 import { useCanvasUi } from './canvas/uiStore'
 import { BoardSearch } from './search/BoardSearch'
 import { resetSearch } from './search/searchStore'
@@ -133,7 +133,7 @@ export function BoardScreen({ caseId, boardId }: Props) {
   return (
     <div className="bs-screen">
       <div ref={headRef} className={`bs-head${ready ? ' is-ready' : ''}`} onDoubleClick={onHeadDoubleClick}>
-        <AppHeader crumbs={crumbs} center={ready ? <ThemeSwitcher /> : undefined} actions={ready ? <BoardActions /> : undefined} />
+        <AppHeader crumbs={crumbs} actions={ready ? <BoardActions /> : undefined} />
       </div>
 
       {phase.kind === 'loading' && (

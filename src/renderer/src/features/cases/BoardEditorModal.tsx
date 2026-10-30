@@ -1,6 +1,5 @@
 import { useId, useMemo, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check } from 'lucide-react'
 import type { BoardRecord, BoardTheme, Id } from '@shared/types'
 import { schemas } from '@shared/validation'
 import { Field } from '@renderer/components/ui/Field'
@@ -8,8 +7,7 @@ import { Modal } from '@renderer/components/ui/Modal'
 import { toast } from '@renderer/components/ui/toast'
 import { api, call, errorMessage } from '@renderer/lib/api'
 import { useStableCallback } from './hooks'
-import { BOARD_THEMES, TITLE_MAX } from './meta'
-import { ThemePreview } from './ThemePreview'
+import { TITLE_MAX } from './meta'
 import './cases.css'
 import './BoardEditorModal.css'
 
@@ -36,7 +34,8 @@ export function BoardEditorModal({ mode, onClose, onSaved }: BoardEditorModalPro
   const titleId = `${uid}-title`
   const creating = mode.kind === 'create'
   const [title, setTitle] = useState(creating ? '' : mode.board.title)
-  const [theme, setTheme] = useState<BoardTheme>(creating ? mode.theme : mode.board.theme)
+  // The theme is not asked for: new boards start in the user's default theme and it can be switched on the board.
+  const theme: BoardTheme = creating ? mode.theme : mode.board.theme
   const [touched, setTouched] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -86,7 +85,7 @@ export function BoardEditorModal({ mode, onClose, onSaved }: BoardEditorModalPro
       open
       title={creating ? t('cases.boardEditor.createTitle') : t('cases.boardEditor.renameTitle')}
       onClose={close}
-      width={creating ? 680 : 460}
+      width={460}
       footer={
         <>
           <button type="button" className="btn" onClick={close}>
@@ -116,37 +115,6 @@ export function BoardEditorModal({ mode, onClose, onSaved }: BoardEditorModalPro
           />
         </Field>
 
-        {creating && (
-          <fieldset className="cases-fieldset cases-fieldset--last">
-            <legend className="field__label">{t('cases.boardEditor.themeLabel')}</legend>
-            <div className="cases-theme-picker">
-              {BOARD_THEMES.map((value) => (
-                <label key={value} className="cases-theme-option">
-                  <input
-                    type="radio"
-                    className="cases-theme-option__input"
-                    name={`${uid}-theme`}
-                    value={value}
-                    checked={theme === value}
-                    onChange={() => setTheme(value)}
-                    aria-label={t(`cases.themes.${value}`)}
-                    aria-describedby={`${uid}-${value}-desc`}
-                  />
-                  <span className="cases-theme-option__frame">
-                    <ThemePreview theme={value} />
-                    <span className="cases-theme-option__check" aria-hidden="true">
-                      <Check size={13} strokeWidth={3} />
-                    </span>
-                  </span>
-                  <span className="cases-theme-option__name">{t(`cases.themes.${value}`)}</span>
-                  <span className="cases-theme-option__desc" id={`${uid}-${value}-desc`}>
-                    {t(`cases.themeDescriptions.${value}`)}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-        )}
       </form>
     </Modal>
   )
