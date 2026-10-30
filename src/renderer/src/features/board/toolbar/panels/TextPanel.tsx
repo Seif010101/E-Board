@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useShallow } from 'zustand/react/shallow'
 import {
   Bold,
   Italic,
@@ -34,7 +35,8 @@ export function TextPanel() {
   const { t } = useTranslation()
   const gesture = useTxGesture()
   const defaults = useBoard((s) => s.toolOptions.text)
-  const targets = useBoard((s) => s.selection.filter((id) => s.items[id]?.type === 'text'))
+  // A selector returning a new array needs a shallow comparison, or it re-renders forever.
+  const targets = useBoard(useShallow((s) => s.selection.filter((id) => s.items[id]?.type === 'text')))
   const first = useBoard((s) => {
     const id = s.selection.find((i) => s.items[i]?.type === 'text')
     const item = id ? s.items[id] : undefined

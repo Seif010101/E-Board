@@ -119,25 +119,23 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
             placeholder={t('inspector.person.age_placeholder')}
           />
         </Row>
-        <Row>
-          <TextField
-            certaintyKey="dateOfBirth"
-            label={t('inspector.person.dob')}
-            type="date"
-            value={d.dateOfBirth ?? ''}
-            onCommit={(v) => patch({ dateOfBirth: v === '' ? null : v })}
-            validate={pastDate}
-            min="1800-01-01"
-            max={todayIso()}
-          />
-          <CountryField
-            certaintyKey="nationality"
-            label={t('inspector.person.nationality')}
-            value={d.nationality}
-            onChange={(nationality) => patch({ nationality })}
-            placeholder={t('inspector.person.nationality_placeholder')}
-          />
-        </Row>
+        <TextField
+          certaintyKey="dateOfBirth"
+          label={t('inspector.person.dob')}
+          type="date"
+          value={d.dateOfBirth ?? ''}
+          onCommit={(v) => patch({ dateOfBirth: v === '' ? null : v })}
+          validate={pastDate}
+          min="1800-01-01"
+          max={todayIso()}
+        />
+        <CountryField
+          certaintyKey="nationality"
+          label={t('inspector.person.nationality')}
+          value={d.nationality}
+          onChange={(nationality) => patch({ nationality })}
+          placeholder={t('inspector.person.nationality_placeholder')}
+        />
         {suggestedAge !== null && (
           <div className="insp-suggestion" role="status">
             <Sparkles size={14} aria-hidden="true" />

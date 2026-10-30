@@ -125,25 +125,23 @@ export function CompanyForm({ item }: { item: ItemOfType<'company'> }) {
             placeholder="100123456700003"
           />
         </Row>
-        <Row>
-          <CountryField
-            certaintyKey="country"
-            label={t('inspector.company.country')}
-            value={d.country}
-            onChange={(country) => patch({ country })}
-            placeholder={t('inspector.company.country_placeholder')}
-          />
-          <TextField
-            certaintyKey="foundedDate"
-            label={t('inspector.company.founded')}
-            type="date"
-            value={d.foundedDate ?? ''}
-            onCommit={(v) => patch({ foundedDate: v === '' ? null : v })}
-            validate={pastDate}
-            min="1800-01-01"
-            max={todayIso()}
-          />
-        </Row>
+        <CountryField
+          certaintyKey="country"
+          label={t('inspector.company.country')}
+          value={d.country}
+          onChange={(country) => patch({ country })}
+          placeholder={t('inspector.company.country_placeholder')}
+        />
+        <TextField
+          certaintyKey="foundedDate"
+          label={t('inspector.company.founded')}
+          type="date"
+          value={d.foundedDate ?? ''}
+          onCommit={(v) => patch({ foundedDate: v === '' ? null : v })}
+          validate={pastDate}
+          min="1800-01-01"
+          max={todayIso()}
+        />
       </Section>
 
       <Section id={`${scope}.web`} title={t('inspector.section.web')} icon={Globe}>

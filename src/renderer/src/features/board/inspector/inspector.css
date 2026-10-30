@@ -1423,7 +1423,7 @@
   align-items: center;
   gap: 8px;
   margin-top: 5px;
-  --cb-h: 8px;
+  --cb-h: 10px;
 }
 .cb--compact {
   margin-top: 3px;
@@ -1437,7 +1437,7 @@
   padding: 0;
   appearance: none;
   -webkit-appearance: none;
-  border: 1px solid color-mix(in srgb, var(--text-muted) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-muted) 75%, transparent);
   border-radius: 3px;
   background:
     linear-gradient(
@@ -1467,7 +1467,7 @@
   outline-offset: 2px;
 }
 .cb.is-unrated .cb__range {
-  opacity: 0.55;
+  opacity: 0.7;
   border-style: dashed;
 }
 .cb__value {
@@ -1478,7 +1478,7 @@
   text-align: end;
 }
 .cb--compact {
-  --cb-h: 6px;
+  --cb-h: 8px;
 }
 
 /* ---------- Phone input: calling-code picker + number ---------- */

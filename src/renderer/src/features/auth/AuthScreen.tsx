@@ -1,7 +1,7 @@
 import { useRef, useState, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
-import { KeyRound, Moon, ShieldCheck, Sun, Waypoints } from 'lucide-react'
+import { HardDrive, KeyRound, Moon, ShieldCheck, Sun, Waypoints } from 'lucide-react'
 import type { Language, PublicUser } from '@shared/types'
 import { toast } from '@renderer/components/ui/toast'
 import { api, call, errorMessage } from '@renderer/lib/api'
@@ -183,9 +183,12 @@ export function AuthScreen() {
             </>
           )}
           <p className="auth-panel__foot">{t('auth.footer')}</p>
-          <button type="button" className="btn btn--ghost btn--sm auth-panel__drive" onClick={() => void useDrive(t)}>
-            {t('storage.use_drive')}
-          </button>
+          {!enrolling && (
+            <button type="button" className="auth-panel__drive" onClick={() => void useDrive(t)}>
+              <HardDrive size={13} aria-hidden="true" />
+              {t('storage.use_drive')}
+            </button>
+          )}
         </section>
       </main>
     </div>

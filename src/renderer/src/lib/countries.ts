@@ -10,7 +10,9 @@ import type { Language } from '@shared/types'
 countries.registerLocale(en)
 countries.registerLocale(ar)
 
-const flagUrls = import.meta.glob<string>('/node_modules/country-flag-icons/3x2/*.svg', {
+// Relative to this file: Vite resolves an absolute "/node_modules" against the renderer root, not the repository.
+const FLAG_DIR = '../../../../node_modules/country-flag-icons/3x2'
+const flagUrls = import.meta.glob<string>('../../../../node_modules/country-flag-icons/3x2/*.svg', {
   query: '?url',
   import: 'default',
   eager: true
@@ -48,7 +50,7 @@ export function countryName(code: string, lang: Language): string {
   return countries.getName(code, lang, { select: 'official' }) ?? countries.getName(code, 'en') ?? code
 }
 
-export const flagUrl = (code: string): string | undefined => flagUrls[`/node_modules/country-flag-icons/3x2/${code}.svg`]
+export const flagUrl = (code: string): string | undefined => flagUrls[`${FLAG_DIR}/${code}.svg`]
 
 /** Lower-cased, accent-free form used for matching. */
 const norm = (s: string): string => s.normalize('NFKD').replace(/\p{M}/gu, '').toLowerCase().trim()
