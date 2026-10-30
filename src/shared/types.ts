@@ -161,10 +161,17 @@ export interface PersonData {
   emails: string[]
   socials: SocialAccount[]
   locations: GeoLocation[]
+  /** Photos and videos stored for this person; opened from the album button in the details. */
+  album: AlbumEntry[]
   notes: string
   tags: string[]
   source: string
   confidence: Confidence
+  /**
+   * How much each piece of information is trusted, 0-100, keyed by field ("fullName", "phones:+9715…").
+   * Fields without an entry are unrated.
+   */
+  certainty: Record<string, number>
   /** Card "More" section expanded on the board. */
   expanded: boolean
 }
@@ -201,6 +208,11 @@ export interface CompanyData {
   notes: string
   tags: string[]
   source: string
+  /**
+   * How much each piece of information is trusted, 0-100, keyed by field ("fullName", "phones:+9715…").
+   * Fields without an entry are unrated.
+   */
+  certainty: Record<string, number>
   confidence: Confidence
   expanded: boolean
 }
@@ -230,6 +242,11 @@ export interface EntityData {
   mediaId: Id | null
   locations: GeoLocation[]
   notes: string
+  /**
+   * How much each piece of information is trusted, 0-100, keyed by field ("fullName", "phones:+9715…").
+   * Fields without an entry are unrated.
+   */
+  certainty: Record<string, number>
   tags: string[]
   confidence: Confidence
 }
@@ -280,12 +297,26 @@ export interface ImageData {
   caption: string
 }
 
+export const TEXT_FONTS = ['default', 'sans', 'serif', 'mono', 'hand'] as const
+export type TextFont = (typeof TEXT_FONTS)[number]
+export const TEXT_LISTS = ['none', 'bullet', 'number'] as const
+export type TextList = (typeof TEXT_LISTS)[number]
+export const TEXT_SPACINGS = ['tight', 'normal', 'loose'] as const
+export type TextSpacing = (typeof TEXT_SPACINGS)[number]
+export const TEXT_ALIGNS = ['start', 'center', 'end', 'justify'] as const
+export type TextAlign = (typeof TEXT_ALIGNS)[number]
+
 export interface TextData {
   text: string
   color: string
   fontSize: number
   bold: boolean
-  align: 'start' | 'center' | 'end'
+  italic: boolean
+  underline: boolean
+  font: TextFont
+  list: TextList
+  spacing: TextSpacing
+  align: TextAlign
 }
 
 // ---------------------------------------------------------------------------
@@ -303,8 +334,17 @@ export interface ItemBase {
   /** Degrees. Used for the slightly tilted look of notes/cards. */
   rotation: number
   locked: boolean
+  /** Locked with a PIN: the main process refuses every change to it until the PIN is entered. Set by the main process only. */
+  pinLocked: boolean
   createdAt: number
   updatedAt: number
+}
+
+/** A photo or video kept in a person's album (not shown on the card). */
+export interface AlbumEntry {
+  mediaId: Id
+  kind: 'image' | 'video'
+  caption: string
 }
 
 export interface PersonItem extends ItemBase { type: 'person'; data: PersonData }
@@ -362,6 +402,8 @@ export interface LinkRecord {
   label: string
   /** Optional colour override (#rrggbb); null = theme default. */
   color: string | null
+  /** Waypoints the thread is pulled through, in world coordinates, from source to target. */
+  via: [number, number][]
   createdAt: number
   updatedAt: number
 }
@@ -370,10 +412,12 @@ export interface LinkRecord {
 // Media
 
 export type ImageMime = 'image/png' | 'image/jpeg'
+export type VideoMime = 'video/mp4' | 'video/webm'
+export type MediaMime = ImageMime | VideoMime
 
 export interface MediaRef {
   id: Id
-  mime: ImageMime
+  mime: MediaMime
   size: number
   width: number
   height: number

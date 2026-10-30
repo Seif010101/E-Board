@@ -19,7 +19,7 @@ import type {
   TextData
 } from '@shared/types'
 import { newId } from '@renderer/lib/api'
-import type { Point } from './types'
+import { DEFAULT_TOOL_OPTIONS, type Point } from './types'
 
 export const emptyPerson = (): PersonData => ({
   fullName: '',
@@ -37,10 +37,12 @@ export const emptyPerson = (): PersonData => ({
   emails: [],
   socials: [],
   locations: [],
+  album: [],
   notes: '',
   tags: [],
   source: '',
   confidence: 'unverified',
+  certainty: {},
   expanded: false
 })
 
@@ -65,6 +67,7 @@ export const emptyCompany = (): CompanyData => ({
   tags: [],
   source: '',
   confidence: 'unverified',
+  certainty: {},
   expanded: false
 })
 
@@ -76,7 +79,8 @@ export const emptyEntity = (kind: EntityKind): EntityData => ({
   locations: [],
   notes: '',
   tags: [],
-  confidence: 'unverified'
+  confidence: 'unverified',
+  certainty: {}
 })
 
 export const DEFAULT_SIZES: Record<ItemType, { w: number; h: number }> = {
@@ -120,6 +124,7 @@ const base = (type: ItemType, o: CreateOptions): Omit<ItemBase, never> => {
     z: o.z,
     rotation: o.rotation ?? 0,
     locked: false,
+    pinLocked: false,
     createdAt: now,
     updatedAt: now
   }
@@ -170,12 +175,12 @@ export const createImage = (o: CreateOptions, data: ImageData): ItemOfType<'imag
 export const createText = (o: CreateOptions, data: Partial<TextData> = {}): ItemOfType<'text'> => ({
   ...base('text', o),
   type: 'text',
-  data: { text: '', color: '#1c1b19', fontSize: 24, bold: false, align: 'start', ...data }
+  data: { text: '', ...DEFAULT_TOOL_OPTIONS.text, ...data }
 })
 
 export const createLink = (boardId: Id, fromId: Id, toId: Id, kind: RelationKind, label = ''): LinkRecord => {
   const now = Date.now()
-  return { id: newId(), boardId, fromId, toId, kind, label, color: null, createdAt: now, updatedAt: now }
+  return { id: newId(), boardId, fromId, toId, kind, label, color: null, via: [], createdAt: now, updatedAt: now }
 }
 
 /** Deep copy with fresh ids (for duplicate / paste). Offsets position. */
@@ -184,6 +189,9 @@ export const cloneItem = (item: BoardItem, z: number, offset = 24): BoardItem =>
   return {
     ...structuredClone(item),
     id: newId(),
+    // A copy is a new item: it never inherits a lock or its PIN.
+    locked: false,
+    pinLocked: false,
     x: item.x + offset,
     y: item.y + offset,
     z,

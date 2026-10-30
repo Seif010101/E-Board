@@ -472,3 +472,20 @@
     display: flex;
   }
 }
+
+.auth-panel__drive {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px auto 0;
+  padding: 4px 8px;
+  border: 0;
+  background: transparent;
+  color: var(--text-faint);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.auth-panel__drive:hover {
+  color: var(--text);
+}

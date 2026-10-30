@@ -37,12 +37,12 @@ registerTool({
       edit(hit.id)
       return
     }
-    const { color, fontSize } = s.toolOptions.text
+    const { fontSize } = s.toolOptions.text
     const { w } = DEFAULT_SIZES.text
     // The first line starts at the click: from the left in LTR, from the right in RTL.
     const x = i18n.dir() === 'rtl' ? start.at.x - w + PAD_X : start.at.x - PAD_X
     const y = start.at.y - fontSize * 0.65 - 4
-    const item = createText({ boardId, z: s.nextZ(), x, y, h: Math.ceil(fontSize * 1.3 + 8) }, { color, fontSize })
+    const item = createText({ boardId, z: s.nextZ(), x, y, h: Math.ceil(fontSize * 1.3 + 8) }, { ...s.toolOptions.text })
     s.addItems([item])
     edit(item.id)
   },

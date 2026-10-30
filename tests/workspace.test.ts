@@ -240,6 +240,20 @@ describe('boards', () => {
       expect(bundle.caseRecord.updatedAt).toBe(clock.now())
     })
 
+    it('stores and updates the waypoints of a thread', () => {
+      const a = person(board.id)
+      const b = person(board.id)
+      const l = link(board.id, a.id, b.id, { via: [[10, 20.5]] })
+      apply(alice, changes(board.id, { upsertItems: [a, b], upsertLinks: [l] }))
+      expect(ws.loadBoard(alice, board.id).links[0].via).toEqual([[10, 20.5]])
+      apply(alice, changes(board.id, { upsertLinks: [{ ...l, via: [[1, 2], [3, 4]] }] }))
+      expect(ws.loadBoard(alice, board.id).links[0].via).toEqual([[1, 2], [3, 4]])
+      // The schema (applied by the router before the service) rejects bad waypoints.
+      const parse = (via: [number, number][]) => schemas.boardChanges.safeParse(changes(board.id, { upsertLinks: [{ ...l, via }] })).success
+      expect(parse([[1, Number.NaN]])).toBe(false)
+      expect(parse(Array.from({ length: 25 }, (_, i): [number, number] => [i, i]))).toBe(false)
+    })
+
     it('rolls back the whole batch when one link is bad', () => {
       const a = person(board.id)
       const b = note(board.id)

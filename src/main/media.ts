@@ -1,7 +1,7 @@
 // Image validation by content, never by name alone: PNG (IHDR) and baseline/progressive JPEG (SOFn).
 // Everything else (SVG, GIF, WebP, renamed documents, truncated files) is rejected.
 
-import type { ImageMime } from '@shared/types'
+import type { ImageMime, VideoMime } from '@shared/types'
 
 export const MAX_IMAGE_BYTES = 15 * 1024 * 1024
 export const MAX_IMAGE_SIDE = 16384
@@ -101,4 +101,34 @@ export function inspectImage(name: string, bytes: Uint8Array): ImageCheck {
     return { ok: false, error: 'invalid_file' }
   }
   return { ok: true, info: { mime, width, height } }
+}
+
+// ---------------------------------------------------------------------------
+// Videos (person albums): MP4 and WebM, recognised by their container signature.
+
+export const MAX_VIDEO_BYTES = 150 * 1024 * 1024
+export const MAX_ALBUM_FILES = 20
+
+const VIDEO_EXTENSIONS = ['.mp4', '.m4v', '.webm']
+
+export const hasVideoExtension = (name: string): boolean => {
+  const lower = name.trim().toLowerCase()
+  return VIDEO_EXTENSIONS.some((ext) => lower.endsWith(ext) && lower.length > ext.length)
+}
+
+export type VideoCheck = { ok: true; mime: VideoMime } | { ok: false; error: 'invalid_file' | 'file_too_large' }
+
+/** MP4: an "ftyp" box at the start with a plausible size. WebM: an EBML header declaring "webm". */
+export function inspectVideo(name: string, bytes: Uint8Array): VideoCheck {
+  if (bytes.length > MAX_VIDEO_BYTES) return { ok: false, error: 'file_too_large' }
+  if (bytes.length < 16 || !hasVideoExtension(name)) return { ok: false, error: 'invalid_file' }
+  if (ascii(bytes, 4, 4) === 'ftyp') {
+    const size = u32(bytes, 0)
+    if (size >= 12 && size <= 4096) return { ok: true, mime: 'video/mp4' }
+  }
+  if (startsWith(bytes, [0x1a, 0x45, 0xdf, 0xa3])) {
+    const head = ascii(bytes, 0, Math.min(bytes.length, 64))
+    if (head.includes('webm')) return { ok: true, mime: 'video/webm' }
+  }
+  return { ok: false, error: 'invalid_file' }
 }

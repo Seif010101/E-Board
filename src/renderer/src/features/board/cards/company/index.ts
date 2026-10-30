@@ -7,6 +7,7 @@ import { pinAnchor } from '../common/anchor'
 import { openDetails } from '../common/actions'
 import { joinSearch, locationsText, socialsText } from '../common/search'
 import { CompanyCard } from './CompanyCard'
+import { countryNames } from '@renderer/lib/countries'
 
 registerItem({
   type: 'company',
@@ -22,7 +23,7 @@ registerItem({
       d.legalName,
       d.companyType,
       d.industry,
-      d.country,
+      countryNames(d.country),
       d.registrationNumber,
       d.taxId,
       d.status === 'unknown' ? null : i18n.t(`cards.status.${d.status}`),

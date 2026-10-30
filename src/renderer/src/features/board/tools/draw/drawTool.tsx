@@ -76,7 +76,28 @@ function commit(d: Drawing): void {
   const boardId = s.board?.id
   if (!boardId || d.points.length === 0) return
   const box = normalizeStroke(d.points, d.style.size)
-  s.addItems([createStroke({ boardId, z: s.nextZ(), x: box.x, y: box.y, w: box.w, h: box.h }, { ...d.style, points: box.points })])
+  const stroke = createStroke({ boardId, z: s.nextZ(), x: box.x, y: box.y, w: box.w, h: box.h }, { ...d.style, points: box.points })
+  if (d.style.tool !== 'highlighter') {
+    s.addItems([stroke])
+    return
+  }
+  // Highlighter paint never covers pen ink it overlaps: it is slotted just under the lowest such
+  // pen stroke, and everything from that layer up moves one step to make room (one undo step).
+  let under = Infinity
+  for (const i of Object.values(s.items)) {
+    if (i.type !== 'stroke' || i.data.tool !== 'pen') continue
+    if (i.x < stroke.x + stroke.w && i.x + i.w > stroke.x && i.y < stroke.y + stroke.h && i.y + i.h > stroke.y) under = Math.min(under, i.z)
+  }
+  if (under === Infinity) {
+    s.addItems([stroke])
+    return
+  }
+  const bumps: Record<string, { z: number }> = {}
+  for (const i of Object.values(s.items)) if (i.z >= under) bumps[i.id] = { z: i.z + 1 }
+  s.beginTx()
+  s.updateItems(bumps)
+  s.addItems([{ ...stroke, z: under }])
+  s.endTx()
 }
 
 function styleFor(tool: StrokeTool): StrokeStyle {

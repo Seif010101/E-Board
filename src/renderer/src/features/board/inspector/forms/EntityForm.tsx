@@ -13,9 +13,10 @@ import { entityFieldLabel, entityKindLabel, entityOptionLabel } from '../labels'
 import { MediaField } from '../controls/MediaField'
 import { Section } from '../controls/Section'
 import { SelectField, TextField } from '../controls/TextField'
+import { parsePhone, cleanNational } from '@renderer/lib/phone'
 import { filters, plainText } from '../controls/inputRules'
 import type { Validator } from '../controls/useDraft'
-import { CaseFileSection, LocationsSection, NotesSection, plainLine, RelationshipsSection, UrlAdornment, usePatch } from './shared'
+import { CaseFileSection, CertaintyScope, LocationsSection, NotesSection, plainLine, RelationshipsSection, UrlAdornment, usePatch } from './shared'
 
 interface InputSpec {
   validate: Validator
@@ -64,9 +65,18 @@ function inputSpec(f: EntityFieldDef): InputSpec {
     case 'datetime':
       return { validate: typed, maxLength, type: 'datetime-local' }
     case 'phone':
-      return { validate: typed, maxLength, filter: filters.phone, inputMode: 'tel', technical: true, placeholder: '+971 50 123 4567' }
+      return {
+        // Entity phone cards hold one number, so it is typed in full international form.
+        validate: (v) => typed(v) ?? (parsePhone('AE', v.startsWith('+') ? v : `+${v}`) ? null : 'validation.invalid_phone_international'),
+        maxLength,
+        filter: cleanNational,
+        inputMode: 'tel',
+        technical: true,
+        live: true,
+        placeholder: '+971 50 123 4567'
+      }
     case 'email':
-      return { validate: typed, maxLength, filter: filters.noSpaces, inputMode: 'email', technical: true, placeholder: 'name@example.com' }
+      return { validate: typed, maxLength, filter: filters.noSpaces, inputMode: 'email', technical: true, live: true, placeholder: 'name@example.com' }
     case 'url':
       return { validate: typed, maxLength, filter: filters.noSpaces, inputMode: 'url', technical: true, placeholder: 'https://' }
     case 'domain':
@@ -123,6 +133,7 @@ export function EntityForm({ item }: { item: ItemOfType<'entity'> }) {
   }
 
   return (
+    <CertaintyScope item={item}>
     <div className="insp-form">
       <Section id={`${scope}.details`} title={t('inspector.section.details')} icon={ListTree}>
         <div className="insp-kind" style={{ '--insp-kind-accent': def.accent } as CSSProperties}>
@@ -132,6 +143,7 @@ export function EntityForm({ item }: { item: ItemOfType<'entity'> }) {
           <span className="insp-kind__name">{kindName}</span>
         </div>
         <TextField
+          certaintyKey="title"
           label={t('inspector.entity.title')}
           value={d.title}
           onCommit={(title) => patch({ title })}
@@ -163,6 +175,7 @@ export function EntityForm({ item }: { item: ItemOfType<'entity'> }) {
           return (
             <TextField
               key={f.key}
+              certaintyKey={`fields:${f.key}`}
               label={label}
               value={value}
               onCommit={(v) => setField(f.key, v)}
@@ -211,5 +224,6 @@ export function EntityForm({ item }: { item: ItemOfType<'entity'> }) {
 
       <CaseFileSection scope={scope} confidence={d.confidence} onConfidence={(confidence) => patch({ confidence })} />
     </div>
+    </CertaintyScope>
   )
 }

@@ -1,0 +1,39 @@
+{
+  "errors": {
+    "drive_missing": "The USB drive holding your data is not connected"
+  },
+  "storage": {
+    "not_a_folder": "Choose a folder or a drive",
+    "drive_has_data": "That drive already holds E-Board data. Use it from the sign-in screen instead",
+    "already_portable": "Your data is already on a drive",
+    "already_local": "Your data is already on this computer",
+    "local_has_data": "This computer already has its own E-Board data",
+    "missing": {
+      "title": "Insert your USB drive",
+      "text": "Your E-Board data is kept on a USB drive. Plug it back in and the app opens by itself; nothing is stored on this computer.",
+      "where": "Expected on",
+      "choose": "Choose another drive…",
+      "local": "Use this computer's data instead",
+      "local_confirm": "Open the data kept on this computer? The drive is not changed.",
+      "working": "Opening…"
+    },
+    "removed": "The drive was removed. Everything was closed and you were signed out.",
+    "use_drive": "Use data from a USB drive…",
+    "use_drive_confirm": "Pick the drive (or folder) that holds your E-Board data. If it holds none, new empty data is started there. This computer's own data is not touched. The app restarts.",
+    "settings": {
+      "title": "Where your data lives",
+      "description": "Keep everything on a USB drive so nothing stays on this computer.",
+      "local": "On this computer",
+      "portable": "On a USB drive",
+      "now": "Right now",
+      "to_drive": "Move to a USB drive…",
+      "to_drive_text": "Pick the drive. Everything is copied there, the copy on this computer is erased, and the app restarts. From then on the app only works while the drive is plugged in: pulling it out closes the app and signs you out.",
+      "to_local": "Move back to this computer…",
+      "to_local_text": "Everything is copied back to this computer and erased from the drive. The app restarts.",
+      "confirm": "Continue",
+      "working": "Moving your data… the app will restart.",
+      "warning": "Keep the drive safe: anyone who has it has your data. Keep a backup copy of it elsewhere, because a lost or damaged drive cannot be recovered.",
+      "path": "Drive folder"
+    }
+  }
+}

@@ -98,6 +98,20 @@ const MIGRATIONS: readonly Migration[] = [
         UNIQUE (user_id, sha256)
       ) STRICT;
     `
+  },
+  {
+    version: 2,
+    sql: `
+      ALTER TABLE links ADD COLUMN via_json TEXT NOT NULL DEFAULT '[]';
+    `
+  },
+  {
+    version: 3,
+    sql: `
+      ALTER TABLE items ADD COLUMN pin_hash TEXT NULL;
+      ALTER TABLE items ADD COLUMN pin_fails INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE items ADD COLUMN pin_blocked_until INTEGER NOT NULL DEFAULT 0;
+    `
   }
 ]
 
@@ -122,11 +136,13 @@ function migrate(db: Database): void {
 }
 
 /** Opens (creating if needed) and migrates the database. Accepts a file path or ':memory:'. */
-export function openDatabase(path: string): Database {
+export function openDatabase(path: string, options: { removable?: boolean } = {}): Database {
   const db = new DatabaseSync(path, { enableForeignKeyConstraints: true })
   try {
-    db.exec('PRAGMA journal_mode = WAL')
-    db.exec('PRAGMA synchronous = NORMAL')
+    // On a drive that can be pulled out at any moment, every commit is flushed and the rollback
+    // journal (a single self-contained file) is used instead of WAL.
+    db.exec(`PRAGMA journal_mode = ${options.removable ? 'DELETE' : 'WAL'}`)
+    db.exec(`PRAGMA synchronous = ${options.removable ? 'FULL' : 'NORMAL'}`)
     db.exec('PRAGMA foreign_keys = ON')
     db.exec('PRAGMA busy_timeout = 5000')
     // Deleted evidence is overwritten instead of lingering in free pages.

@@ -386,3 +386,34 @@
   font-size: 15px;
   line-height: 1;
 }
+
+/* Toggle buttons laid out like a segmented row (bold / italic / underline). */
+.sc-seg .sc-toggle {
+  flex: 1 1 0;
+  height: 30px;
+  padding: 0 4px;
+  border-color: transparent;
+}
+
+/* ---------- Select ---------- */
+
+.sc-select {
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--sc-text, var(--text)) 18%, transparent);
+  background: color-mix(in srgb, var(--sc-text, var(--text)) 5%, transparent);
+  color: var(--sc-text, var(--text));
+  font: inherit;
+  font-size: 13px;
+}
+.sc-select:focus {
+  outline: none;
+  border-color: var(--sc-accent, var(--accent));
+  box-shadow: 0 0 0 3px var(--sc-accent-soft, var(--accent-soft));
+}
+.sc-select option {
+  background: var(--sc-surface, var(--surface, #fff));
+  color: var(--sc-text, var(--text, #111));
+}

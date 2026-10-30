@@ -4,7 +4,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { LucideIcon } from 'lucide-react'
-import { Check, CloudOff, Keyboard, LoaderCircle, Pin, Redo2, Search, Sun, Terminal, Undo2 } from 'lucide-react'
+import { Check, ChevronDown, CloudOff, Keyboard, LoaderCircle, Pin, Redo2, Search, Sun, Terminal, Undo2 } from 'lucide-react'
 import type { BoardTheme } from '@shared/types'
 import { cleanLine } from '@shared/validation'
 import { board, useBoard } from '../core/store'
@@ -26,54 +26,90 @@ const THEMES: { id: BoardTheme; icon: LucideIcon }[] = [
   { id: 'detective', icon: Pin }
 ]
 
-/** Segmented radio group (arrow keys move and select, as for native radios). */
+/** One header button showing the board's theme; it opens a small menu to switch. */
 export function ThemeSwitcher() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const theme = useBoard((s) => s.board?.theme ?? 'normal')
-  const refs = useRef<(HTMLButtonElement | null)[]>([])
+  const [open, setOpen] = useState(false)
+  const wrap = useRef<HTMLDivElement>(null)
+  const items = useRef<(HTMLButtonElement | null)[]>([])
+  const current = THEMES.find((x) => x.id === theme) ?? THEMES[0]
+  const CurrentIcon = current.icon
 
-  const choose = (index: number) => {
-    const next = THEMES[(index + THEMES.length) % THEMES.length]
-    board().setBoardTheme(next.id)
-    refs.current[THEMES.indexOf(next)]?.focus()
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e: PointerEvent) => {
+      if (!wrap.current?.contains(e.target as Node)) setOpen(false)
+    }
+    window.addEventListener('pointerdown', onDown, true)
+    return () => window.removeEventListener('pointerdown', onDown, true)
+  }, [open])
+
+  useEffect(() => {
+    if (open) items.current[THEMES.findIndex((x) => x.id === theme)]?.focus()
+  }, [open, theme])
+
+  const choose = (id: BoardTheme) => {
+    board().setBoardTheme(id)
+    setOpen(false)
+    wrap.current?.querySelector<HTMLButtonElement>('.bh-theme-btn')?.focus()
   }
 
   const onKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
-    const index = THEMES.findIndex((x) => x.id === theme)
-    const forward = i18n.dir() === 'rtl' ? 'ArrowLeft' : 'ArrowRight'
-    const backward = i18n.dir() === 'rtl' ? 'ArrowRight' : 'ArrowLeft'
-    if (e.key === forward || e.key === 'ArrowDown') choose(index + 1)
-    else if (e.key === backward || e.key === 'ArrowUp') choose(index - 1)
-    else if (e.key === 'Home') choose(0)
-    else if (e.key === 'End') choose(THEMES.length - 1)
+    if (e.key === 'Escape' && open) {
+      e.preventDefault()
+      e.stopPropagation()
+      setOpen(false)
+      wrap.current?.querySelector<HTMLButtonElement>('.bh-theme-btn')?.focus()
+      return
+    }
+    if (!open) return
+    const index = items.current.findIndex((el) => el === document.activeElement)
+    if (e.key === 'ArrowDown') items.current[(index + 1) % THEMES.length]?.focus()
+    else if (e.key === 'ArrowUp') items.current[(index - 1 + THEMES.length) % THEMES.length]?.focus()
     else return
     e.preventDefault()
   }
 
   return (
-    <div className="bh-themes" role="radiogroup" aria-label={t('board.theme.label')} onKeyDown={onKeyDown}>
-      {THEMES.map(({ id, icon: Icon }, i) => {
-        const checked = id === theme
-        const label = t(`board.theme.${id}`)
-        return (
-          <button
-            key={id}
-            ref={(el) => {
-              refs.current[i] = el
-            }}
-            type="button"
-            role="radio"
-            aria-checked={checked}
-            tabIndex={checked ? 0 : -1}
-            className={`bh-theme bh-theme--${id}${checked ? ' is-active' : ''}`}
-            title={t(`board.theme.${id}_hint`)}
-            onClick={() => board().setBoardTheme(id)}
-          >
-            <Icon size={15} aria-hidden="true" />
-            <span className="bh-theme__label">{label}</span>
-          </button>
-        )
-      })}
+    <div className="bh-theme-wrap" ref={wrap} onKeyDown={onKeyDown}>
+      <button
+        type="button"
+        className={`bh-theme-btn bh-theme--${theme}${open ? ' is-open' : ''}`}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label={t('board.theme.label')}
+        title={t('board.theme.label')}
+        onClick={() => setOpen((o) => !o)}
+      >
+        <CurrentIcon size={15} aria-hidden="true" />
+        <span className="bh-theme__label">{t(`board.theme.${theme}`)}</span>
+        <ChevronDown size={13} aria-hidden="true" />
+      </button>
+      {open && (
+        <div className="bh-theme-menu" role="menu" aria-label={t('board.theme.label')}>
+          {THEMES.map(({ id, icon: Icon }, i) => (
+            <button
+              key={id}
+              ref={(el) => {
+                items.current[i] = el
+              }}
+              type="button"
+              role="menuitemradio"
+              aria-checked={id === theme}
+              className={`bh-theme-item bh-theme--${id}${id === theme ? ' is-active' : ''}`}
+              onClick={() => choose(id)}
+            >
+              <Icon size={16} aria-hidden="true" />
+              <span className="bh-theme-item__text">
+                <span className="bh-theme__label">{t(`board.theme.${id}`)}</span>
+                <span className="bh-theme-item__hint">{t(`board.theme.${id}_hint`)}</span>
+              </span>
+              {id === theme && <Check size={14} aria-hidden="true" />}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -143,6 +179,8 @@ export function BoardActions() {
 
   return (
     <div className="bh-actions">
+      <ThemeSwitcher />
+      <span className="bh-sep" aria-hidden="true" />
       <button type="button" className="icon-btn" onClick={() => board().undo()} disabled={!canUndo} aria-label={undo} title={undo}>
         <Undo2 size={18} aria-hidden="true" />
       </button>

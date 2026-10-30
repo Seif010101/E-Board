@@ -3,7 +3,8 @@
 
 import type { z } from 'zod'
 import { API_CHANNELS, type EBoardApi, type ErrorCode, type Result } from '@shared/api'
-import type { Language } from '@shared/types'
+import type { Language, MediaRef } from '@shared/types'
+import { MAX_ALBUM_FILES } from './media'
 import { isHttpUrl, issueKeys, schemas } from '@shared/validation'
 import type { Backend } from './backend'
 import { AppError, fail } from './errors'
@@ -19,6 +20,8 @@ type Access = 'any' | 'guest' | 'session' | 'user'
 export interface Platform {
   /** Native open dialog; resolves to the chosen path or null when cancelled. */
   pickImageFile(language: Language): Promise<string | null>
+  /** Native multi-file dialog for album photos and videos; [] when cancelled. */
+  pickAlbumFiles(language: Language): Promise<string[]>
   openExternal(url: string): Promise<void>
   copyText(text: string): void
   appInfo(): { version: string; platform: string; dataPath: string }
@@ -61,7 +64,8 @@ export function createRouter(
   platform: Platform,
   log: (message: string, err: unknown) => void = (m, e) => console.error(m, e)
 ): Router {
-  const { auth, workspace, media } = backend
+  const { auth, workspace, media, storage } = backend
+  const needStorage = (): NonNullable<typeof storage> => storage ?? fail('internal')
 
   const languageOf = (): Language => auth.me().user?.settings.language ?? 'en'
 
@@ -96,6 +100,10 @@ export function createRouter(
       load: authed('user', schemas.byId, (i, uid) => workspace.loadBoard(uid, i.id)),
       applyChanges: authed('user', schemas.boardChanges, (i, uid) => workspace.applyChanges(uid, i))
     },
+    items: {
+      lockWithPin: authed('user', schemas.itemPin, (i, uid) => workspace.lockItemWithPin(uid, i)),
+      unlockWithPin: authed('user', schemas.itemPin, (i, uid) => workspace.unlockItemWithPin(uid, i))
+    },
     media: {
       pickImage: authed('user', null, async (_i, uid) => {
         const path = await platform.pickImageFile(languageOf())
@@ -106,7 +114,24 @@ export function createRouter(
         if (state.locked) fail('locked')
         return media.importFile(uid, path)
       }),
-      importImageBytes: authed('user', schemas.importImageBytes, (i, uid) => media.importBytes(uid, i.name, i.bytes))
+      importImageBytes: authed('user', schemas.importImageBytes, (i, uid) => media.importBytes(uid, i.name, i.bytes)),
+      pickAlbumFiles: authed('user', null, async (_i, uid) => {
+        const paths = await platform.pickAlbumFiles(languageOf())
+        const state = auth.state()
+        if (state.userId !== uid) fail('not_authenticated')
+        if (state.locked) fail('locked')
+        // Many files at once are fine, but not an unbounded number.
+        if (paths.length > MAX_ALBUM_FILES) fail('invalid_input')
+        const added: MediaRef[] = []
+        for (const path of paths) added.push(await media.importFile(uid, path, true))
+        return added
+      })
+    },
+    storage: {
+      status: open('any', null, () => storage?.status() ?? { mode: 'local' as const, available: true, drivePath: null }),
+      useDrive: open('guest', null, () => needStorage().useDrive()),
+      useLocal: open('guest', null, () => needStorage().useLocal()),
+      moveData: authed('user', schemas.moveData, (i) => needStorage().moveData(i.target))
     },
     system: {
       openExternal: authed('user', schemas.openExternal, async (i) => {
@@ -184,3 +209,30 @@ export function createRouter(
     }
   }
 }
+
+/**
+ * Router used while the drive holding the data is not plugged in: there is no database, so only the
+ * storage questions are answered; everything else says the drive is missing.
+ */
+export function createWaitingRouter(storage: NonNullable<Backend['storage']>): Router {
+  const answers: Record<string, () => unknown> = {
+    'storage:status': () => storage.status(),
+    'storage:useDrive': () => storage.useDrive(),
+    'storage:useLocal': () => storage.useLocal()
+  }
+  return {
+    has: (channel) => channel in answers || API_CHANNELS_SET.has(channel),
+    async dispatch(channel, payload) {
+      void payload
+      const answer = answers[channel]
+      if (!answer) return { ok: false, error: 'drive_missing' }
+      try {
+        return { ok: true, data: await answer() }
+      } catch (err) {
+        return err instanceof AppError ? { ok: false, error: err.code, details: err.details } : { ok: false, error: 'internal' }
+      }
+    }
+  }
+}
+
+const API_CHANNELS_SET = new Set(Object.entries(API_CHANNELS).flatMap(([ns, methods]) => methods.map((m) => `${ns}:${m}`)))

@@ -27,7 +27,7 @@ describe('router wiring', () => {
 
   it('requires a session for everything except sign-in, me and logout', async () => {
     const env = setup()
-    const open = new Set(['auth:signup', 'auth:login', 'auth:verifyTotp', 'auth:me', 'auth:logout'])
+    const open = new Set(['auth:signup', 'auth:login', 'auth:verifyTotp', 'auth:me', 'auth:logout', 'storage:status', 'storage:useDrive', 'storage:useLocal'])
     for (const [ns, methods] of Object.entries(API_CHANNELS)) {
       for (const method of methods) {
         const channel = `${ns}:${method}`

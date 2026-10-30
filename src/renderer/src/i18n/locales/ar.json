@@ -44,7 +44,9 @@
     "invalid_file": "مسموح فقط بصور PNG أو JPG",
     "file_too_large": "الملف كبير جداً (الحد الأقصى 15 ميجابايت)",
     "cloud_unavailable": "التخزين السحابي غير متاح بعد",
-    "internal": "حدث خطأ ما"
+    "internal": "حدث خطأ ما",
+    "pin_locked": "هذا العنصر مقفول برمز PIN",
+    "invalid_pin": "الرمز غير صحيح"
   },
   "validation": {
     "required": "هذا الحقل مطلوب",
@@ -75,6 +77,9 @@
     "invalid_option": "اختيار غير صالح",
     "invalid_id": "مرجع غير صالح",
     "invalid_color": "لون غير صالح",
-    "invalid_input": "قيمة غير صالحة"
+    "invalid_input": "قيمة غير صالحة",
+    "pick_country": "اختر دولة من القائمة",
+    "invalid_phone_for_country": "هذا الرقم غير صالح للدولة المختارة",
+    "invalid_phone_international": "أدخل رقمًا دوليًا كاملًا، مثل ‎+971 50 123 4567"
   }
 }

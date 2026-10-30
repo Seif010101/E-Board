@@ -18,6 +18,7 @@ export function setup(opts: { cipher?: SecretCipher | null; platform?: Partial<P
   const copied: string[] = []
   const platform: Platform = {
     pickImageFile: async () => null,
+    pickAlbumFiles: async () => [],
     openExternal: async (url) => void opened.push(url),
     copyText: (text) => void copied.push(text),
     appInfo: () => ({ version: '0.1.0', platform: 'win32', dataPath: 'C:\\data' }),

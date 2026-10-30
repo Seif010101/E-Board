@@ -1357,3 +1357,251 @@
   max-height: calc(100vh - 200px);
   object-fit: contain;
 }
+
+/* ---------- Country picker / flags ---------- */
+
+.insp-flag {
+  display: inline-block;
+  width: 22px;
+  height: 15px;
+  flex: none;
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.22);
+}
+.insp-flag--none {
+  background: var(--border);
+}
+
+.insp-combo {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.insp-combo__flag {
+  position: absolute;
+  inset-inline-start: 10px;
+  display: flex;
+  pointer-events: none;
+}
+.insp-combo__flag:not(:empty) + .insp-combo__input {
+  padding-inline-start: 40px;
+}
+.insp-combo__list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  inset-inline: 0;
+  max-height: 240px;
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.28);
+}
+.insp-combo__opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 8px;
+  border-radius: 7px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.insp-combo__opt.is-active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ---------- Certainty meter (battery style) ---------- */
+
+.cb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+  --cb-h: 10px;
+}
+.cb--compact {
+  margin-top: 3px;
+  padding-inline: 2px;
+}
+.cb__range {
+  flex: 1;
+  min-width: 0;
+  height: var(--cb-h);
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid color-mix(in srgb, var(--text-muted) 75%, transparent);
+  border-radius: 3px;
+  background:
+    linear-gradient(
+      to right,
+      hsl(var(--cb-hue) 70% 46%) calc(var(--cb-v) * 1%),
+      transparent calc(var(--cb-v) * 1%)
+    ),
+    repeating-linear-gradient(to right, transparent 0 calc(10% - 1px), color-mix(in srgb, var(--surface) 80%, transparent) calc(10% - 1px) 10%);
+  background-blend-mode: normal;
+  cursor: pointer;
+}
+.cb__range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 3px;
+  height: calc(var(--cb-h) + 6px);
+  border-radius: 2px;
+  background: var(--text);
+  opacity: 0;
+}
+.cb:hover .cb__range::-webkit-slider-thumb,
+.cb__range:focus-visible::-webkit-slider-thumb {
+  opacity: 0.85;
+}
+.cb__range:focus-visible {
+  outline: 2px solid var(--focus, var(--accent));
+  outline-offset: 2px;
+}
+.cb.is-unrated .cb__range {
+  opacity: 0.7;
+  border-style: dashed;
+}
+.cb__value {
+  min-width: 34px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  text-align: end;
+}
+.cb--compact {
+  --cb-h: 8px;
+}
+
+/* ---------- Phone input: calling-code picker + number ---------- */
+
+.insp-list__text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-inline-start: 8px;
+}
+.insp-phone > .input:not(.insp-dial__btn) {
+  flex: 1;
+  min-width: 0;
+}
+.insp-dial {
+  position: relative;
+  flex: none;
+}
+.insp-dial__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  padding-inline: 8px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.insp-dial__pop {
+  position: absolute;
+  z-index: 25;
+  top: calc(100% + 4px);
+  inset-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 280px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.28);
+}
+.insp-dial__list {
+  max-height: 220px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.insp-dial__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.insp-dial__code {
+  flex: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.insp-dial__empty {
+  padding: 10px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  text-align: center;
+}
+
+.insp-list__kind {
+  flex: 0 1 40%;
+  min-width: 0;
+  margin-inline-end: 8px;
+  padding-inline-end: 8px;
+  overflow: hidden;
+  border-inline-end: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 12.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.insp-addrow__custom {
+  margin-top: 6px;
+}
+.insp-addrow__main--split > .select {
+  flex: 0 1 42%;
+  min-width: 0;
+}
+
+.insp-socials__add {
+  width: 100%;
+  justify-content: center;
+  margin-top: 6px;
+}
+.insp-socials__form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.insp-socials__formrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.insp-socials__formrow > .select {
+  flex: 1;
+  min-width: 0;
+}
+.insp-socials__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.insp-album-btn {
+  width: 100%;
+  justify-content: center;
+}

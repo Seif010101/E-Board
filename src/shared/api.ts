@@ -28,10 +28,13 @@ export type ErrorCode =
   | 'totp_not_started'
   | 'not_authenticated'
   | 'locked'
+  | 'pin_locked'
+  | 'invalid_pin'
   | 'not_found'
   | 'invalid_file'
   | 'file_too_large'
   | 'cloud_unavailable'
+  | 'drive_missing'
   | 'internal'
 
 export type Result<T> =
@@ -60,6 +63,14 @@ export interface CaseInput {
   status: CaseStatus
   priority: CasePriority
   color: string
+}
+
+export interface StorageStatus {
+  mode: 'local' | 'portable'
+  /** False while the drive holding the data is not plugged in. */
+  available: boolean
+  /** Folder on the drive (portable mode). */
+  drivePath: string | null
 }
 
 export interface EBoardApi {
@@ -102,11 +113,34 @@ export interface EBoardApi {
     /** Atomically applies item/link upserts and deletes for one board. */
     applyChanges(changes: BoardChanges): Promise<Result<null>>
   }
+  items: {
+    /** Locks an item and protects it with a PIN (4-8 digits); every change is refused until it is unlocked. */
+    lockWithPin(input: { boardId: Id; itemId: Id; pin: string }): Promise<Result<null>>
+    /** Removes the lock (and the PIN) when the PIN is right; repeated failures are rate limited. */
+    unlockWithPin(input: { boardId: Id; itemId: Id; pin: string }): Promise<Result<null>>
+  }
   media: {
     /** Opens a native file dialog restricted to PNG/JPEG; null if the user cancelled. */
     pickImage(): Promise<Result<MediaRef | null>>
     /** For drag & drop / paste. Bytes are validated by magic number in the main process. */
     importImageBytes(input: { name: string; bytes: Uint8Array }): Promise<Result<MediaRef>>
+    /** Native dialog for several photos (PNG/JPEG) and videos (MP4/WebM); the cancelled dialog yields an empty list. */
+    pickAlbumFiles(): Promise<Result<MediaRef[]>>
+  }
+  storage: {
+    status(): Promise<Result<StorageStatus>>
+    /**
+     * Native folder dialog: connects to the E-Board data on the chosen drive (or starts empty data
+     * there), then restarts the app. Only while signed out. Resolves with false when cancelled.
+     */
+    useDrive(): Promise<Result<boolean>>
+    /** Goes back to this computer's own data without moving anything (only while signed out). */
+    useLocal(): Promise<Result<boolean>>
+    /**
+     * Moves everything to a drive (a folder dialog asks which) or back to this computer. The source
+     * copy is erased and the app restarts. Resolves with false when cancelled.
+     */
+    moveData(input: { target: 'portable' | 'local' }): Promise<Result<boolean>>
   }
   system: {
     /** Opens an http(s) URL in the default browser. */
@@ -136,7 +170,9 @@ export const API_CHANNELS = {
   ],
   cases: ['list', 'create', 'update', 'remove'],
   boards: ['list', 'create', 'update', 'remove', 'load', 'applyChanges'],
-  media: ['pickImage', 'importImageBytes'],
+  items: ['lockWithPin', 'unlockWithPin'],
+  media: ['pickImage', 'importImageBytes', 'pickAlbumFiles'],
+  storage: ['status', 'useDrive', 'useLocal', 'moveData'],
   system: ['openExternal', 'copyText', 'appInfo']
 } as const satisfies { [K in keyof EBoardApi]: readonly (keyof EBoardApi[K])[] }
 

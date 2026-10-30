@@ -1,9 +1,9 @@
-import type { ImageMime, MediaRef } from '@shared/types'
+import type { MediaMime, MediaRef } from '@shared/types'
 import type { Database } from '../db'
 
 interface MediaRow {
   id: string
-  mime: ImageMime
+  mime: MediaMime
   size: number
   width: number
   height: number
@@ -19,10 +19,11 @@ export interface NewMedia extends MediaRef {
 }
 
 /** JSON paths inside items.data_json that reference media (person, company, entity / image). */
-const MEDIA_REFERENCE = `media.id IN (
+const MEDIA_REFERENCE = `(media.id IN (
   json_extract(i.data_json, '$.photoMediaId'),
   json_extract(i.data_json, '$.logoMediaId'),
-  json_extract(i.data_json, '$.mediaId'))`
+  json_extract(i.data_json, '$.mediaId'))
+  OR EXISTS (SELECT 1 FROM json_each(i.data_json, '$.album') je WHERE json_extract(je.value, '$.mediaId') = media.id))`
 
 export function createMediaRepo(db: Database) {
   const bySha = db.prepare('SELECT id, mime, size, width, height FROM media WHERE user_id = ? AND sha256 = ?')
@@ -48,8 +49,8 @@ export function createMediaRepo(db: Database) {
     insert(m: NewMedia): void {
       insert.run(m.id, m.userId, m.mime, m.size, m.width, m.height, m.sha256, m.bytes, m.now)
     },
-    content(userId: string, id: string): { mime: ImageMime; bytes: Uint8Array } | null {
-      const row = content.get(id, userId) as { mime: ImageMime; bytes: Uint8Array } | undefined
+    content(userId: string, id: string): { mime: MediaMime; bytes: Uint8Array } | null {
+      const row = content.get(id, userId) as { mime: MediaMime; bytes: Uint8Array } | undefined
       return row ?? null
     },
     ownedBy: (userId: string, id: string): boolean => owned.get(id, userId) !== undefined,

@@ -11,6 +11,7 @@ import { AccountPage, Row, Section } from './PageParts'
 import { BoardThemeSwatch, DockDiagram } from './SettingsPreviews'
 import { saveSettings } from './settingsActions'
 import { Switch } from './Switch'
+import { StorageSection } from '@renderer/features/storage/StorageSection'
 import './SettingsScreen.css'
 
 const LANGUAGES: readonly Language[] = ['en', 'ar']
@@ -246,6 +247,8 @@ export function SettingsScreen() {
           />
         </Row>
       </Section>
+
+      <StorageSection />
 
       <Section
         id="acct-set-about"

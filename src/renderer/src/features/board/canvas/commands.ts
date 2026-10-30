@@ -2,6 +2,7 @@
 
 import type { BoardItem, Id, ItemType, LinkRecord } from '@shared/types'
 import { cleanMultiline } from '@shared/validation'
+import { askLockWithPin, askUnlock } from '../lock/pinStore'
 import i18n from '@renderer/i18n'
 import { newId } from '@renderer/lib/api'
 import { toast } from '@renderer/components/ui/toast'
@@ -51,7 +52,7 @@ function cloneGroup(src: Group, dx: number, dy: number): Group | null {
     .map((item) => {
       const copy = cloneItem(item, z++, 0)
       idMap.set(item.id, copy.id)
-      return { ...copy, boardId, x: item.x + dx, y: item.y + dy, locked: false } as BoardItem
+      return { ...copy, boardId, x: item.x + dx, y: item.y + dy, locked: false, pinLocked: false } as BoardItem
     })
   for (const copy of items) {
     if (copy.type !== 'company') continue
@@ -165,8 +166,19 @@ export function selectAll(): void {
 export function toggleLockSelection(): void {
   const items = selectedItems()
   if (!items.length) return
-  const locked = items.some((i) => !i.locked)
-  board().updateItems(Object.fromEntries(items.map((i) => [i.id, { locked }])))
+  if (items.some((i) => !i.locked)) {
+    board().updateItems(Object.fromEntries(items.filter((i) => !i.locked).map((i) => [i.id, { locked: true }])))
+    return
+  }
+  // Unlocking: items locked with a PIN need it; the others open right away.
+  const plain = items.filter((i) => !i.pinLocked)
+  if (plain.length) board().updateItems(Object.fromEntries(plain.map((i) => [i.id, { locked: false }])))
+  askUnlock(items.filter((i) => i.pinLocked).map((i) => i.id))
+}
+
+/** Locks the selected items with a PIN asked for in a dialog. */
+export function lockSelectionWithPin(): void {
+  askLockWithPin(selectedItems().filter((i) => !i.pinLocked).map((i) => i.id))
 }
 
 export function bringSelectionToFront(): void {

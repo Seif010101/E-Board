@@ -9,6 +9,13 @@
   line-height: 1.3;
 }
 
+.txt__list {
+  margin: 0;
+  padding-block: 0;
+  padding-inline-start: 1.4em;
+  overflow-wrap: anywhere;
+}
+
 .txt__body {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -20,7 +27,14 @@
   outline-offset: -1px;
   border-radius: 4px;
 }
-.txt.is-empty:not(.is-editing) .txt__body {
+.txt.is-empty:not(.is-editing) .txt__list {
+  margin: 0;
+  padding-block: 0;
+  padding-inline-start: 1.4em;
+  overflow-wrap: anywhere;
+}
+
+.txt__body {
   font-style: italic;
   opacity: 0.45;
 }

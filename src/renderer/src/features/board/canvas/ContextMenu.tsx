@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import type { LucideIcon } from 'lucide-react'
 import {
+  LockKeyhole,
   BringToFront,
   ClipboardPaste,
   Copy,
@@ -39,6 +40,7 @@ import {
   pasteClipboard,
   selectAll,
   sendSelectionToBack,
+  lockSelectionWithPin,
   toggleLockSelection
 } from './commands'
 import { fitContent } from './viewport'
@@ -87,6 +89,9 @@ function itemRows(t: TFunction, items: BoardItem[]): Row[] {
       icon: allLocked ? LockOpen : Lock,
       run: toggleLockSelection
     },
+    ...(items.some((i) => !i.pinLocked)
+      ? [{ id: 'lockPin', label: t('board.menu.lock_pin'), icon: LockKeyhole, run: lockSelectionWithPin } satisfies Entry]
+      : []),
     'sep',
     {
       id: 'delete',
