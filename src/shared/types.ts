@@ -161,6 +161,8 @@ export interface PersonData {
   emails: string[]
   socials: SocialAccount[]
   locations: GeoLocation[]
+  /** Photos and videos stored for this person; opened from the album button in the details. */
+  album: AlbumEntry[]
   notes: string
   tags: string[]
   source: string
@@ -338,6 +340,13 @@ export interface ItemBase {
   updatedAt: number
 }
 
+/** A photo or video kept in a person's album (not shown on the card). */
+export interface AlbumEntry {
+  mediaId: Id
+  kind: 'image' | 'video'
+  caption: string
+}
+
 export interface PersonItem extends ItemBase { type: 'person'; data: PersonData }
 export interface CompanyItem extends ItemBase { type: 'company'; data: CompanyData }
 export interface EntityItem extends ItemBase { type: 'entity'; data: EntityData }
@@ -403,10 +412,12 @@ export interface LinkRecord {
 // Media
 
 export type ImageMime = 'image/png' | 'image/jpeg'
+export type VideoMime = 'video/mp4' | 'video/webm'
+export type MediaMime = ImageMime | VideoMime
 
 export interface MediaRef {
   id: Id
-  mime: ImageMime
+  mime: MediaMime
   size: number
   width: number
   height: number

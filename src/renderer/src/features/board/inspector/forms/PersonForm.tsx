@@ -1,10 +1,12 @@
 // Person card details: photo, identity, contact, documents, socials, places, relationships, notes.
 
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Camera, IdCard, Sparkles, UserRound } from 'lucide-react'
+import { Camera, IdCard, Images, Sparkles, UserRound } from 'lucide-react'
 import { PERSON_ROLES, RISK_LEVELS, type ItemOfType, type PersonData } from '@shared/types'
 import { LIMITS, rules } from '@shared/validation'
 import { genderLabel, riskLabel, roleLabel } from '../labels'
+import { AlbumDialog } from '../controls/AlbumDialog'
 import { ChipsField } from '../controls/ChipsField'
 import { CountryField } from '../controls/CountryField'
 import { IdDocumentsEditor } from '../controls/IdDocumentsEditor'
@@ -33,6 +35,9 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
   const d = item.data
   const patch = usePatch(item)
   const scope = 'person'
+  const [albumOpen, setAlbumOpen] = useState(false)
+  // Cards saved before albums existed have none.
+  const album = d.album ?? []
 
   // Offer the age implied by the date of birth when it is missing or disagrees.
   const dobAge = d.dateOfBirth ? ageFromDate(d.dateOfBirth) : null
@@ -167,6 +172,22 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
 
       <Section id={`${scope}.documents`} title={t('inspector.section.documents')} icon={IdCard} count={d.idDocuments.length}>
         <IdDocumentsEditor documents={d.idDocuments} onChange={(idDocuments) => patch({ idDocuments })} />
+      </Section>
+
+      <Section id={`${scope}.album`} title={t('inspector.section.album')} icon={Images} count={album.length}>
+        <p className="insp-note">{t('inspector.album.hint')}</p>
+        <button type="button" className="btn insp-album-btn" onClick={() => setAlbumOpen(true)}>
+          <Images size={16} aria-hidden="true" />
+          {t('inspector.album.open')}
+        </button>
+        {albumOpen && (
+          <AlbumDialog
+            name={d.fullName || t('cards.unnamed_person')}
+            entries={album}
+            onChange={(next) => patch({ album: next })}
+            onClose={() => setAlbumOpen(false)}
+          />
+        )}
       </Section>
 
       <SocialsSection scope={scope} socials={d.socials} onChange={(socials) => patch({ socials })} />

@@ -83,6 +83,7 @@ export const personData = (overrides: Partial<PersonData> = {}): PersonData => (
   emails: ['ahmed@example.com'],
   socials: [{ platform: 'instagram', handle: '@ahmed462_ali', url: '' }],
   locations: [],
+  album: [],
   notes: '',
   tags: [],
   source: '',

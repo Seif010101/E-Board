@@ -34,7 +34,8 @@
       "locations": "Locations",
       "relationships": "Relationships",
       "notes": "Notes & tags",
-      "casefile": "Source & confidence"
+      "casefile": "Source & confidence",
+      "album": "Album"
     },
     "not_set": "Not set",
     "invalid_text": "Use letters, numbers, spaces and basic punctuation only",
@@ -234,7 +235,23 @@
     "certainty_hint": "How much you trust this information",
     "phone_country": "Country calling code",
     "phone_country_search": "Search country or code",
-    "phone_country_none": "No matching country"
+    "phone_country_none": "No matching country",
+    "album": {
+      "button": "Album",
+      "title": "Album: {{name}}",
+      "add": "Add photos / videos",
+      "empty": "No photos or videos yet.",
+      "limit": "An album holds up to {{max}} items.",
+      "caption": "Caption",
+      "delete": "Remove from album",
+      "confirm_delete": "Remove?",
+      "back": "All items",
+      "previous": "Previous",
+      "next": "Next",
+      "open_item": "Open item {{n}}",
+      "open": "Open album",
+      "hint": "Photos and videos stored for this person. They are not shown on the card."
+    }
   },
   "map": {
     "empty": "No saved places yet.",

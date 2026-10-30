@@ -24,7 +24,7 @@ const PIN_MAX_BLOCK_MS = 15 * 60_000
 export function mediaIdsOf(item: BoardItem): string[] {
   switch (item.type) {
     case 'person':
-      return item.data.photoMediaId ? [item.data.photoMediaId] : []
+      return [...(item.data.photoMediaId ? [item.data.photoMediaId] : []), ...item.data.album.map((a) => a.mediaId)]
     case 'company':
       return item.data.logoMediaId ? [item.data.logoMediaId] : []
     case 'entity':

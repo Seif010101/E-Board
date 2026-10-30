@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { app, clipboard, dialog, Menu, safeStorage, session, shell } from 'electron'
 import { createBackend } from './backend'
 import { openDatabase, type Database } from './db'
-import { pickImageFile } from './dialogs'
+import { pickAlbumFiles, pickImageFile } from './dialogs'
 import { registerIpc } from './ipc'
 import { registerMediaScheme, serveMedia } from './protocol'
 import { createRouter } from './router'
@@ -34,6 +34,7 @@ function start(): void {
 
   const router = createRouter(backend, {
     pickImageFile: (language) => pickImageFile(getMainWindow(), language),
+    pickAlbumFiles: (language) => pickAlbumFiles(getMainWindow(), language),
     openExternal: (url) => shell.openExternal(url),
     copyText: (text) => clipboard.writeText(text),
     appInfo: () => ({ version: app.getVersion(), platform: process.platform, dataPath: app.getPath('userData') })

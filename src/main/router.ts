@@ -3,7 +3,8 @@
 
 import type { z } from 'zod'
 import { API_CHANNELS, type EBoardApi, type ErrorCode, type Result } from '@shared/api'
-import type { Language } from '@shared/types'
+import type { Language, MediaRef } from '@shared/types'
+import { MAX_ALBUM_FILES } from './media'
 import { isHttpUrl, issueKeys, schemas } from '@shared/validation'
 import type { Backend } from './backend'
 import { AppError, fail } from './errors'
@@ -19,6 +20,8 @@ type Access = 'any' | 'guest' | 'session' | 'user'
 export interface Platform {
   /** Native open dialog; resolves to the chosen path or null when cancelled. */
   pickImageFile(language: Language): Promise<string | null>
+  /** Native multi-file dialog for album photos and videos; [] when cancelled. */
+  pickAlbumFiles(language: Language): Promise<string[]>
   openExternal(url: string): Promise<void>
   copyText(text: string): void
   appInfo(): { version: string; platform: string; dataPath: string }
@@ -110,7 +113,18 @@ export function createRouter(
         if (state.locked) fail('locked')
         return media.importFile(uid, path)
       }),
-      importImageBytes: authed('user', schemas.importImageBytes, (i, uid) => media.importBytes(uid, i.name, i.bytes))
+      importImageBytes: authed('user', schemas.importImageBytes, (i, uid) => media.importBytes(uid, i.name, i.bytes)),
+      pickAlbumFiles: authed('user', null, async (_i, uid) => {
+        const paths = await platform.pickAlbumFiles(languageOf())
+        const state = auth.state()
+        if (state.userId !== uid) fail('not_authenticated')
+        if (state.locked) fail('locked')
+        // Many files at once are fine, but not an unbounded number.
+        if (paths.length > MAX_ALBUM_FILES) fail('invalid_input')
+        const added: MediaRef[] = []
+        for (const path of paths) added.push(await media.importFile(uid, path, true))
+        return added
+      })
     },
     system: {
       openExternal: authed('user', schemas.openExternal, async (i) => {

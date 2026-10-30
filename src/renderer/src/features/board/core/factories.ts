@@ -37,6 +37,7 @@ export const emptyPerson = (): PersonData => ({
   emails: [],
   socials: [],
   locations: [],
+  album: [],
   notes: '',
   tags: [],
   source: '',

@@ -115,6 +115,8 @@ export interface EBoardApi {
     pickImage(): Promise<Result<MediaRef | null>>
     /** For drag & drop / paste. Bytes are validated by magic number in the main process. */
     importImageBytes(input: { name: string; bytes: Uint8Array }): Promise<Result<MediaRef>>
+    /** Native dialog for several photos (PNG/JPEG) and videos (MP4/WebM); the cancelled dialog yields an empty list. */
+    pickAlbumFiles(): Promise<Result<MediaRef[]>>
   }
   system: {
     /** Opens an http(s) URL in the default browser. */
@@ -145,7 +147,7 @@ export const API_CHANNELS = {
   cases: ['list', 'create', 'update', 'remove'],
   boards: ['list', 'create', 'update', 'remove', 'load', 'applyChanges'],
   items: ['lockWithPin', 'unlockWithPin'],
-  media: ['pickImage', 'importImageBytes'],
+  media: ['pickImage', 'importImageBytes', 'pickAlbumFiles'],
   system: ['openExternal', 'copyText', 'appInfo']
 } as const satisfies { [K in keyof EBoardApi]: readonly (keyof EBoardApi[K])[] }
 

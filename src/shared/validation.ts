@@ -78,6 +78,7 @@ export const LIMITS = {
   employees: 500,
   strokePoints: 20000,
   threadPoints: 24,
+  album: 200,
   coord: 10_000_000,
   size: 100_000
 } as const
@@ -252,6 +253,8 @@ export const zSocialAccount = z.strictObject({
 
 const zIdDocument = z.strictObject({ kind: zLine(60), value: zRuled(rules.alnum, 64) })
 
+export const zAlbumEntry = z.strictObject({ mediaId: zId, kind: z.enum(['image', 'video']), caption: zLine(200) })
+
 export const zPersonData = z.strictObject({
   fullName: zPersonName,
   aliases: zList(zPersonName, 20),
@@ -268,6 +271,7 @@ export const zPersonData = z.strictObject({
   emails: zList(zEmail),
   socials: zList(zSocialAccount, LIMITS.socials),
   locations: zList(zGeoLocation, LIMITS.locations),
+  album: zList(zAlbumEntry, LIMITS.album).default([]),
   notes: zMultiline(),
   tags: zTags,
   source: zLine(300),

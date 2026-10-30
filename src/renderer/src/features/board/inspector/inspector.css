@@ -1600,3 +1600,8 @@
   justify-content: flex-end;
   gap: 8px;
 }
+
+.insp-album-btn {
+  width: 100%;
+  justify-content: center;
+}

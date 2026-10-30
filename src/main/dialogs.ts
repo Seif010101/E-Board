@@ -14,3 +14,15 @@ export async function pickImageFile(parent: BrowserWindow | null, language: Lang
   const result = parent ? await dialog.showOpenDialog(parent, options) : await dialog.showOpenDialog(options)
   return result.canceled || result.filePaths.length === 0 ? null : result.filePaths[0]
 }
+
+const ALBUM_LABEL: Record<Language, string> = { en: 'Photos and videos', ar: 'الصور والفيديوهات' }
+
+/** Photo / video picker for albums (several files); an empty list when cancelled. */
+export async function pickAlbumFiles(parent: BrowserWindow | null, language: Language): Promise<string[]> {
+  const options: OpenDialogOptions = {
+    properties: ['openFile', 'multiSelections'],
+    filters: [{ name: ALBUM_LABEL[language], extensions: ['png', 'jpg', 'jpeg', 'mp4', 'm4v', 'webm'] }]
+  }
+  const result = parent ? await dialog.showOpenDialog(parent, options) : await dialog.showOpenDialog(options)
+  return result.canceled ? [] : result.filePaths
+}
