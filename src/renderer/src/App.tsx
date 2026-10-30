@@ -13,6 +13,8 @@ import { SettingsScreen } from '@renderer/features/account/SettingsScreen'
 import { CasesScreen } from '@renderer/features/cases/CasesScreen'
 import { CaseScreen } from '@renderer/features/cases/CaseScreen'
 import { BoardScreen } from '@renderer/features/board/BoardScreen'
+import { DriveMissingScreen } from '@renderer/features/storage/DriveMissingScreen'
+import { useStorageStatus } from '@renderer/features/storage/useStorageStatus'
 
 export function App() {
   const { t } = useTranslation()
@@ -22,6 +24,7 @@ export function App() {
   const userId = useSession((s) => s.user?.id)
   const prefs = usePrefs()
   const route = useNav((s) => s.route)
+  const storage = useStorageStatus()
 
   useEffect(() => {
     void useSession.getState().refresh()
@@ -46,7 +49,10 @@ export function App() {
   useAutoLock()
 
   let screen: React.ReactNode
-  if (status === 'loading') {
+  if (storage.kind === 'ready' && !storage.status.available) {
+    // The data is on a USB drive that is not plugged in: nothing else is shown.
+    screen = <DriveMissingScreen drivePath={storage.status.drivePath} />
+  } else if (status === 'loading' || storage.kind === 'loading') {
     screen = (
       <div className="splash" aria-label={t('common.loading')}>
         <div className="spinner" />

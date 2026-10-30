@@ -26,3 +26,10 @@ export async function pickAlbumFiles(parent: BrowserWindow | null, language: Lan
   const result = parent ? await dialog.showOpenDialog(parent, options) : await dialog.showOpenDialog(options)
   return result.canceled ? [] : result.filePaths
 }
+
+/** Folder picker (a USB drive or a folder on it); null when cancelled. */
+export async function pickFolder(parent: BrowserWindow | null): Promise<string | null> {
+  const options: OpenDialogOptions = { properties: ['openDirectory', 'createDirectory'] }
+  const result = parent ? await dialog.showOpenDialog(parent, options) : await dialog.showOpenDialog(options)
+  return result.canceled || result.filePaths.length === 0 ? null : result.filePaths[0]
+}

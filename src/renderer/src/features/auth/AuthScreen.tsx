@@ -1,7 +1,10 @@
 import { useRef, useState, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { KeyRound, Moon, ShieldCheck, Sun, Waypoints } from 'lucide-react'
 import type { Language, PublicUser } from '@shared/types'
+import { toast } from '@renderer/components/ui/toast'
+import { api, call, errorMessage } from '@renderer/lib/api'
 import { usePrefs } from '@renderer/stores/prefs'
 import { useSession } from '@renderer/stores/session'
 import { Choice } from '@renderer/features/account/Choice'
@@ -21,6 +24,16 @@ const FEATURES = [
   { key: 'boards', Icon: Waypoints },
   { key: 'twofa', Icon: KeyRound }
 ] as const
+
+/** Connects to the data kept on a USB drive; the app restarts when it works. */
+async function useDrive(t: TFunction): Promise<void> {
+  if (!window.confirm(t('storage.use_drive_confirm'))) return
+  try {
+    await call(api.storage.useDrive())
+  } catch (err) {
+    toast.error(errorMessage(t, err))
+  }
+}
 
 export function AuthScreen() {
   const { t } = useTranslation()
@@ -170,6 +183,9 @@ export function AuthScreen() {
             </>
           )}
           <p className="auth-panel__foot">{t('auth.footer')}</p>
+          <button type="button" className="btn btn--ghost btn--sm auth-panel__drive" onClick={() => void useDrive(t)}>
+            {t('storage.use_drive')}
+          </button>
         </section>
       </main>
     </div>

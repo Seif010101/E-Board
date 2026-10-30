@@ -502,6 +502,7 @@ export const schemas = {
     theme: zBoardTheme.optional(),
     viewport: zViewport.optional()
   }),
+  moveData: z.strictObject({ target: z.enum(['portable', 'local']) }),
   itemPin: z.strictObject({ boardId: zId, itemId: zId, pin: zPin }),
   boardChanges: z.strictObject({
     boardId: zId,

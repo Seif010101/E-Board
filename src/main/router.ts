@@ -64,7 +64,8 @@ export function createRouter(
   platform: Platform,
   log: (message: string, err: unknown) => void = (m, e) => console.error(m, e)
 ): Router {
-  const { auth, workspace, media } = backend
+  const { auth, workspace, media, storage } = backend
+  const needStorage = (): NonNullable<typeof storage> => storage ?? fail('internal')
 
   const languageOf = (): Language => auth.me().user?.settings.language ?? 'en'
 
@@ -125,6 +126,12 @@ export function createRouter(
         for (const path of paths) added.push(await media.importFile(uid, path, true))
         return added
       })
+    },
+    storage: {
+      status: open('any', null, () => storage?.status() ?? { mode: 'local' as const, available: true, drivePath: null }),
+      useDrive: open('guest', null, () => needStorage().useDrive()),
+      useLocal: open('guest', null, () => needStorage().useLocal()),
+      moveData: authed('user', schemas.moveData, (i) => needStorage().moveData(i.target))
     },
     system: {
       openExternal: authed('user', schemas.openExternal, async (i) => {
@@ -202,3 +209,30 @@ export function createRouter(
     }
   }
 }
+
+/**
+ * Router used while the drive holding the data is not plugged in: there is no database, so only the
+ * storage questions are answered; everything else says the drive is missing.
+ */
+export function createWaitingRouter(storage: NonNullable<Backend['storage']>): Router {
+  const answers: Record<string, () => unknown> = {
+    'storage:status': () => storage.status(),
+    'storage:useDrive': () => storage.useDrive(),
+    'storage:useLocal': () => storage.useLocal()
+  }
+  return {
+    has: (channel) => channel in answers || API_CHANNELS_SET.has(channel),
+    async dispatch(channel, payload) {
+      void payload
+      const answer = answers[channel]
+      if (!answer) return { ok: false, error: 'drive_missing' }
+      try {
+        return { ok: true, data: await answer() }
+      } catch (err) {
+        return err instanceof AppError ? { ok: false, error: err.code, details: err.details } : { ok: false, error: 'internal' }
+      }
+    }
+  }
+}
+
+const API_CHANNELS_SET = new Set(Object.entries(API_CHANNELS).flatMap(([ns, methods]) => methods.map((m) => `${ns}:${m}`)))

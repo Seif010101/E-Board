@@ -472,3 +472,8 @@
     display: flex;
   }
 }
+
+.auth-panel__drive {
+  align-self: center;
+  margin-top: 4px;
+}
