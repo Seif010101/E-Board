@@ -1,0 +1,45 @@
+.pin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pin-form__text,
+.pin-form__hint {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.pin-form__hint {
+  font-size: 12px;
+}
+.pin-form__input {
+  font-family: var(--font-mono);
+  letter-spacing: 0.4em;
+  text-align: center;
+  direction: ltr;
+}
+
+/* Inspector of a PIN-locked item: read-only, with a way to unlock. */
+.insp-pinlock {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 13px;
+}
+.insp-pinlock span {
+  flex: 1;
+}
+.insp-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.insp-fieldset:disabled {
+  opacity: 0.6;
+}

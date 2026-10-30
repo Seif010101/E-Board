@@ -39,10 +39,15 @@ export function createLinksRepo(db: Database) {
      WHERE links.board_id = excluded.board_id`
   )
   const remove = db.prepare('DELETE FROM links WHERE id = ? AND board_id = ?')
+  const ends = db.prepare('SELECT from_id, to_id FROM links WHERE id = ?')
 
   return {
     list: (boardId: string): LinkRecord[] => (list.all(boardId) as unknown as LinkRow[]).map(toLink),
     boardOf: (id: string): string | null => (boardOf.get(id) as { board_id: string } | undefined)?.board_id ?? null,
+    endsOf: (id: string): { fromId: string; toId: string } | null => {
+      const r = ends.get(id) as { from_id: string; to_id: string } | undefined
+      return r ? { fromId: r.from_id, toId: r.to_id } : null
+    },
     upsert(link: LinkRecord): void {
       upsert.run(
         link.id,

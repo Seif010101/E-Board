@@ -44,7 +44,9 @@
     "invalid_file": "مسموح فقط بصور PNG أو JPG",
     "file_too_large": "الملف كبير جداً (الحد الأقصى 15 ميجابايت)",
     "cloud_unavailable": "التخزين السحابي غير متاح بعد",
-    "internal": "حدث خطأ ما"
+    "internal": "حدث خطأ ما",
+    "pin_locked": "هذا العنصر مقفول برمز PIN",
+    "invalid_pin": "الرمز غير صحيح"
   },
   "validation": {
     "required": "هذا الحقل مطلوب",

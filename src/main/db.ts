@@ -104,6 +104,14 @@ const MIGRATIONS: readonly Migration[] = [
     sql: `
       ALTER TABLE links ADD COLUMN via_json TEXT NOT NULL DEFAULT '[]';
     `
+  },
+  {
+    version: 3,
+    sql: `
+      ALTER TABLE items ADD COLUMN pin_hash TEXT NULL;
+      ALTER TABLE items ADD COLUMN pin_fails INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE items ADD COLUMN pin_blocked_until INTEGER NOT NULL DEFAULT 0;
+    `
   }
 ]
 

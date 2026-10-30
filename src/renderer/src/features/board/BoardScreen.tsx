@@ -22,6 +22,8 @@ import { ShortcutsDialog } from './canvas/ShortcutsDialog'
 import { BoardActions, BoardTitleEditor } from './canvas/BoardChrome'
 import { useCanvasUi } from './canvas/uiStore'
 import { BoardSearch } from './search/BoardSearch'
+import { PinDialog } from './lock/PinDialog'
+import './lock/pin.css'
 import { resetSearch } from './search/searchStore'
 import './BoardScreen.css'
 
@@ -168,6 +170,7 @@ export function BoardScreen({ caseId, boardId }: Props) {
           <InspectorHost />
           <ZoomControls />
           <Minimap />
+          <PinDialog />
           <BoardSearch />
           <ContextMenu />
         </div>

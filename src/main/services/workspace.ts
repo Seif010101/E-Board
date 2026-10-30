@@ -5,7 +5,8 @@ import { randomUUID } from 'node:crypto'
 import type { CaseInput } from '@shared/api'
 import type { BoardBundle, BoardChanges, BoardItem, BoardRecord, BoardTheme, CaseRecord, Viewport } from '@shared/types'
 import { transaction, type Database } from '../db'
-import { fail } from '../errors'
+import { AppError, fail } from '../errors'
+import { hashPassword, verifyPassword } from '../password'
 import { createBoardsRepo } from '../repos/boards'
 import { createCasesRepo } from '../repos/cases'
 import { createItemsRepo } from '../repos/items'
@@ -13,6 +14,11 @@ import { createLinksRepo } from '../repos/links'
 import { createMediaRepo } from '../repos/media'
 
 const BAD_REFERENCE = ['validation.invalid_id']
+
+/** Wrong PINs: after this many, further attempts on the item wait, doubling each time. */
+const PIN_FREE_ATTEMPTS = 5
+const PIN_BASE_BLOCK_MS = 60_000
+const PIN_MAX_BLOCK_MS = 15 * 60_000
 
 /** Media ids an item points at; these must belong to the board's owner. */
 export function mediaIdsOf(item: BoardItem): string[] {
@@ -69,6 +75,9 @@ export function createWorkspaceService({ db, now = Date.now }: { db: Database; n
     },
 
     removeCase(userId: string, id: string): null {
+      ownedCase(userId, id)
+      // Deleting around a PIN lock would be a way to destroy what the PIN protects.
+      if (items.caseHasPinLocked(id)) fail('pin_locked')
       if (!cases.remove(userId, id)) fail('not_found')
       return null
     },
@@ -109,6 +118,7 @@ export function createWorkspaceService({ db, now = Date.now }: { db: Database; n
     removeBoard(userId: string, id: string): null {
       transaction(db, () => {
         const current = ownedBoard(userId, id)
+        if (items.boardHasPinLocked(id)) fail('pin_locked')
         boards.remove(userId, id)
         cases.touch(current.caseId, now())
       })
@@ -143,6 +153,22 @@ export function createWorkspaceService({ db, now = Date.now }: { db: Database; n
       transaction(db, () => {
         const board = ownedBoard(userId, boardId)
 
+        // PIN-locked items (and the threads attached to them) cannot be changed or deleted, whatever
+        // the renderer sends: the whole batch is refused.
+        for (const id of [...deletedItems, ...changes.upsertItems.map((i) => i.id)]) {
+          if (items.isPinLocked(id)) fail('pin_locked')
+        }
+        for (const link of changes.upsertLinks) {
+          if (items.isPinLocked(link.fromId) || items.isPinLocked(link.toId)) fail('pin_locked')
+        }
+        for (const id of deletedLinks) {
+          const ends = links.endsOf(id)
+          if (!ends) continue
+          // A thread that goes with a deleted (unlocked) item is fine; deleting it on its own is not.
+          const goesWithItem = deletedItems.has(ends.fromId) || deletedItems.has(ends.toId)
+          if (!goesWithItem && (items.isPinLocked(ends.fromId) || items.isPinLocked(ends.toId))) fail('pin_locked')
+        }
+
         for (const item of changes.upsertItems) {
           const owner = items.boardOf(item.id)
           if (owner !== null && owner !== boardId) reject()
@@ -169,6 +195,41 @@ export function createWorkspaceService({ db, now = Date.now }: { db: Database; n
           boards.touch(boardId, t)
           cases.touch(board.caseId, t)
         }
+      })
+      return null
+    },
+
+    /** Locks the item and protects it with `pin` (the stored value is a salted scrypt hash). */
+    async lockItemWithPin(userId: string, input: { boardId: string; itemId: string; pin: string }): Promise<null> {
+      ownedBoard(userId, input.boardId)
+      const state = items.pinState(input.boardId, input.itemId) ?? fail('not_found')
+      if (state.hash !== null) fail('pin_locked')
+      const hash = await hashPassword(input.pin)
+      transaction(db, () => {
+        if (!items.lockWithPin(input.boardId, input.itemId, hash, now())) fail('pin_locked')
+        boards.touch(input.boardId, now())
+      })
+      return null
+    },
+
+    /** Removes the lock and the PIN. Failures are counted per item and stay counted across restarts. */
+    async unlockItemWithPin(userId: string, input: { boardId: string; itemId: string; pin: string }): Promise<null> {
+      ownedBoard(userId, input.boardId)
+      const state = items.pinState(input.boardId, input.itemId) ?? fail('not_found')
+      if (state.hash === null) return null
+      const wait = state.blockedUntil - now()
+      if (wait > 0) throw new AppError('rate_limited', undefined, wait)
+      if (!(await verifyPassword(input.pin, state.hash))) {
+        const fails = state.fails + 1
+        const blockMs =
+          fails >= PIN_FREE_ATTEMPTS ? Math.min(PIN_BASE_BLOCK_MS * 2 ** Math.min(fails - PIN_FREE_ATTEMPTS, 20), PIN_MAX_BLOCK_MS) : 0
+        items.recordPinFailure(input.boardId, input.itemId, fails, blockMs ? now() + blockMs : 0)
+        if (blockMs) throw new AppError('rate_limited', undefined, blockMs)
+        fail('invalid_pin')
+      }
+      transaction(db, () => {
+        items.clearPin(input.boardId, input.itemId, now())
+        boards.touch(input.boardId, now())
       })
       return null
     }

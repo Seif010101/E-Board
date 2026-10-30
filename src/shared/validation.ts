@@ -62,7 +62,8 @@ export const PATTERNS = {
   hexColor: /^#[0-9a-fA-F]{6}$/,
   tag: /^[\p{L}\p{N}][\p{L}\p{N}_\- ]{0,31}$/u,
   id: /^[A-Za-z0-9_-]{8,64}$/,
-  totpCode: /^\d{6}$/
+  totpCode: /^\d{6}$/,
+  pin: /^\d{4,8}$/
 } as const
 
 export const LIMITS = {
@@ -381,6 +382,8 @@ const itemBase = {
   z: z.number().int().min(-1_000_000_000).max(1_000_000_000),
   rotation: zFinite(-360, 360),
   locked: z.boolean(),
+  // Informational: the main process decides it, whatever the renderer sends.
+  pinLocked: z.boolean().default(false),
   createdAt: zTimestamp,
   updatedAt: zTimestamp
 }
@@ -444,6 +447,7 @@ export const zLoginPassword = z.string().min(1).max(256)
 export const zDisplayName = zLine(60).superRefine((s, ctx) => {
   if (s !== '' && !PATTERNS.displayName.test(s)) ctx.addIssue({ code: 'custom', message: 'validation.invalid_display_name' })
 })
+export const zPin = z.string().regex(PATTERNS.pin, 'validation.invalid_pin')
 export const zTotpCode = z.string().overwrite((s) => s.replace(/\s/g, '')).regex(PATTERNS.totpCode, 'validation.invalid_totp')
 
 export const schemas = {
@@ -494,6 +498,7 @@ export const schemas = {
     theme: zBoardTheme.optional(),
     viewport: zViewport.optional()
   }),
+  itemPin: z.strictObject({ boardId: zId, itemId: zId, pin: zPin }),
   boardChanges: z.strictObject({
     boardId: zId,
     upsertItems: z.array(zBoardItem).max(5000),

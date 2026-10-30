@@ -123,6 +123,7 @@ const base = (type: ItemType, o: CreateOptions): Omit<ItemBase, never> => {
     z: o.z,
     rotation: o.rotation ?? 0,
     locked: false,
+    pinLocked: false,
     createdAt: now,
     updatedAt: now
   }
@@ -187,6 +188,9 @@ export const cloneItem = (item: BoardItem, z: number, offset = 24): BoardItem =>
   return {
     ...structuredClone(item),
     id: newId(),
+    // A copy is a new item: it never inherits a lock or its PIN.
+    locked: false,
+    pinLocked: false,
     x: item.x + offset,
     y: item.y + offset,
     z,

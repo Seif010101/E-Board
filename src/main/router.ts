@@ -96,6 +96,10 @@ export function createRouter(
       load: authed('user', schemas.byId, (i, uid) => workspace.loadBoard(uid, i.id)),
       applyChanges: authed('user', schemas.boardChanges, (i, uid) => workspace.applyChanges(uid, i))
     },
+    items: {
+      lockWithPin: authed('user', schemas.itemPin, (i, uid) => workspace.lockItemWithPin(uid, i)),
+      unlockWithPin: authed('user', schemas.itemPin, (i, uid) => workspace.unlockItemWithPin(uid, i))
+    },
     media: {
       pickImage: authed('user', null, async (_i, uid) => {
         const path = await platform.pickImageFile(languageOf())

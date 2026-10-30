@@ -28,6 +28,8 @@ export type ErrorCode =
   | 'totp_not_started'
   | 'not_authenticated'
   | 'locked'
+  | 'pin_locked'
+  | 'invalid_pin'
   | 'not_found'
   | 'invalid_file'
   | 'file_too_large'
@@ -102,6 +104,12 @@ export interface EBoardApi {
     /** Atomically applies item/link upserts and deletes for one board. */
     applyChanges(changes: BoardChanges): Promise<Result<null>>
   }
+  items: {
+    /** Locks an item and protects it with a PIN (4-8 digits); every change is refused until it is unlocked. */
+    lockWithPin(input: { boardId: Id; itemId: Id; pin: string }): Promise<Result<null>>
+    /** Removes the lock (and the PIN) when the PIN is right; repeated failures are rate limited. */
+    unlockWithPin(input: { boardId: Id; itemId: Id; pin: string }): Promise<Result<null>>
+  }
   media: {
     /** Opens a native file dialog restricted to PNG/JPEG; null if the user cancelled. */
     pickImage(): Promise<Result<MediaRef | null>>
@@ -136,6 +144,7 @@ export const API_CHANNELS = {
   ],
   cases: ['list', 'create', 'update', 'remove'],
   boards: ['list', 'create', 'update', 'remove', 'load', 'applyChanges'],
+  items: ['lockWithPin', 'unlockWithPin'],
   media: ['pickImage', 'importImageBytes'],
   system: ['openExternal', 'copyText', 'appInfo']
 } as const satisfies { [K in keyof EBoardApi]: readonly (keyof EBoardApi[K])[] }

@@ -1,4 +1,4 @@
-import { Lock } from 'lucide-react'
+import { Lock, LockKeyhole } from 'lucide-react'
 import type { BoardItem } from '@shared/types'
 import { useBoard } from '../core/store'
 import { getItemRenderer, type ResizeMode } from '../core/registry'
@@ -100,7 +100,7 @@ export function SelectionOverlay() {
       )}
       {single?.locked && (
         <div className="bc-sel-lock" style={{ left: single.x + single.w, top: single.y }}>
-          <Lock aria-hidden="true" />
+          {single.pinLocked ? <LockKeyhole aria-hidden="true" /> : <Lock aria-hidden="true" />}
         </div>
       )}
     </div>

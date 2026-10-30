@@ -332,6 +332,8 @@ export interface ItemBase {
   /** Degrees. Used for the slightly tilted look of notes/cards. */
   rotation: number
   locked: boolean
+  /** Locked with a PIN: the main process refuses every change to it until the PIN is entered. Set by the main process only. */
+  pinLocked: boolean
   createdAt: number
   updatedAt: number
 }

@@ -4,7 +4,8 @@
 
 import { memo, useCallback, useEffect, useRef, useState, type ComponentType, type CSSProperties, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, FileQuestion, Trash2, X } from 'lucide-react'
+import { ArrowLeft, FileQuestion, LockKeyhole, Trash2, X } from 'lucide-react'
+import { askUnlock } from '../lock/pinStore'
 import type { BoardItem, Id } from '@shared/types'
 import { ENTITY_KINDS } from '@shared/entityKinds'
 import { toast } from '@renderer/components/ui/toast'
@@ -81,7 +82,8 @@ function useContentStable(item: BoardItem | null): BoardItem | null {
     prev.data !== item.data ||
     prev.w !== item.w ||
     prev.h !== item.h ||
-    prev.locked !== item.locked
+    prev.locked !== item.locked ||
+    prev.pinLocked !== item.pinLocked
   ) {
     ref.current = item
   }
@@ -89,7 +91,23 @@ function useContentStable(item: BoardItem | null): BoardItem | null {
 }
 
 const ItemSlot = memo(function ItemSlot({ Inspector, item }: { Inspector: ComponentType<{ item: BoardItem }>; item: BoardItem }) {
-  return <Inspector item={item} />
+  const { t } = useTranslation()
+  if (!item.pinLocked) return <Inspector item={item} />
+  // A PIN-locked item can be read but not changed (the main process refuses changes too).
+  return (
+    <>
+      <div className="insp-pinlock" role="status">
+        <LockKeyhole size={16} aria-hidden="true" />
+        <span>{t('board.pin.locked_banner')}</span>
+        <button type="button" className="btn btn--sm" onClick={() => askUnlock([item.id])}>
+          {t('board.pin.unlock_button')}
+        </button>
+      </div>
+      <fieldset className="insp-fieldset" disabled>
+        <Inspector item={item} />
+      </fieldset>
+    </>
+  )
 })
 
 export function InspectorHost() {

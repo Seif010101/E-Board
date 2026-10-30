@@ -61,6 +61,7 @@ const base = (boardId: string, overrides: Partial<BoardItem> = {}) => ({
   z: 1,
   rotation: 0,
   locked: false,
+  pinLocked: false,
   createdAt: 1_700_000_000_000,
   updatedAt: 1_700_000_000_000,
   ...overrides
