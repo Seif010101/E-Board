@@ -86,10 +86,10 @@
       "risk": "Risk level",
       "gender": "Gender",
       "age": "Age",
-      "age_placeholder": "0–150",
+      "age_placeholder": "Age",
       "dob": "Date of birth",
       "nationality": "Nationality",
-      "nationality_placeholder": "e.g. Indian",
+      "nationality_placeholder": "Nationality",
       "occupation": "Occupation",
       "occupation_placeholder": "e.g. Call-centre manager",
       "age_from_dob": "The date of birth gives an age of {{age}}.",
@@ -128,7 +128,7 @@
       "registration": "Registration no.",
       "tax_id": "Tax ID",
       "country": "Country",
-      "country_placeholder": "e.g. India",
+      "country_placeholder": "Country",
       "founded": "Founded",
       "website": "Website"
     },
@@ -168,7 +168,8 @@
         "residence_permit": "Residence permit",
         "tax_id": "Tax ID",
         "social_security": "Social security number"
-      }
+      },
+      "kind_other": "Other…"
     },
     "socials": {
       "hint": "Fill in an account to light it up on the card.",
@@ -178,7 +179,9 @@
       "add_url": "Add a {{platform}} profile link",
       "url_label": "{{platform}} profile link",
       "open_profile": "Open {{platform}} profile",
-      "handle_first": "Enter the account first"
+      "handle_first": "Enter the account first",
+      "add_account": "Add account",
+      "platform": "Platform"
     },
     "relations": {
       "empty": "No relationships yet. Connect this card to people, companies or evidence.",
@@ -224,7 +227,14 @@
       "remove_message": "{{name}} is connected to this company with an employee thread. Remove the thread from the board as well?",
       "keep_thread": "Keep thread",
       "remove_thread": "Remove thread too"
-    }
+    },
+    "certainty": "Reliability of this information",
+    "certainty_for": "Reliability of {{name}}",
+    "certainty_unrated": "Not rated",
+    "certainty_hint": "How much you trust this information",
+    "phone_country": "Country calling code",
+    "phone_country_search": "Search country or code",
+    "phone_country_none": "No matching country"
   },
   "map": {
     "empty": "No saved places yet.",

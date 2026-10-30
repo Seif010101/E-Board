@@ -1,4 +1,5 @@
 import { useId } from 'react'
+import { displayCountry } from '@renderer/lib/countries'
 import { useTranslation } from 'react-i18next'
 import { useShallow } from 'zustand/react/shallow'
 import { Building2, Crosshair, Globe, Mail, MapPin, Phone, TriangleAlert, Users } from 'lucide-react'
@@ -30,7 +31,7 @@ export function CompanyCard({ item }: ItemComponentProps<'company'>) {
   const d = item.data
   const name = d.name || d.legalName || t('cards.unnamed_company')
   const alert = ALERT_STATUSES.includes(d.status)
-  const meta = [d.industry, d.country].filter(Boolean).join(' · ')
+  const meta = [d.industry, displayCountry(d.country, i18n.language === 'ar' ? 'ar' : 'en')].filter(Boolean).join(' · ')
   // Only employees whose person card is still on the board count.
   const staffCount = useBoard((s) => d.employees.filter((e) => s.items[e.personItemId]?.type === 'person').length)
 
@@ -119,9 +120,11 @@ export function CompanyCard({ item }: ItemComponentProps<'company'>) {
               </CardSection>
             )}
 
-            <CardSection title={t('cards.social_media')}>
-              <SocialList socials={d.socials} />
-            </CardSection>
+            {d.socials.length > 0 && (
+              <CardSection title={t('cards.social_media')}>
+                <SocialList socials={d.socials} />
+              </CardSection>
+            )}
 
             <CardSection title={t('cards.employees')}>
               <EmployeeList employees={d.employees} />

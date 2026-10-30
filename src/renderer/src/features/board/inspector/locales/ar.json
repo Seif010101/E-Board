@@ -90,10 +90,10 @@
       "risk": "مستوى الخطورة",
       "gender": "الجنس",
       "age": "العمر",
-      "age_placeholder": "0–150",
+      "age_placeholder": "العمر",
       "dob": "تاريخ الميلاد",
       "nationality": "الجنسية",
-      "nationality_placeholder": "مثال: هندي",
+      "nationality_placeholder": "الجنسية",
       "occupation": "المهنة",
       "occupation_placeholder": "مثال: مدير مركز اتصال",
       "age_from_dob": "يشير تاريخ الميلاد إلى عمر {{age}} سنة.",
@@ -132,7 +132,7 @@
       "registration": "رقم السجل التجاري",
       "tax_id": "الرقم الضريبي",
       "country": "الدولة",
-      "country_placeholder": "مثال: الهند",
+      "country_placeholder": "الدولة",
       "founded": "تاريخ التأسيس",
       "website": "الموقع الإلكتروني"
     },
@@ -172,7 +172,8 @@
         "residence_permit": "تصريح إقامة",
         "tax_id": "الرقم الضريبي",
         "social_security": "رقم الضمان الاجتماعي"
-      }
+      },
+      "kind_other": "أخرى…"
     },
     "socials": {
       "hint": "أدخل اسم الحساب ليظهر مضيئًا على البطاقة.",
@@ -182,7 +183,9 @@
       "add_url": "إضافة رابط الملف الشخصي على {{platform}}",
       "url_label": "رابط الملف الشخصي على {{platform}}",
       "open_profile": "فتح الملف الشخصي على {{platform}}",
-      "handle_first": "أدخل اسم الحساب أولًا"
+      "handle_first": "أدخل اسم الحساب أولًا",
+      "add_account": "إضافة حساب",
+      "platform": "المنصّة"
     },
     "relations": {
       "empty": "لا توجد علاقات بعد. اربط هذه البطاقة بأشخاص أو شركات أو أدلة.",
@@ -228,7 +231,14 @@
       "remove_message": "يرتبط {{name}} بهذه الشركة بخيط «موظف». هل تريد إزالة الخيط من اللوحة أيضًا؟",
       "keep_thread": "الإبقاء على الخيط",
       "remove_thread": "إزالة الخيط أيضًا"
-    }
+    },
+    "certainty": "مدى موثوقية هذه المعلومة",
+    "certainty_for": "موثوقية {{name}}",
+    "certainty_unrated": "غير مُقيَّم",
+    "certainty_hint": "مدى ثقتك في هذه المعلومة",
+    "phone_country": "مفتاح الدولة",
+    "phone_country_search": "ابحث عن دولة أو مفتاح",
+    "phone_country_none": "لا توجد دولة مطابقة"
   },
   "map": {
     "empty": "لا توجد أماكن محفوظة بعد.",

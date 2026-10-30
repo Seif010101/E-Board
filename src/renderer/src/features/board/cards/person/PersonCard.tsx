@@ -1,4 +1,5 @@
 import { useId } from 'react'
+import { displayCountry } from '@renderer/lib/countries'
 import { useTranslation } from 'react-i18next'
 import { Mail, MapPin, Phone } from 'lucide-react'
 import type { ItemComponentProps } from '../../core/registry'
@@ -19,6 +20,7 @@ import './person.css'
 
 export function PersonCard({ item }: ItemComponentProps<'person'>) {
   const { t, i18n } = useTranslation()
+  const lang = i18n.language === 'ar' ? 'ar' : 'en'
   const ref = useAutoHeight<HTMLElement>(item.id, item.h)
   const moreId = useId()
   const d = item.data
@@ -29,7 +31,7 @@ export function PersonCard({ item }: ItemComponentProps<'person'>) {
   if (age !== null) facts.push({ key: 'age', label: t('cards.age'), value: String(age), ltr: true })
   if (d.dateOfBirth) facts.push({ key: 'dob', label: t('cards.date_of_birth'), value: formatDate(d.dateOfBirth, i18n.language) })
   if (d.gender !== 'unknown') facts.push({ key: 'gender', label: t('cards.gender_label'), value: t(`cards.gender.${d.gender}`) })
-  if (d.nationality) facts.push({ key: 'nationality', label: t('cards.nationality'), value: d.nationality })
+  if (d.nationality) facts.push({ key: 'nationality', label: t('cards.nationality'), value: displayCountry(d.nationality, lang) })
   if (d.occupation) facts.push({ key: 'occupation', label: t('cards.occupation'), value: d.occupation })
 
   return (
@@ -64,9 +66,11 @@ export function PersonCard({ item }: ItemComponentProps<'person'>) {
 
         {d.expanded && (
           <div className="cd-expand" id={moreId}>
-            <CardSection title={t('cards.social_media')}>
-              <SocialList socials={d.socials} />
-            </CardSection>
+            {d.socials.length > 0 && (
+              <CardSection title={t('cards.social_media')}>
+                <SocialList socials={d.socials} />
+              </CardSection>
+            )}
 
             {(facts.length > 0 || d.phones.length + d.emails.length + d.locations.length > 0) && (
               <CardSection title={t('cards.facts')}>

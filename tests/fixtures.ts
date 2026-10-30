@@ -86,6 +86,7 @@ export const personData = (overrides: Partial<PersonData> = {}): PersonData => (
   tags: [],
   source: '',
   confidence: 'probable',
+  certainty: {},
   expanded: false,
   ...overrides
 })
@@ -121,6 +122,7 @@ export const company = (boardId: string, overrides: Partial<CompanyItem> = {}): 
     tags: [],
     source: '',
     confidence: 'possible',
+    certainty: {},
     expanded: false
   },
   ...overrides
@@ -138,6 +140,7 @@ export const entity = (boardId: string, data: Partial<EntityData> = {}): EntityI
     notes: '',
     tags: [],
     confidence: 'confirmed',
+    certainty: {},
     ...data
   }
 })

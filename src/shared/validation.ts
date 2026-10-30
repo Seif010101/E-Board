@@ -13,6 +13,10 @@ import {
   RISK_LEVELS,
   SHAPE_KINDS,
   SOCIAL_PLATFORMS,
+  TEXT_ALIGNS,
+  TEXT_FONTS,
+  TEXT_LISTS,
+  TEXT_SPACINGS,
   type BoardItem
 } from './types'
 
@@ -101,6 +105,13 @@ const isValidIpv6 = (s: string): boolean => {
   }
 }
 
+/** Pattern match plus the dot rules the pattern alone lets through ("a..b@x.com", ".a@x.com", "a.@x.com"). */
+const isValidEmail = (s: string): boolean => {
+  if (!PATTERNS.email.test(s)) return false
+  const [local] = s.split('@')
+  return !local.startsWith('.') && !local.endsWith('.') && !s.includes('..')
+}
+
 export const isHttpUrl = (s: string): boolean => {
   if (s.length > LIMITS.url || /\s/.test(s)) return false
   try {
@@ -115,7 +126,7 @@ export const rules = {
   personName: (s: string): RuleError => (s === '' || PATTERNS.personName.test(s) ? null : 'validation.letters_only'),
   handle: (s: string): RuleError => (s === '' || PATTERNS.handle.test(s) ? null : 'validation.invalid_handle'),
   phone: (s: string): RuleError => (s === '' || PATTERNS.phone.test(s) ? null : 'validation.invalid_phone'),
-  email: (s: string): RuleError => (s === '' || PATTERNS.email.test(s) ? null : 'validation.invalid_email'),
+  email: (s: string): RuleError => (s === '' || isValidEmail(s) ? null : 'validation.invalid_email'),
   domain: (s: string): RuleError => (s === '' || PATTERNS.domain.test(s) ? null : 'validation.invalid_domain'),
   ip: (s: string): RuleError => (s === '' || PATTERNS.ipv4.test(s) || isValidIpv6(s) ? null : 'validation.invalid_ip'),
   url: (s: string): RuleError => (s === '' || isHttpUrl(s) ? null : 'validation.invalid_url'),
@@ -127,7 +138,7 @@ export const rules = {
   integer: (s: string): RuleError => (s === '' || PATTERNS.integer.test(s) ? null : 'validation.digits_only'),
   tag: (s: string): RuleError => (s === '' || PATTERNS.tag.test(s) ? null : 'validation.invalid_tag'),
   age: (n: number | null): RuleError =>
-    n === null || (Number.isInteger(n) && n >= 0 && n <= 150) ? null : 'validation.invalid_age',
+    n === null || (Number.isInteger(n) && n >= 0 && n <= 120) ? null : 'validation.invalid_age',
   accountUsername: (s: string): RuleError => (PATTERNS.accountUsername.test(s) ? null : 'validation.invalid_username'),
   password: (s: string): RuleError => {
     if (s.length < 8) return 'validation.password_too_short'
@@ -217,6 +228,10 @@ export const zUrl = zRuled(rules.url, LIMITS.url)
 export const zTag = zRuled(rules.tag, 32)
 export const zTags = zList(zTag.refine((s) => s.length > 0), LIMITS.tags)
 
+/** Field key ("fullName") or list entry ("phones:+971…"); starts with a letter so it can never be "__proto__". */
+const zCertaintyKey = z.string().regex(/^[A-Za-z][A-Za-z0-9_]{0,40}(:[^\u0000-\u001f]{1,150})?$/)
+export const zCertainty = z.record(zCertaintyKey, z.number().int().min(0).max(100)).refine((o) => Object.keys(o).length <= 400).default({})
+
 export const zConfidence = z.enum(['confirmed', 'probable', 'possible', 'unverified'])
 
 export const zGeoLocation = z.strictObject({
@@ -240,7 +255,7 @@ export const zPersonData = z.strictObject({
   aliases: zList(zPersonName, 20),
   photoMediaId: zId.nullable(),
   gender: z.enum(['male', 'female', 'unknown']),
-  age: z.number().int().min(0).max(150).nullable(),
+  age: z.number().int().min(0).max(120).nullable(),
   dateOfBirth: zIsoDateOrNull,
   nationality: zLine(80),
   occupation: zLine(120),
@@ -255,6 +270,7 @@ export const zPersonData = z.strictObject({
   tags: zTags,
   source: zLine(300),
   confidence: zConfidence,
+  certainty: zCertainty,
   expanded: z.boolean()
 })
 
@@ -279,6 +295,7 @@ export const zCompanyData = z.strictObject({
   tags: zTags,
   source: zLine(300),
   confidence: zConfidence,
+  certainty: zCertainty,
   expanded: z.boolean()
 })
 
@@ -291,7 +308,8 @@ export const zEntityData = z
     locations: zList(zGeoLocation, LIMITS.locations),
     notes: zMultiline(),
     tags: zTags,
-    confidence: zConfidence
+    confidence: zConfidence,
+    certainty: zCertainty
   })
   .transform((data, ctx) => {
     const kindDef = ENTITY_KINDS[data.kind]
@@ -344,7 +362,12 @@ export const zTextData = z.strictObject({
   color: zColor,
   fontSize: z.number().int().min(8).max(200),
   bold: z.boolean(),
-  align: z.enum(['start', 'center', 'end'])
+  italic: z.boolean().default(false),
+  underline: z.boolean().default(false),
+  font: z.enum(TEXT_FONTS).default('default'),
+  list: z.enum(TEXT_LISTS).default('none'),
+  spacing: z.enum(TEXT_SPACINGS).default('normal'),
+  align: z.enum(TEXT_ALIGNS)
 })
 
 const itemBase = {

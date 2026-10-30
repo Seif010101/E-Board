@@ -239,6 +239,13 @@ export const useBoard = create<BoardState>((set, get) => {
     return changes
   }
 
+  /** Level every tilted item (no undo step: tilt is purely a detective-board look). */
+  const straighten = () => {
+    const tilted = Object.values(get().items).filter((i) => i.rotation !== 0)
+    if (!tilted.length) return
+    commit(Object.fromEntries(tilted.map((i) => [i.id, { ...i, rotation: 0 }])), {}, { history: false })
+  }
+
   const applyItemPatch = (item: BoardItem, patch: ItemPatch): BoardItem => {
     const { data, ...base } = patch
     return { ...item, ...base, data: data ? { ...item.data, ...data } : item.data } as BoardItem
@@ -265,6 +272,7 @@ export const useBoard = create<BoardState>((set, get) => {
         links: Object.fromEntries(bundle.links.map((l) => [l.id, l])),
         viewport: bundle.board.viewport
       })
+      if (bundle.board.theme !== 'detective') straighten()
     },
 
     reset() {
@@ -366,6 +374,8 @@ export const useBoard = create<BoardState>((set, get) => {
       if (!board || board.theme === theme) return
       internal.dirtyBoardMeta = true
       set({ board: { ...board, theme }, dirtyVersion: get().dirtyVersion + 1 })
+      // Only the detective board hangs its paper crooked; the other themes keep everything straight.
+      if (theme !== 'detective') straighten()
     },
 
     setBoardTitle(title) {

@@ -7,6 +7,7 @@ import { COMPANY_STATUSES, type ItemOfType } from '@shared/types'
 import { LIMITS, rules } from '@shared/validation'
 import { useBoard } from '../../core/store'
 import { statusLabel } from '../labels'
+import { CountryField } from '../controls/CountryField'
 import { EmployeesEditor, presentEmployees } from '../controls/EmployeesEditor'
 import { MediaField } from '../controls/MediaField'
 import { Row, Section } from '../controls/Section'
@@ -14,6 +15,7 @@ import { SelectField, TextField } from '../controls/TextField'
 import { filters, pastDate, todayIso } from '../controls/inputRules'
 import {
   CaseFileSection,
+  CertaintyScope,
   ContactSection,
   LocationsSection,
   NotesSection,
@@ -37,6 +39,7 @@ export function CompanyForm({ item }: { item: ItemOfType<'company'> }) {
   const employeeCount = useBoard((s) => presentEmployees(d.employees, s.items).length)
 
   return (
+    <CertaintyScope item={item}>
     <div className="insp-form">
       <Section id={`${scope}.logo`} title={t('inspector.section.logo')} icon={ImageIcon}>
         <MediaField
@@ -49,6 +52,7 @@ export function CompanyForm({ item }: { item: ItemOfType<'company'> }) {
 
       <Section id={`${scope}.identity`} title={t('inspector.section.company')} icon={Building2}>
         <TextField
+          certaintyKey="name"
           label={t('inspector.company.name')}
           value={d.name}
           onCommit={(name) => patch({ name })}
@@ -57,6 +61,7 @@ export function CompanyForm({ item }: { item: ItemOfType<'company'> }) {
           placeholder={t('inspector.company.name_placeholder')}
         />
         <TextField
+          certaintyKey="legalName"
           label={t('inspector.company.legal_name')}
           value={d.legalName}
           onCommit={(legalName) => patch({ legalName })}
@@ -79,6 +84,7 @@ export function CompanyForm({ item }: { item: ItemOfType<'company'> }) {
         </datalist>
         <Row>
           <TextField
+            certaintyKey="companyType"
             label={t('inspector.company.type')}
             value={d.companyType}
             onCommit={(companyType) => patch({ companyType })}
@@ -88,6 +94,7 @@ export function CompanyForm({ item }: { item: ItemOfType<'company'> }) {
             placeholder={t('inspector.company.type_placeholder')}
           />
           <TextField
+            certaintyKey="industry"
             label={t('inspector.company.industry')}
             value={d.industry}
             onCommit={(industry) => patch({ industry })}
@@ -98,6 +105,7 @@ export function CompanyForm({ item }: { item: ItemOfType<'company'> }) {
         </Row>
         <Row>
           <TextField
+            certaintyKey="registrationNumber"
             label={t('inspector.company.registration')}
             value={d.registrationNumber}
             onCommit={(registrationNumber) => patch({ registrationNumber })}
@@ -107,6 +115,7 @@ export function CompanyForm({ item }: { item: ItemOfType<'company'> }) {
             placeholder="CN-1234567"
           />
           <TextField
+            certaintyKey="taxId"
             label={t('inspector.company.tax_id')}
             value={d.taxId}
             onCommit={(taxId) => patch({ taxId })}
@@ -117,15 +126,15 @@ export function CompanyForm({ item }: { item: ItemOfType<'company'> }) {
           />
         </Row>
         <Row>
-          <TextField
+          <CountryField
+            certaintyKey="country"
             label={t('inspector.company.country')}
             value={d.country}
-            onCommit={(country) => patch({ country })}
-            validate={plainLine(SHORT_MAX)}
-            maxLength={SHORT_MAX}
+            onChange={(country) => patch({ country })}
             placeholder={t('inspector.company.country_placeholder')}
           />
           <TextField
+            certaintyKey="foundedDate"
             label={t('inspector.company.founded')}
             type="date"
             value={d.foundedDate ?? ''}
@@ -139,6 +148,7 @@ export function CompanyForm({ item }: { item: ItemOfType<'company'> }) {
 
       <Section id={`${scope}.web`} title={t('inspector.section.web')} icon={Globe}>
         <TextField
+          certaintyKey="website"
           label={t('inspector.company.website')}
           value={d.website}
           onCommit={(website) => patch({ website })}
@@ -186,5 +196,6 @@ export function CompanyForm({ item }: { item: ItemOfType<'company'> }) {
         onConfidence={(confidence) => patch({ confidence })}
       />
     </div>
+    </CertaintyScope>
   )
 }

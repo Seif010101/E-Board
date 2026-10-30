@@ -7,6 +7,8 @@ import { pinAnchor } from '../common/anchor'
 import { openDetails } from '../common/actions'
 import { joinSearch, locationsText, socialsText } from '../common/search'
 import { PersonCard } from './PersonCard'
+import { countryNames } from '@renderer/lib/countries'
+import { idKindLabel } from '../../inspector/controls/idKinds'
 
 registerItem({
   type: 'person',
@@ -20,13 +22,13 @@ registerItem({
     joinSearch(
       d.fullName,
       d.aliases,
-      d.nationality,
+      countryNames(d.nationality),
       d.occupation,
       d.role === 'unknown' ? null : i18n.t(`cards.role.${d.role}`),
       d.phones,
       d.emails,
       socialsText(d.socials),
-      d.idDocuments.map((doc) => `${doc.kind} ${doc.value}`),
+      d.idDocuments.map((doc) => `${idKindLabel(i18n.t.bind(i18n), doc.kind)} ${doc.value}`),
       locationsText(d.locations),
       d.tags,
       d.source,

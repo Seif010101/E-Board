@@ -165,6 +165,11 @@ export interface PersonData {
   tags: string[]
   source: string
   confidence: Confidence
+  /**
+   * How much each piece of information is trusted, 0-100, keyed by field ("fullName", "phones:+9715…").
+   * Fields without an entry are unrated.
+   */
+  certainty: Record<string, number>
   /** Card "More" section expanded on the board. */
   expanded: boolean
 }
@@ -201,6 +206,11 @@ export interface CompanyData {
   notes: string
   tags: string[]
   source: string
+  /**
+   * How much each piece of information is trusted, 0-100, keyed by field ("fullName", "phones:+9715…").
+   * Fields without an entry are unrated.
+   */
+  certainty: Record<string, number>
   confidence: Confidence
   expanded: boolean
 }
@@ -230,6 +240,11 @@ export interface EntityData {
   mediaId: Id | null
   locations: GeoLocation[]
   notes: string
+  /**
+   * How much each piece of information is trusted, 0-100, keyed by field ("fullName", "phones:+9715…").
+   * Fields without an entry are unrated.
+   */
+  certainty: Record<string, number>
   tags: string[]
   confidence: Confidence
 }
@@ -280,12 +295,26 @@ export interface ImageData {
   caption: string
 }
 
+export const TEXT_FONTS = ['default', 'sans', 'serif', 'mono', 'hand'] as const
+export type TextFont = (typeof TEXT_FONTS)[number]
+export const TEXT_LISTS = ['none', 'bullet', 'number'] as const
+export type TextList = (typeof TEXT_LISTS)[number]
+export const TEXT_SPACINGS = ['tight', 'normal', 'loose'] as const
+export type TextSpacing = (typeof TEXT_SPACINGS)[number]
+export const TEXT_ALIGNS = ['start', 'center', 'end', 'justify'] as const
+export type TextAlign = (typeof TEXT_ALIGNS)[number]
+
 export interface TextData {
   text: string
   color: string
   fontSize: number
   bold: boolean
-  align: 'start' | 'center' | 'end'
+  italic: boolean
+  underline: boolean
+  font: TextFont
+  list: TextList
+  spacing: TextSpacing
+  align: TextAlign
 }
 
 // ---------------------------------------------------------------------------

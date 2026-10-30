@@ -6,6 +6,7 @@ import { PERSON_ROLES, RISK_LEVELS, type ItemOfType, type PersonData } from '@sh
 import { LIMITS, rules } from '@shared/validation'
 import { genderLabel, riskLabel, roleLabel } from '../labels'
 import { ChipsField } from '../controls/ChipsField'
+import { CountryField } from '../controls/CountryField'
 import { IdDocumentsEditor } from '../controls/IdDocumentsEditor'
 import { MediaField } from '../controls/MediaField'
 import { Row, Section } from '../controls/Section'
@@ -13,6 +14,7 @@ import { SelectField, TextField } from '../controls/TextField'
 import { ageFromDate, ageText, filters, pastDate, todayIso } from '../controls/inputRules'
 import {
   CaseFileSection,
+  CertaintyScope,
   ContactSection,
   LocationsSection,
   NotesSection,
@@ -24,7 +26,6 @@ import {
 
 const GENDERS: readonly PersonData['gender'][] = ['male', 'female', 'unknown']
 const MAX_ALIASES = 20
-const NATIONALITY_MAX = 80
 const OCCUPATION_MAX = 120
 
 export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
@@ -38,6 +39,7 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
   const suggestedAge = dobAge !== null && dobAge !== d.age ? dobAge : null
 
   return (
+    <CertaintyScope item={item}>
     <div className="insp-form">
       <Section id={`${scope}.photo`} title={t('inspector.section.photo')} icon={Camera}>
         <MediaField
@@ -50,6 +52,7 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
 
       <Section id={`${scope}.identity`} title={t('inspector.section.identity')} icon={UserRound}>
         <TextField
+          certaintyKey="fullName"
           label={t('inspector.person.full_name')}
           value={d.fullName}
           onCommit={(fullName) => patch({ fullName })}
@@ -94,12 +97,17 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
             onChange={(gender) => gender && patch({ gender })}
           />
           <TextField
+            certaintyKey="age"
             label={t('inspector.person.age')}
             value={d.age === null ? '' : String(d.age)}
             onCommit={(v) => patch({ age: v === '' ? null : Number(v) })}
             validate={ageText}
             filter={filters.digits}
+            type="number"
             inputMode="numeric"
+            min="0"
+            max="120"
+            step="1"
             maxLength={3}
             live
             technical
@@ -108,6 +116,7 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
         </Row>
         <Row>
           <TextField
+            certaintyKey="dateOfBirth"
             label={t('inspector.person.dob')}
             type="date"
             value={d.dateOfBirth ?? ''}
@@ -116,12 +125,11 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
             min="1800-01-01"
             max={todayIso()}
           />
-          <TextField
+          <CountryField
+            certaintyKey="nationality"
             label={t('inspector.person.nationality')}
             value={d.nationality}
-            onCommit={(nationality) => patch({ nationality })}
-            validate={plainLine(NATIONALITY_MAX)}
-            maxLength={NATIONALITY_MAX}
+            onChange={(nationality) => patch({ nationality })}
             placeholder={t('inspector.person.nationality_placeholder')}
           />
         </Row>
@@ -139,6 +147,7 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
           </div>
         )}
         <TextField
+          certaintyKey="occupation"
           label={t('inspector.person.occupation')}
           value={d.occupation}
           onCommit={(occupation) => patch({ occupation })}
@@ -182,5 +191,6 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
         onConfidence={(confidence) => patch({ confidence })}
       />
     </div>
+    </CertaintyScope>
   )
 }

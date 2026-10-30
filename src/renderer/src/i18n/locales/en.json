@@ -75,6 +75,9 @@
     "invalid_option": "Invalid choice",
     "invalid_id": "Invalid reference",
     "invalid_color": "Invalid colour",
-    "invalid_input": "Invalid value"
+    "invalid_input": "Invalid value",
+    "pick_country": "Pick a country from the list",
+    "invalid_phone_for_country": "This number is not valid for the selected country",
+    "invalid_phone_international": "Enter a full international number, e.g. +971 50 123 4567"
   }
 }

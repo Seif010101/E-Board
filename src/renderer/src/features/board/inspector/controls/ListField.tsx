@@ -4,6 +4,8 @@ import { Copy, Plus, X, type LucideIcon } from 'lucide-react'
 import { cleanLine } from '@shared/validation'
 import { copyText } from '../../cards/common/actions'
 import { FieldShell } from './FieldShell'
+import { CertaintyBar } from './CertaintyBar'
+import { entryKey, useCertaintyFor } from './certainty'
 import { useDraft, type Validator } from './useDraft'
 
 interface ListFieldProps {
@@ -19,6 +21,8 @@ interface ListFieldProps {
   filter?(raw: string): string
   /** Technical values (phones, e-mails): left-to-right and monospace. */
   technical?: boolean
+  /** Name of the list in the card's reliability ratings; every entry gets a rating bar. */
+  certaintyList?: string
 }
 
 /** Editable list of short values (phones, e-mails): edit rows in place, add, copy, remove. */
@@ -26,6 +30,7 @@ export function ListField(p: ListFieldProps) {
   const { t } = useTranslation()
   const id = useId()
   const full = p.values.length >= p.max
+  const bind = useCertaintyFor()
 
   const sameAs = (a: string, b: string) => a.toLowerCase() === b.toLowerCase()
 
@@ -53,6 +58,7 @@ export function ListField(p: ListFieldProps) {
             inputMode={p.inputMode}
             filter={p.filter}
             technical={p.technical}
+            certainty={bind && p.certaintyList ? bind(entryKey(p.certaintyList, value)) : undefined}
             onCommit={(v) => (v === '' ? p.onChange(p.values.filter((_, j) => j !== i)) : setAt(i, v))}
             onRemove={() => p.onChange(p.values.filter((_, j) => j !== i))}
           />
@@ -86,11 +92,12 @@ interface RowProps {
   inputMode?: HTMLAttributes<HTMLInputElement>['inputMode']
   filter?(raw: string): string
   technical?: boolean
+  certainty?: { value: number | undefined; onChange(v: number): void }
   onCommit(value: string): void
   onRemove(): void
 }
 
-function ListRow({ value, label, icon: Icon, validate, maxLength, inputMode, filter, technical, onCommit, onRemove }: RowProps) {
+function ListRow({ value, label, icon: Icon, validate, maxLength, inputMode, filter, technical, certainty, onCommit, onRemove }: RowProps) {
   const { t } = useTranslation()
   const d = useDraft({ value, onCommit, validate, maxLength, filter })
   return (
@@ -129,6 +136,7 @@ function ListRow({ value, label, icon: Icon, validate, maxLength, inputMode, fil
           <X size={14} />
         </button>
       </div>
+      {certainty && <CertaintyBar {...certainty} label={value} compact />}
       {d.errorKey && (
         <div className="field__error" role="alert">
           {t(d.errorKey)}

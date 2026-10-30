@@ -75,6 +75,9 @@
     "invalid_option": "اختيار غير صالح",
     "invalid_id": "مرجع غير صالح",
     "invalid_color": "لون غير صالح",
-    "invalid_input": "قيمة غير صالحة"
+    "invalid_input": "قيمة غير صالحة",
+    "pick_country": "اختر دولة من القائمة",
+    "invalid_phone_for_country": "هذا الرقم غير صالح للدولة المختارة",
+    "invalid_phone_international": "أدخل رقمًا دوليًا كاملًا، مثل ‎+971 50 123 4567"
   }
 }
