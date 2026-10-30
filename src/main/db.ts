@@ -98,6 +98,12 @@ const MIGRATIONS: readonly Migration[] = [
         UNIQUE (user_id, sha256)
       ) STRICT;
     `
+  },
+  {
+    version: 2,
+    sql: `
+      ALTER TABLE links ADD COLUMN via_json TEXT NOT NULL DEFAULT '[]';
+    `
   }
 ]
 

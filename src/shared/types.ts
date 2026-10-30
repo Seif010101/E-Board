@@ -391,6 +391,8 @@ export interface LinkRecord {
   label: string
   /** Optional colour override (#rrggbb); null = theme default. */
   color: string | null
+  /** Waypoints the thread is pulled through, in world coordinates, from source to target. */
+  via: [number, number][]
   createdAt: number
   updatedAt: number
 }

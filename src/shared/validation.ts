@@ -76,6 +76,7 @@ export const LIMITS = {
   socials: 40,
   employees: 500,
   strokePoints: 20000,
+  threadPoints: 24,
   coord: 10_000_000,
   size: 100_000
 } as const
@@ -407,6 +408,7 @@ export const zLinkRecord = z.strictObject({
   kind: z.enum(RELATION_KINDS),
   label: zLine(120),
   color: zColor.nullable(),
+  via: z.array(z.tuple([zFinite(-LIMITS.coord, LIMITS.coord), zFinite(-LIMITS.coord, LIMITS.coord)])).max(LIMITS.threadPoints).default([]),
   createdAt: zTimestamp,
   updatedAt: zTimestamp
 })

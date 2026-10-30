@@ -11,6 +11,7 @@ import { useCanvasUi } from '../../uiStore'
 import { activateItem, duplicateItems } from '../../commands'
 import { HANDLE_CURSORS, lineEndsOf, type HandleId, type LineHandleId } from '../../SelectionOverlay'
 import { lineBox, snapAngle } from '../../../items/shape/geometry'
+import { addViaPoint, moveViaPoint, removeViaPoint } from '../../../threads/viaPoints'
 import { setMarquee, useMarquee } from './marquee'
 import { MarqueeOverlay } from './MarqueeOverlay'
 
@@ -70,7 +71,17 @@ interface LineEndGesture {
   started: boolean
 }
 
-let gesture: MoveGesture | MarqueeGesture | ResizeGesture | LineEndGesture | null = null
+/** Dragging a waypoint of a thread. */
+interface ViaGesture {
+  kind: 'via'
+  linkId: Id
+  index: number
+  startScreen: Point
+  before: [number, number][]
+  started: boolean
+}
+
+let gesture: MoveGesture | MarqueeGesture | ResizeGesture | LineEndGesture | ViaGesture | null = null
 let txOpen = false
 
 const openTx = () => {
@@ -129,6 +140,18 @@ export function resizeRect(r: Rect, handle: HandleId, dx: number, dy: number, mo
 function onPointerDown(p: BoardPointer) {
   const s = board()
   gesture = null
+
+  if (p.handle?.startsWith('via:') && p.linkId && s.links[p.linkId]) {
+    const index = Number(p.handle.slice(4))
+    if (!Number.isInteger(index)) return
+    if (p.detail === 2) {
+      removeViaPoint(p.linkId, index)
+      return
+    }
+    gesture = { kind: 'via', linkId: p.linkId, index, startScreen: p.screen, before: s.links[p.linkId].via, started: false }
+    useCanvasUi.getState().setGestureCursor('grabbing')
+    return
+  }
 
   if (p.handle && isLineHandle(p.handle) && s.selection.length === 1) {
     const item = s.items[s.selection[0]]
@@ -200,6 +223,8 @@ function onPointerDown(p: BoardPointer) {
   if (p.linkId && s.links[p.linkId]) {
     s.selectLink(p.linkId)
     s.openInspector({ kind: 'link', id: p.linkId })
+    // Double-click on a thread pins a waypoint there, which can then be dragged.
+    if (p.detail === 2) addViaPoint(p.linkId, p.world)
     return
   }
 
@@ -273,10 +298,20 @@ function updateLineEnd(g: LineEndGesture, p: BoardPointer) {
   board().updateItem<'shape'>(g.id, { x: box.x, y: box.y, w: box.w, h: box.h, data: { points: box.points } })
 }
 
+function updateVia(g: ViaGesture, p: BoardPointer) {
+  if (!g.started) {
+    if (!beyondThreshold(p.screen, g.startScreen)) return
+    g.started = true
+    openTx()
+  }
+  moveViaPoint(g.linkId, g.index, p.world)
+}
+
 function onPointerMove(p: BoardPointer) {
   const g = gesture
   if (!g || !(p.buttons & 1)) return
-  if (g.kind === 'move') moveItems(g, p)
+  if (g.kind === 'via') updateVia(g, p)
+  else if (g.kind === 'move') moveItems(g, p)
   else if (g.kind === 'marquee') updateMarquee(g, p)
   else if (g.kind === 'lineEnd') updateLineEnd(g, p)
   else updateResize(g, p)
@@ -308,6 +343,8 @@ function onCancel() {
     board().updateItem(g.id, g.rect)
   } else if (g?.kind === 'lineEnd' && g.started) {
     board().updateItem(g.id, g.before)
+  } else if (g?.kind === 'via' && g.started) {
+    board().updateLink(g.linkId, { via: g.before })
   }
   finish()
 }

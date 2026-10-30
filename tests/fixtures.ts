@@ -166,6 +166,7 @@ export const link = (boardId: string, fromId: string, toId: string, overrides: P
   kind: 'family',
   label: 'Brother',
   color: null,
+  via: [],
   createdAt: 1_700_000_000_000,
   updatedAt: 1_700_000_000_000,
   ...overrides

@@ -9,7 +9,7 @@ import { createLink } from '../core/factories'
 import { getCanvasElement } from '../core/geometry'
 import type { BoardPointer, ToolHandler } from '../core/registry'
 import { board, useBoard } from '../core/store'
-import { connectableItemAt, isConnectable, pinAnchorOf } from './anchors'
+import { anchorToward, centerOf, connectableItemAt, isConnectable } from './anchors'
 import { threadShape } from './geometry'
 import { resetPendingLink, usePendingLink } from './pending'
 import { RELATION_META } from './relations'
@@ -64,8 +64,8 @@ function LinkToolOverlay() {
     return () => el.removeEventListener('pointerleave', leave)
   }, [])
 
-  const start = from ? pinAnchorOf(from) : null
-  const end = from && target ? pinAnchorOf(target) : cursor
+  const start = from ? anchorToward(from, target ? centerOf(target) : (cursor ?? centerOf(from))) : null
+  const end = from && target ? anchorToward(target, centerOf(from)) : cursor
   const shape = start && end ? threadShape(theme, start, end) : null
   const Icon = RELATION_META[kind].icon
 

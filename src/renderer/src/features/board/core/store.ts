@@ -86,7 +86,7 @@ export interface BoardState {
 
   // links
   addLink(link: LinkRecord, opts?: MutateOptions): boolean
-  updateLink(id: Id, patch: Partial<Pick<LinkRecord, 'kind' | 'label' | 'color' | 'fromId' | 'toId'>>, opts?: MutateOptions): void
+  updateLink(id: Id, patch: Partial<Pick<LinkRecord, 'kind' | 'label' | 'color' | 'fromId' | 'toId' | 'via'>>, opts?: MutateOptions): void
   removeLinks(ids: Id[], opts?: MutateOptions): void
 
   // board meta

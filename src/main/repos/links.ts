@@ -9,6 +9,7 @@ interface LinkRow {
   kind: RelationKind
   label: string
   color: string | null
+  via_json: string
   created_at: number
   updated_at: number
 }
@@ -21,6 +22,7 @@ const toLink = (r: LinkRow): LinkRecord => ({
   kind: r.kind,
   label: r.label,
   color: r.color,
+  via: JSON.parse(r.via_json) as [number, number][],
   createdAt: r.created_at,
   updatedAt: r.updated_at
 })
@@ -29,11 +31,11 @@ export function createLinksRepo(db: Database) {
   const list = db.prepare('SELECT * FROM links WHERE board_id = ? ORDER BY created_at ASC')
   const boardOf = db.prepare('SELECT board_id FROM links WHERE id = ?')
   const upsert = db.prepare(
-    `INSERT INTO links (id, board_id, from_id, to_id, kind, label, color, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `INSERT INTO links (id, board_id, from_id, to_id, kind, label, color, via_json, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
      ON CONFLICT(id) DO UPDATE SET
        from_id = excluded.from_id, to_id = excluded.to_id, kind = excluded.kind, label = excluded.label,
-       color = excluded.color, updated_at = excluded.updated_at
+       color = excluded.color, via_json = excluded.via_json, updated_at = excluded.updated_at
      WHERE links.board_id = excluded.board_id`
   )
   const remove = db.prepare('DELETE FROM links WHERE id = ? AND board_id = ?')
@@ -50,6 +52,7 @@ export function createLinksRepo(db: Database) {
         link.kind,
         link.label,
         link.color,
+        JSON.stringify(link.via),
         link.createdAt,
         link.updatedAt
       )

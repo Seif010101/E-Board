@@ -10,8 +10,8 @@ import { PATTERNS } from '@shared/validation'
 import { useSettings } from '@renderer/stores/session'
 import { board, useBoard } from '../core/store'
 import { clientToScreen, screenToWorld } from '../core/geometry'
-import { pinAnchorOf } from './anchors'
-import { nearestPoint, spreadSlots, threadShape } from './geometry'
+import { threadEnds } from './anchors'
+import { nearestOnThread, spreadSlots, threadShape } from './geometry'
 import { useHoverPoint, usePendingLink } from './pending'
 import { RELATION_META, relationName } from './relations'
 import { ThreadStrokes, cssVars } from './ThreadStrokes'
@@ -31,10 +31,12 @@ const Thread = memo(function Thread({ link, slot, orient, theme }: ThreadProps) 
   const hovered = useBoard((s) => s.hoveredLinkId === link.id)
   const selected = useBoard((s) => s.selectedLinkId === link.id)
 
-  const shape = useMemo(
-    () => (from && to ? threadShape(theme, pinAnchorOf(from), pinAnchorOf(to), slot, orient) : null),
-    [from, to, theme, slot, orient]
-  )
+  const shape = useMemo(() => {
+    if (!from || !to) return null
+    const via = link.via.map(([x, y]) => ({ x, y }))
+    const { a, b } = threadEnds(from, to, via)
+    return threadShape(theme, a, b, slot, orient, via)
+  }, [from, to, theme, slot, orient, link.via])
   if (!shape) return null
 
   const custom = link.color && PATTERNS.hexColor.test(link.color) ? link.color : null
@@ -45,7 +47,7 @@ const Thread = memo(function Thread({ link, slot, orient, theme }: ThreadProps) 
     const s = board()
     s.setHoveredLink(link.id)
     const world = screenToWorld(clientToScreen(e.clientX, e.clientY), s.viewport)
-    useHoverPoint.setState({ linkId: link.id, point: nearestPoint(shape.curve, world) })
+    useHoverPoint.setState({ linkId: link.id, point: nearestOnThread(shape, world).point })
   }
 
   const leave = () => {
@@ -70,7 +72,19 @@ const Thread = memo(function Thread({ link, slot, orient, theme }: ThreadProps) 
       aria-label={relationName(link, t)}
     >
       <ThreadStrokes theme={theme} shape={shape} />
-      {selected ? <circle className="thr__handle" cx={shape.mid.x} cy={shape.mid.y} /> : null}
+      {selected && shape.via.length === 0 ? <circle className="thr__handle" cx={shape.mid.x} cy={shape.mid.y} /> : null}
+      {selected
+        ? shape.via.map((p, i) => (
+            <circle
+              key={i}
+              className="thr__via"
+              cx={p.x}
+              cy={p.y}
+              data-handle={`via:${i}`}
+              data-link-id={link.id}
+            />
+          ))
+        : null}
       <path className="thr__hit" d={shape.d} onPointerEnter={track} onPointerMove={track} onPointerLeave={leave} />
     </g>
   )

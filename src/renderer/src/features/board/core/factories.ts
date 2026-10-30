@@ -178,7 +178,7 @@ export const createText = (o: CreateOptions, data: Partial<TextData> = {}): Item
 
 export const createLink = (boardId: Id, fromId: Id, toId: Id, kind: RelationKind, label = ''): LinkRecord => {
   const now = Date.now()
-  return { id: newId(), boardId, fromId, toId, kind, label, color: null, createdAt: now, updatedAt: now }
+  return { id: newId(), boardId, fromId, toId, kind, label, color: null, via: [], createdAt: now, updatedAt: now }
 }
 
 /** Deep copy with fresh ids (for duplicate / paste). Offsets position. */
