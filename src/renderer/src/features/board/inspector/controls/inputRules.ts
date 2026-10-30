@@ -53,8 +53,8 @@ export function ageFromDate(iso: string): number | null {
   const now = new Date()
   let age = now.getFullYear() - y
   if (now.getMonth() + 1 < m || (now.getMonth() + 1 === m && now.getDate() < d)) age--
-  return age >= 0 && age <= 150 ? age : null
+  return age >= 0 && age <= 120 ? age : null
 }
 
-/** Age typed as digits: a whole number between 0 and 150. */
+/** Age typed as digits: a whole number between 0 and 120. */
 export const ageText = (s: string): RuleError => rules.integer(s) ?? rules.age(Number(s))

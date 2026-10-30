@@ -61,6 +61,7 @@ const base = (boardId: string, overrides: Partial<BoardItem> = {}) => ({
   z: 1,
   rotation: 0,
   locked: false,
+  pinLocked: false,
   createdAt: 1_700_000_000_000,
   updatedAt: 1_700_000_000_000,
   ...overrides
@@ -82,10 +83,12 @@ export const personData = (overrides: Partial<PersonData> = {}): PersonData => (
   emails: ['ahmed@example.com'],
   socials: [{ platform: 'instagram', handle: '@ahmed462_ali', url: '' }],
   locations: [],
+  album: [],
   notes: '',
   tags: [],
   source: '',
   confidence: 'probable',
+  certainty: {},
   expanded: false,
   ...overrides
 })
@@ -121,6 +124,7 @@ export const company = (boardId: string, overrides: Partial<CompanyItem> = {}): 
     tags: [],
     source: '',
     confidence: 'possible',
+    certainty: {},
     expanded: false
   },
   ...overrides
@@ -138,6 +142,7 @@ export const entity = (boardId: string, data: Partial<EntityData> = {}): EntityI
     notes: '',
     tags: [],
     confidence: 'confirmed',
+    certainty: {},
     ...data
   }
 })
@@ -163,6 +168,7 @@ export const link = (boardId: string, fromId: string, toId: string, overrides: P
   kind: 'family',
   label: 'Brother',
   color: null,
+  via: [],
   createdAt: 1_700_000_000_000,
   updatedAt: 1_700_000_000_000,
   ...overrides

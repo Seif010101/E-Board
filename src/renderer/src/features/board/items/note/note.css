@@ -1,6 +1,5 @@
 /*
  * Sticky note. --nt-paper (paper tone for the board theme) and --nt-ink come from NoteItem.
- * .nt itself must not become a stacking context: the detective curl shadow sits behind it.
  */
 
 .nt {
@@ -88,48 +87,22 @@
   );
 }
 
-/* ---------- Detective: creased paper, push pin, curled corner ---------- */
+/* ---------- Detective: flat sticky paper held by a push pin ---------- */
 
 [data-board-theme='detective'] .nt__sheet {
-  border-radius: 1px;
+  border-radius: 2px;
+  /* A real sticky note: flat pastel paper, a faint sheen at the top (the adhesive strip) and a
+     soft shade toward the bottom edge. */
   background-image:
-    radial-gradient(ellipse 60% 45% at 22% 18%, rgb(255 255 255 / 0.32), transparent 70%),
-    radial-gradient(ellipse 55% 50% at 82% 78%, rgb(60 35 10 / 0.1), transparent 70%),
-    linear-gradient(112deg, transparent 38%, rgb(60 35 10 / 0.07) 39.5%, rgb(255 255 255 / 0.18) 41%, transparent 44%),
-    linear-gradient(203deg, transparent 57%, rgb(255 255 255 / 0.2) 58.5%, rgb(60 35 10 / 0.06) 60%, transparent 63%),
-    linear-gradient(168deg, rgb(255 255 255 / 0.14), rgb(60 35 10 / 0.08));
+    linear-gradient(to bottom, rgb(0 0 0 / 0.05) 0, rgb(255 255 255 / 0.12) 14%, transparent 22%),
+    linear-gradient(to bottom, transparent 70%, rgb(0 0 0 / 0.07));
   box-shadow:
-    inset 0 0 18px rgb(90 60 20 / 0.12),
-    1px 2px 2px rgb(0 0 0 / 0.22),
-    3px 7px 12px rgb(0 0 0 / 0.3);
+    0 1px 1px rgb(0 0 0 / 0.18),
+    0 6px 10px -4px rgb(0 0 0 / 0.35);
 }
-/* The lifted bottom corner: a folded tip on the paper and a deeper shadow beneath it. */
-[data-board-theme='detective'] .nt__sheet::after {
-  content: '';
-  position: absolute;
-  inset-inline-end: 0;
-  bottom: 0;
-  width: 22px;
-  height: 22px;
-  background: linear-gradient(315deg, transparent 50%, rgb(255 255 255 / 0.28) 50%, rgb(60 35 10 / 0.16) 100%);
-  pointer-events: none;
-}
-[dir='rtl'] [data-board-theme='detective'] .nt__sheet::after {
-  background: linear-gradient(45deg, transparent 50%, rgb(255 255 255 / 0.28) 50%, rgb(60 35 10 / 0.16) 100%);
-}
-.nt__curl {
-  position: absolute;
-  z-index: -1;
-  inset-inline-end: 6px;
-  bottom: 9px;
-  width: 46%;
-  height: 24%;
-  box-shadow: 8px 12px 12px rgb(0 0 0 / 0.42);
-  transform: skew(8deg) rotate(4deg);
-}
-[dir='rtl'] .nt__curl {
-  box-shadow: -8px 12px 12px rgb(0 0 0 / 0.42);
-  transform: skew(-8deg) rotate(-4deg);
+/* The pin (and the threads tied to it) sits over the top of the sheet: keep the text below it. */
+[data-board-theme='detective'] .nt__sheet {
+  padding-top: 32px;
 }
 
 /* Push pin centred on the thread anchor (top centre, 12px down). */
@@ -174,7 +147,8 @@
   color: color-mix(in srgb, var(--nt-paper) 78%, #ffffff);
 }
 [data-board-theme='hacker'] .nt__sheet {
-  padding-top: 18px;
+  /* Clears the thread end node at the top-centre anchor. */
+  padding-top: 28px;
   border: 1px solid color-mix(in srgb, var(--nt-paper) 62%, transparent);
   border-top-width: 3px;
   border-radius: 3px;

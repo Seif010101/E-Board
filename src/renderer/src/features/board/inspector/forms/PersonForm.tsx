@@ -1,11 +1,14 @@
 // Person card details: photo, identity, contact, documents, socials, places, relationships, notes.
 
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Camera, IdCard, Sparkles, UserRound } from 'lucide-react'
+import { Camera, IdCard, Images, Sparkles, UserRound } from 'lucide-react'
 import { PERSON_ROLES, RISK_LEVELS, type ItemOfType, type PersonData } from '@shared/types'
 import { LIMITS, rules } from '@shared/validation'
 import { genderLabel, riskLabel, roleLabel } from '../labels'
+import { AlbumDialog } from '../controls/AlbumDialog'
 import { ChipsField } from '../controls/ChipsField'
+import { CountryField } from '../controls/CountryField'
 import { IdDocumentsEditor } from '../controls/IdDocumentsEditor'
 import { MediaField } from '../controls/MediaField'
 import { Row, Section } from '../controls/Section'
@@ -13,6 +16,7 @@ import { SelectField, TextField } from '../controls/TextField'
 import { ageFromDate, ageText, filters, pastDate, todayIso } from '../controls/inputRules'
 import {
   CaseFileSection,
+  CertaintyScope,
   ContactSection,
   LocationsSection,
   NotesSection,
@@ -24,7 +28,6 @@ import {
 
 const GENDERS: readonly PersonData['gender'][] = ['male', 'female', 'unknown']
 const MAX_ALIASES = 20
-const NATIONALITY_MAX = 80
 const OCCUPATION_MAX = 120
 
 export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
@@ -32,12 +35,16 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
   const d = item.data
   const patch = usePatch(item)
   const scope = 'person'
+  const [albumOpen, setAlbumOpen] = useState(false)
+  // Cards saved before albums existed have none.
+  const album = d.album ?? []
 
   // Offer the age implied by the date of birth when it is missing or disagrees.
   const dobAge = d.dateOfBirth ? ageFromDate(d.dateOfBirth) : null
   const suggestedAge = dobAge !== null && dobAge !== d.age ? dobAge : null
 
   return (
+    <CertaintyScope item={item}>
     <div className="insp-form">
       <Section id={`${scope}.photo`} title={t('inspector.section.photo')} icon={Camera}>
         <MediaField
@@ -50,6 +57,7 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
 
       <Section id={`${scope}.identity`} title={t('inspector.section.identity')} icon={UserRound}>
         <TextField
+          certaintyKey="fullName"
           label={t('inspector.person.full_name')}
           value={d.fullName}
           onCommit={(fullName) => patch({ fullName })}
@@ -94,37 +102,40 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
             onChange={(gender) => gender && patch({ gender })}
           />
           <TextField
+            certaintyKey="age"
             label={t('inspector.person.age')}
             value={d.age === null ? '' : String(d.age)}
             onCommit={(v) => patch({ age: v === '' ? null : Number(v) })}
             validate={ageText}
             filter={filters.digits}
+            type="number"
             inputMode="numeric"
+            min="0"
+            max="120"
+            step="1"
             maxLength={3}
             live
             technical
             placeholder={t('inspector.person.age_placeholder')}
           />
         </Row>
-        <Row>
-          <TextField
-            label={t('inspector.person.dob')}
-            type="date"
-            value={d.dateOfBirth ?? ''}
-            onCommit={(v) => patch({ dateOfBirth: v === '' ? null : v })}
-            validate={pastDate}
-            min="1800-01-01"
-            max={todayIso()}
-          />
-          <TextField
-            label={t('inspector.person.nationality')}
-            value={d.nationality}
-            onCommit={(nationality) => patch({ nationality })}
-            validate={plainLine(NATIONALITY_MAX)}
-            maxLength={NATIONALITY_MAX}
-            placeholder={t('inspector.person.nationality_placeholder')}
-          />
-        </Row>
+        <TextField
+          certaintyKey="dateOfBirth"
+          label={t('inspector.person.dob')}
+          type="date"
+          value={d.dateOfBirth ?? ''}
+          onCommit={(v) => patch({ dateOfBirth: v === '' ? null : v })}
+          validate={pastDate}
+          min="1800-01-01"
+          max={todayIso()}
+        />
+        <CountryField
+          certaintyKey="nationality"
+          label={t('inspector.person.nationality')}
+          value={d.nationality}
+          onChange={(nationality) => patch({ nationality })}
+          placeholder={t('inspector.person.nationality_placeholder')}
+        />
         {suggestedAge !== null && (
           <div className="insp-suggestion" role="status">
             <Sparkles size={14} aria-hidden="true" />
@@ -139,6 +150,7 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
           </div>
         )}
         <TextField
+          certaintyKey="occupation"
           label={t('inspector.person.occupation')}
           value={d.occupation}
           onCommit={(occupation) => patch({ occupation })}
@@ -158,6 +170,22 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
 
       <Section id={`${scope}.documents`} title={t('inspector.section.documents')} icon={IdCard} count={d.idDocuments.length}>
         <IdDocumentsEditor documents={d.idDocuments} onChange={(idDocuments) => patch({ idDocuments })} />
+      </Section>
+
+      <Section id={`${scope}.album`} title={t('inspector.section.album')} icon={Images} count={album.length}>
+        <p className="insp-note">{t('inspector.album.hint')}</p>
+        <button type="button" className="btn insp-album-btn" onClick={() => setAlbumOpen(true)}>
+          <Images size={16} aria-hidden="true" />
+          {t('inspector.album.open')}
+        </button>
+        {albumOpen && (
+          <AlbumDialog
+            name={d.fullName || t('cards.unnamed_person')}
+            entries={album}
+            onChange={(next) => patch({ album: next })}
+            onClose={() => setAlbumOpen(false)}
+          />
+        )}
       </Section>
 
       <SocialsSection scope={scope} socials={d.socials} onChange={(socials) => patch({ socials })} />
@@ -182,5 +210,6 @@ export function PersonForm({ item }: { item: ItemOfType<'person'> }) {
         onConfidence={(confidence) => patch({ confidence })}
       />
     </div>
+    </CertaintyScope>
   )
 }

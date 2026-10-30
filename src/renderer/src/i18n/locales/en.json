@@ -44,7 +44,9 @@
     "invalid_file": "Only PNG or JPG images are allowed",
     "file_too_large": "The file is too large (max 15 MB)",
     "cloud_unavailable": "Cloud storage is not available yet",
-    "internal": "Something went wrong"
+    "internal": "Something went wrong",
+    "pin_locked": "This item is locked with a PIN",
+    "invalid_pin": "The PIN is wrong"
   },
   "validation": {
     "required": "This field is required",
@@ -75,6 +77,9 @@
     "invalid_option": "Invalid choice",
     "invalid_id": "Invalid reference",
     "invalid_color": "Invalid colour",
-    "invalid_input": "Invalid value"
+    "invalid_input": "Invalid value",
+    "pick_country": "Pick a country from the list",
+    "invalid_phone_for_country": "This number is not valid for the selected country",
+    "invalid_phone_international": "Enter a full international number, e.g. +971 50 123 4567"
   }
 }

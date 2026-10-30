@@ -304,3 +304,17 @@
     opacity: 0;
   }
 }
+
+/* ---------- Waypoints (drag to move, double-click to remove) ---------- */
+
+.thr__via {
+  fill: var(--board-bg, #fff);
+  stroke: var(--selection);
+  stroke-width: calc(var(--thr-px) * 2.5);
+  r: calc(var(--thr-px) * 6);
+  pointer-events: none;
+}
+.thr-layer--pointer .thr__via {
+  pointer-events: all;
+  cursor: grab;
+}

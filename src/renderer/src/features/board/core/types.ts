@@ -1,4 +1,4 @@
-import type { EntityKind, Id, LineStyle, NoteColor, RelationKind, ShapeKind } from '@shared/types'
+import type { EntityKind, Id, LineStyle, NoteColor, RelationKind, ShapeKind, TextData } from '@shared/types'
 
 export type ToolId = 'select' | 'hand' | 'pen' | 'highlighter' | 'eraser' | 'shape' | 'note' | 'text' | 'link'
 
@@ -10,7 +10,7 @@ export interface ToolOptions {
   eraser: { mode: EraserMode; size: number }
   shape: { kind: ShapeKind; stroke: string; fill: string; strokeWidth: number; dash: LineStyle }
   note: { color: NoteColor }
-  text: { color: string; fontSize: number }
+  text: Omit<TextData, 'text'>
   link: { kind: RelationKind }
 }
 
@@ -20,7 +20,17 @@ export const DEFAULT_TOOL_OPTIONS: ToolOptions = {
   eraser: { mode: 'pixel', size: 24 },
   shape: { kind: 'rect', stroke: '#e03131', fill: 'none', strokeWidth: 3, dash: 'solid' },
   note: { color: 'yellow' },
-  text: { color: '#1c1b19', fontSize: 24 },
+  text: {
+    color: '#1c1b19',
+    fontSize: 24,
+    bold: false,
+    italic: false,
+    underline: false,
+    font: 'default',
+    list: 'none',
+    spacing: 'normal',
+    align: 'start'
+  },
   link: { kind: 'associate' }
 }
 

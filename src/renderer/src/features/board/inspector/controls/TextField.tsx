@@ -1,6 +1,8 @@
 import { useId, type HTMLAttributes, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FieldShell } from './FieldShell'
+import { CertaintyBar } from './CertaintyBar'
+import { useCertainty } from './certainty'
 import { useDraft, type Validator } from './useDraft'
 
 export interface TextFieldProps {
@@ -13,7 +15,7 @@ export interface TextFieldProps {
   multiline?: boolean
   /** Visible lines of a multi-line field. */
   rows?: number
-  type?: 'text' | 'date' | 'datetime-local'
+  type?: 'text' | 'date' | 'datetime-local' | 'number'
   inputMode?: HTMLAttributes<HTMLInputElement>['inputMode']
   maxLength?: number
   /** Drops characters that can never be valid (e.g. non-digits in an age). */
@@ -28,10 +30,13 @@ export interface TextFieldProps {
   list?: string
   min?: string
   max?: string
+  step?: string
   /** Rendered inside the control, at its end (e.g. an "open link" button). */
   adornment?: ReactNode
   /** Rendered at the end of the label row. */
   aside?: ReactNode
+  /** Key of this value in the card's reliability ratings; shows the rating bar once there is a value. */
+  certaintyKey?: string
 }
 
 /**
@@ -42,6 +47,7 @@ export function TextField(p: TextFieldProps) {
   const { t } = useTranslation()
   const id = useId()
   const messageId = `${id}-msg`
+  const cert = useCertainty(p.certaintyKey)
   const isDate = p.type === 'date' || p.type === 'datetime-local'
   const d = useDraft({
     value: p.value,
@@ -81,6 +87,7 @@ export function TextField(p: TextFieldProps) {
       list={p.list}
       min={p.min}
       max={p.max}
+      step={p.step}
       autoComplete="off"
     />
   )
@@ -103,6 +110,7 @@ export function TextField(p: TextFieldProps) {
       ) : (
         control
       )}
+      {cert && p.value !== '' && <CertaintyBar {...cert} label={p.label} />}
     </FieldShell>
   )
 }

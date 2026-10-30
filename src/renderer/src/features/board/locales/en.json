@@ -93,7 +93,8 @@
       "select_all": "Select all",
       "fit": "Fit to content",
       "rename": "Rename board",
-      "shortcuts": "Keyboard shortcuts"
+      "shortcuts": "Keyboard shortcuts",
+      "lock_pin": "Lock with PIN…"
     },
     "keys": {
       "mod": "Ctrl",
@@ -154,6 +155,23 @@
       "rename": "Rename board",
       "menu": "Open the context menu",
       "shortcuts": "Show this list"
+    },
+    "pin": {
+      "pin": "PIN",
+      "again": "Repeat the PIN",
+      "lock_title": "Lock with a PIN",
+      "unlock_title": "Unlock",
+      "lock_text": "Nobody can change, move or delete the locked item until it is unlocked with this PIN.",
+      "unlock_text": "Enter the PIN that was set for this item.",
+      "lock": "Lock",
+      "unlock": "Unlock",
+      "format": "The PIN is 4 to 8 digits.",
+      "mismatch": "The two PINs do not match.",
+      "warning": "Remember this PIN: it cannot be recovered.",
+      "locked": "Locked with a PIN",
+      "unlocked": "Unlocked",
+      "locked_banner": "Locked with a PIN: unlock it to edit.",
+      "unlock_button": "Unlock…"
     }
   }
 }

@@ -20,7 +20,6 @@ export function NoteItem({ item, editing, selected, theme }: ItemComponentProps<
 
   return (
     <div className="nt" data-color={color} style={style}>
-      {theme === 'detective' && <span className="nt__curl" aria-hidden="true" />}
       {theme === 'normal' && <span className="nt__tape" aria-hidden="true" />}
       {theme === 'detective' && (
         <span className="nt__pin" aria-hidden="true">

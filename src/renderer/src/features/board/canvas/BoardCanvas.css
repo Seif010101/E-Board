@@ -324,3 +324,25 @@
     display: none;
   }
 }
+
+/* Selected line / arrow: a soft halo along the line and round end handles (no bounding box). */
+.bc-sel-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.bc-sel-line line {
+  stroke: var(--selection);
+  stroke-width: calc(7px * var(--bc-inv));
+  stroke-linecap: round;
+  opacity: 0.3;
+}
+.bc-sel-line.is-locked line {
+  stroke-dasharray: calc(6px * var(--bc-inv)) calc(6px * var(--bc-inv));
+}
+.bc-handle--end {
+  border-radius: 50%;
+  cursor: crosshair;
+}

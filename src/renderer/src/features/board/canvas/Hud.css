@@ -27,8 +27,12 @@
 .bc-hud--right {
   right: var(--bc-hud-gap);
 }
-.bc-hud.is-raised {
-  bottom: calc(var(--bc-hud-gap) + var(--bc-hud-dock));
+/* A bottom dock sits in the middle: the corner widgets only step above it when the board is too
+   narrow for both side by side. */
+@container bs-board (max-width: 960px) {
+  .bc-hud.is-raised {
+    bottom: calc(var(--bc-hud-gap) + var(--bc-hud-dock));
+  }
 }
 
 [data-board-theme='hacker'] .bc-hud {
@@ -105,8 +109,10 @@
   overflow: hidden;
   animation: bc-hud-in 0.16s var(--ease);
 }
-.bc-minimap.is-raised {
-  bottom: calc(var(--bc-hud-gap) + var(--bc-hud-dock) + var(--bc-hud-zoom-h) + 8px);
+@container bs-board (max-width: 960px) {
+  .bc-minimap.is-raised {
+    bottom: calc(var(--bc-hud-gap) + var(--bc-hud-dock) + var(--bc-hud-zoom-h) + 8px);
+  }
 }
 
 .bc-minimap__canvas {

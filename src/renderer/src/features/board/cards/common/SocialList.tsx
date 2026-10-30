@@ -1,27 +1,24 @@
 import type { CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ExternalLink } from 'lucide-react'
-import type { SocialAccount, SocialPlatform } from '@shared/types'
+import type { SocialAccount } from '@shared/types'
 import { isHttpUrl } from '@shared/validation'
 import { BrandIcon } from './BrandIcon'
 import { BRANDS, groupSocials } from './brands'
 import { copyText, openExternal } from './actions'
 
 /**
- * Every platform stacked vertically. Platforms where the person has an account are "lit"
- * (brand background + handle; click copies the handle, the arrow opens the profile URL),
- * the others are dimmed, compact rows.
+ * The accounts that were added, one brand-coloured row each (click copies the handle, the arrow
+ * opens the profile URL). Platforms without an account are not listed at all.
  */
 export function SocialList({ socials }: { socials: SocialAccount[] }) {
   const { t } = useTranslation()
-  const { lit, dim } = groupSocials(socials)
+  const { lit } = groupSocials(socials)
+  if (lit.length === 0) return null
   return (
     <ul className="cd-social" aria-label={t('cards.social_media')}>
       {lit.map((account, i) => (
         <LitRow key={`${account.platform}:${i}`} account={account} />
-      ))}
-      {dim.map((platform) => (
-        <DimRow key={platform} platform={platform} />
       ))}
     </ul>
   )
@@ -59,21 +56,6 @@ function LitRow({ account }: { account: SocialAccount }) {
           <ExternalLink size={13} aria-hidden="true" />
         </button>
       )}
-    </li>
-  )
-}
-
-function DimRow({ platform }: { platform: SocialPlatform }) {
-  const { t } = useTranslation()
-  const name = t(`social.${platform}`)
-  const label = t('cards.no_account', { platform: name })
-  return (
-    <li className="cd-social__row is-dim" data-platform={platform} title={label}>
-      <BrandIcon platform={platform} size={12} />
-      <span className="cd-social__name" aria-hidden="true">
-        {name}
-      </span>
-      <span className="cd-sr">{label}</span>
     </li>
   )
 }

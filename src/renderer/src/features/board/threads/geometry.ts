@@ -13,7 +13,15 @@ export interface Curve {
 }
 
 export interface ThreadShape {
+  /** The first (for a thread without waypoints: the only) curve. */
   curve: Curve
+  /** Every curve from source to target; one more than the number of waypoints. */
+  segments: Curve[]
+  /** Ends of the thread. */
+  a: Point
+  b: Point
+  /** Waypoints, in order. */
+  via: Point[]
   /** SVG path data, running from source to target. */
   d: string
   /** Point on the curve at t = 0.5. */
@@ -128,10 +136,63 @@ export function pointAt(c: Curve, t: number): Point {
 export const curvePath = (c: Curve): string =>
   `M${round(c.a.x)} ${round(c.a.y)}C${round(c.c1.x)} ${round(c.c1.y)} ${round(c.c2.x)} ${round(c.c2.y)} ${round(c.b.x)} ${round(c.b.y)}`
 
-export function threadShape(theme: BoardTheme, a: Point, b: Point, slot = 0, orient: 1 | -1 = 1): ThreadShape {
-  const curve = threadCurve(theme, a, b, slot, orient)
+/** Cubic form of the straight segment p → q. */
+const straight = (p: Point, q: Point): Curve => ({ a: p, c1: lerp(p, q, 1 / 3), c2: lerp(p, q, 2 / 3), b: q })
+
+/**
+ * Curves through a → via… → b. Detective string and hacker traces are pulled taut around the
+ * waypoints (straight runs with corners, like string around pins); normal threads flow smoothly
+ * through them (Catmull-Rom spline).
+ */
+function viaCurves(theme: BoardTheme, a: Point, via: readonly Point[], b: Point): Curve[] {
+  const pts = [a, ...via, b]
+  if (theme !== 'normal') return pts.slice(1).map((p, i) => straight(pts[i], p))
+  return pts.slice(1).map((p, i) => {
+    const p0 = pts[Math.max(0, i - 1)]
+    const p1 = pts[i]
+    const p3 = pts[Math.min(pts.length - 1, i + 2)]
+    return {
+      a: p1,
+      c1: { x: p1.x + (p.x - p0.x) / 6, y: p1.y + (p.y - p0.y) / 6 },
+      c2: { x: p.x - (p3.x - p1.x) / 6, y: p.y - (p3.y - p1.y) / 6 },
+      b: p
+    }
+  })
+}
+
+const SAMPLES = 24
+
+/** Point halfway along the whole thread (by length). */
+function middle(segments: readonly Curve[]): Point {
+  const pts: Point[] = [segments[0].a]
+  for (const c of segments) for (let i = 1; i <= SAMPLES; i++) pts.push(pointAt(c, i / SAMPLES))
+  let total = 0
+  for (let i = 1; i < pts.length; i++) total += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y)
+  let walked = 0
+  for (let i = 1; i < pts.length; i++) {
+    const len = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y)
+    if (walked + len >= total / 2 && len > 0) return lerp(pts[i - 1], pts[i], (total / 2 - walked) / len)
+    walked += len
+  }
+  return pts[pts.length - 1]
+}
+
+export function threadShape(theme: BoardTheme, a: Point, b: Point, slot = 0, orient: 1 | -1 = 1, via: readonly Point[] = []): ThreadShape {
+  const segments = via.length ? viaCurves(theme, a, via, b) : [threadCurve(theme, a, b, slot, orient)]
   const c = chord(a, b)
-  return { curve, d: curvePath(curve), mid: pointAt(curve, 0.5), normal: { x: c.nx, y: c.ny } }
+  const d = segments
+    .map((s, i) => (i === 0 ? curvePath(s) : curvePath(s).replace(/^M[^C]*/, '')))
+    .join('')
+  return {
+    curve: segments[0],
+    segments,
+    a,
+    b,
+    via: [...via],
+    d,
+    mid: segments.length === 1 ? pointAt(segments[0], 0.5) : middle(segments),
+    normal: { x: c.nx, y: c.ny }
+  }
 }
 
 const dist2 = (p: Point, q: Point) => (p.x - q.x) ** 2 + (p.y - q.y) ** 2
@@ -157,6 +218,21 @@ export function nearestPoint(c: Curve, p: Point, samples = 40): Point {
     else lo = m1
   }
   return pointAt(c, (lo + hi) / 2)
+}
+
+/** Closest point on the whole thread, and which segment it lies on (= where a new waypoint goes). */
+export function nearestOnThread(shape: ThreadShape, p: Point): { point: Point; index: number } {
+  let best = { point: shape.a, index: 0 }
+  let bestD = Infinity
+  shape.segments.forEach((c, index) => {
+    const point = nearestPoint(c, p)
+    const d = dist2(point, p)
+    if (d < bestD) {
+      bestD = d
+      best = { point, index }
+    }
+  })
+  return best
 }
 
 /**

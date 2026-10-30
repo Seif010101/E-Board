@@ -1,8 +1,9 @@
 // Building blocks shared by the card forms: the store patch helper and the sections every
 // investigative card has (locations, relationships, notes & tags, source & confidence).
 
+import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AtSign, ExternalLink, Mail, MapPin, NotebookPen, Phone, ShieldCheck, Waypoints, Contact } from 'lucide-react'
+import { AtSign, ExternalLink, Mail, MapPin, NotebookPen, ShieldCheck, Waypoints, Contact } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 import type { BoardItem, Confidence, DataOfType, GeoLocation, ItemOfType, ItemType, SocialAccount } from '@shared/types'
 import { isHttpUrl, LIMITS, rules } from '@shared/validation'
@@ -17,6 +18,8 @@ import { Section } from '../controls/Section'
 import { SocialsEditor } from '../controls/SocialsEditor'
 import { SelectField, TextField } from '../controls/TextField'
 import { filters, plainText } from '../controls/inputRules'
+import { CertaintyContext, certaintyMap, entryKey, useCertaintyFor, type CertaintyBinding } from '../controls/certainty'
+import { PhoneListField } from '../controls/PhoneListField'
 
 export const CONFIDENCES: readonly Confidence[] = ['confirmed', 'probable', 'possible', 'unverified']
 
@@ -56,20 +59,16 @@ interface ContactProps {
 
 export function ContactSection({ scope, phones, emails, onPhones, onEmails }: ContactProps) {
   const { t } = useTranslation()
+  const bind = useCertaintyFor()
   return (
     <Section id={`${scope}.contact`} title={t('inspector.section.contact')} icon={Contact} count={phones.length + emails.length}>
-      <ListField
+      <PhoneListField
         label={t('inspector.phones')}
         values={phones}
         onChange={onPhones}
-        validate={rules.phone}
         max={LIMITS.listItems}
-        maxLength={32}
-        icon={Phone}
-        inputMode="tel"
-        filter={filters.phone}
-        technical
         placeholder={t('inspector.phone_placeholder')}
+        certainty={bind ? (v) => bind(entryKey('phones', v)) : undefined}
       />
       <ListField
         label={t('inspector.emails')}
@@ -82,6 +81,7 @@ export function ContactSection({ scope, phones, emails, onPhones, onEmails }: Co
         inputMode="email"
         filter={filters.noSpaces}
         technical
+        certaintyList="emails"
         placeholder={t('inspector.email_placeholder')}
       />
     </Section>
@@ -190,4 +190,24 @@ export function CaseFileSection({ scope, confidence, onConfidence, source, onSou
       />
     </Section>
   )
+}
+
+/** Most ratings a card keeps; older ones go first (the stored map is capped by the schema). */
+const MAX_RATINGS = 350
+
+/** Lets every field and list row inside a card form show a reliability bar, stored on the card. */
+export function CertaintyScope({ item, children }: { item: ItemOfType<'person' | 'company' | 'entity'>; children: ReactNode }) {
+  const map = certaintyMap(item.data)
+  const bind = (key: string): CertaintyBinding => ({
+    value: map[key],
+    onChange: (value) => {
+      const next = { ...map, [key]: value }
+      for (const k of Object.keys(next)) {
+        if (Object.keys(next).length <= MAX_RATINGS) break
+        if (k !== key) delete next[k]
+      }
+      board().updateItem<'person' | 'company' | 'entity'>(item.id, { data: { certainty: next } })
+    }
+  })
+  return <CertaintyContext.Provider value={bind}>{children}</CertaintyContext.Provider>
 }

@@ -6,28 +6,53 @@ import i18n from '@renderer/i18n'
 import { api, call, errorMessage } from '@renderer/lib/api'
 import { toast } from '@renderer/components/ui/toast'
 import { board } from '../core/store'
-import { createCompany, createEntity, createImage, createPerson, randomTilt } from '../core/factories'
+import { createCompany, createEntity, createImage, createPerson, DEFAULT_SIZES, randomTilt } from '../core/factories'
 import { viewCenterWorld } from '../core/geometry'
 import type { PlaceableId, Point } from '../core/types'
 
-/** Successive cards placed at the same spot cascade down-right by this much. */
-const CASCADE = 24
-/** Centres closer than this count as "already taken". */
-const SAME_SPOT = 12
-const MAX_CASCADE = 40
+/** Clear space kept around a placed card. */
+const GAP = 24
+/** Distance between candidate spots while searching outward from the view centre. */
+const STEP = 40
+/** How many rings of candidates are tried before giving up and using the view centre. */
+const MAX_RINGS = 30
 
 const IMAGE_WIDTH = 240
 /** Strip under the picture for the caption. */
 const IMAGE_CAPTION = 48
 
-/** Centre of the view, moved down-right while another item is already centred there. */
-function freeCenter(): Point {
+/**
+ * Centre for a new w x h card: the view centre if it is clear, otherwise the nearest spot on
+ * square rings around it where the card (plus a gap) overlaps no existing item. Pen strokes are
+ * ignored: they are often large scribbles and covering them is harmless.
+ */
+function freeCenter(w: number, h: number): Point {
   const s = board()
   const base = viewCenterWorld(s.viewport)
-  const centres = Object.values(s.items).map((i) => ({ x: i.x + i.w / 2, y: i.y + i.h / 2 }))
-  for (let k = 0; k < MAX_CASCADE; k++) {
-    const c = { x: base.x + k * CASCADE, y: base.y + k * CASCADE }
-    if (!centres.some((p) => Math.abs(p.x - c.x) < SAME_SPOT && Math.abs(p.y - c.y) < SAME_SPOT)) return c
+  const boxes = Object.values(s.items).filter((i) => i.type !== 'stroke')
+  const clear = (c: Point): boolean => {
+    const x0 = c.x - w / 2 - GAP
+    const y0 = c.y - h / 2 - GAP
+    const x1 = c.x + w / 2 + GAP
+    const y1 = c.y + h / 2 + GAP
+    return !boxes.some((i) => i.x < x1 && i.x + i.w > x0 && i.y < y1 && i.y + i.h > y0)
+  }
+  if (clear(base)) return base
+  for (let r = 1; r <= MAX_RINGS; r++) {
+    let best: Point | null = null
+    let bestD = Infinity
+    for (let dx = -r; dx <= r; dx++) {
+      for (let dy = -r; dy <= r; dy++) {
+        if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue
+        const c = { x: base.x + dx * STEP, y: base.y + dy * STEP }
+        const d = dx * dx + dy * dy
+        if (d < bestD && clear(c)) {
+          best = c
+          bestD = d
+        }
+      }
+    }
+    if (best) return best
   }
   return base
 }
@@ -48,7 +73,8 @@ function placeCard(id: Exclude<PlaceableId, 'image'>): void {
   const s = board()
   const boardId = s.board?.id
   if (!boardId) return
-  const o = { boardId, z: s.nextZ(), center: freeCenter(), rotation: tilt() }
+  const size = DEFAULT_SIZES[id === 'person' ? 'person' : id === 'company' ? 'company' : 'entity']
+  const o = { boardId, z: s.nextZ(), center: freeCenter(size.w, size.h), rotation: tilt() }
   let item: BoardItem
   if (id === 'person') item = createPerson(o)
   else if (id === 'company') item = createCompany(o)
@@ -70,7 +96,7 @@ async function placeImage(): Promise<void> {
     if (!media || board().board?.id !== boardId) return
     const aspect = media.width > 0 ? Math.min(2.5, Math.max(0.25, media.height / media.width)) : 1
     const h = Math.round(IMAGE_WIDTH * aspect) + IMAGE_CAPTION
-    const center = freeCenter()
+    const center = freeCenter(IMAGE_WIDTH, h)
     const item = createImage(
       {
         boardId,

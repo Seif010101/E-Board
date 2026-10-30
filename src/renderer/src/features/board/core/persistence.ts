@@ -4,14 +4,14 @@ import type { BoardItem, LinkRecord } from '@shared/types'
 import { api, ApiError, call } from '@renderer/lib/api'
 import { toast } from '@renderer/components/ui/toast'
 import i18n from '@renderer/i18n'
-import { board, useBoard } from './store'
+import { useSession } from '@renderer/stores/session'
+import { board, hasUnsavedChanges, useBoard } from './store'
 
 const DEBOUNCE_MS = 500
 const RETRY_MS = 5000
 
 let timer: ReturnType<typeof setTimeout> | null = null
 let inflight: Promise<void> | null = null
-let rerun = false
 let lastErrorToast = 0
 
 const schedule = (ms = DEBOUNCE_MS) => {
@@ -76,12 +76,13 @@ async function saveItemsAndLinks(itemIds: string[], linkIds: string[]): Promise<
   }
 }
 
-/** Save everything dirty right now. Safe to call concurrently. */
+/**
+ * Save everything dirty right now. Safe to call concurrently: while a save is running the call
+ * waits for it and then saves whatever changed meanwhile, so awaiting it covers every edit made
+ * before the call.
+ */
 export function flush(): Promise<void> {
-  if (inflight) {
-    rerun = true
-    return inflight
-  }
+  if (inflight) return inflight.then(() => flush())
   const run = async () => {
     const s = board()
     if (!s.board) return
@@ -110,10 +111,6 @@ export function flush(): Promise<void> {
   }
   inflight = run().finally(() => {
     inflight = null
-    if (rerun) {
-      rerun = false
-      void flush()
-    }
   })
   return inflight
 }
@@ -123,7 +120,18 @@ export function startPersistence(): () => Promise<void> {
   const unsub = useBoard.subscribe((s, prev) => {
     if (s.dirtyVersion !== prev.dirtyVersion && s.board) schedule()
   })
-  const onBeforeUnload = () => void flush()
+  // Closing the window waits for the final save: a prevented beforeunload cancels the close in
+  // Electron (no prompt is shown), and the window is closed again once everything is stored. If
+  // that save fails the window stays open with the error shown, and the next close goes through.
+  let letClose = false
+  const onBeforeUnload = (e: BeforeUnloadEvent) => {
+    if (letClose || useSession.getState().locked || (!inflight && !hasUnsavedChanges())) return
+    e.preventDefault()
+    letClose = true
+    void flush().then(() => {
+      if (!hasUnsavedChanges()) window.close()
+    })
+  }
   window.addEventListener('beforeunload', onBeforeUnload)
   return async () => {
     unsub()

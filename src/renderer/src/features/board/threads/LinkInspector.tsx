@@ -142,7 +142,7 @@ export function LinkInspector({ link }: { link: LinkRecord }) {
     board().updateLink(link.id, { color: value })
   }
 
-  const swap = () => board().updateLink(link.id, { fromId: link.toId, toId: link.fromId })
+  const swap = () => board().updateLink(link.id, { fromId: link.toId, toId: link.fromId, via: [...link.via].reverse() })
 
   const remove = () => {
     board().removeLinks([link.id])

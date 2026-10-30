@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export type ToastKind = 'info' | 'success' | 'error'
 
@@ -36,6 +37,7 @@ export const toast = {
 }
 
 export function Toaster() {
+  const { t: tr } = useTranslation()
   const toasts = useToasts((s) => s.toasts)
   const dismiss = useToasts((s) => s.dismiss)
   return (
@@ -43,7 +45,7 @@ export function Toaster() {
       {toasts.map((t) => (
         <div key={t.id} className={`toast toast--${t.kind}`}>
           <span>{t.message}</span>
-          <button className="icon-btn icon-btn--sm" onClick={() => dismiss(t.id)} aria-label="close">
+          <button className="icon-btn icon-btn--sm" onClick={() => dismiss(t.id)} aria-label={tr('common.close')}>
             <X size={14} />
           </button>
         </div>

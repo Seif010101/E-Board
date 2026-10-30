@@ -13,6 +13,7 @@ interface ItemRow {
   rotation: number
   locked: number
   data_json: string
+  pin_hash: string | null
   created_at: number
   updated_at: number
 }
@@ -30,6 +31,7 @@ const toItem = (r: ItemRow): BoardItem =>
     z: r.z,
     rotation: r.rotation,
     locked: r.locked === 1,
+    pinLocked: r.pin_hash !== null,
     data: JSON.parse(r.data_json),
     createdAt: r.created_at,
     updatedAt: r.updated_at
@@ -50,6 +52,21 @@ export function createItemsRepo(db: Database) {
      WHERE items.board_id = excluded.board_id`
   )
   const remove = db.prepare('DELETE FROM items WHERE id = ? AND board_id = ?')
+  const pinOf = db.prepare('SELECT pin_hash, pin_fails, pin_blocked_until FROM items WHERE id = ? AND board_id = ?')
+  const pinLockedAny = db.prepare('SELECT 1 AS found FROM items WHERE id = ? AND pin_hash IS NOT NULL')
+  const pinLockedOnBoard = db.prepare('SELECT 1 AS found FROM items WHERE board_id = ? AND pin_hash IS NOT NULL LIMIT 1')
+  const pinLockedInCase = db.prepare(
+    'SELECT 1 AS found FROM items WHERE pin_hash IS NOT NULL AND board_id IN (SELECT id FROM boards WHERE case_id = ?) LIMIT 1'
+  )
+  const setPin = db.prepare(
+    `UPDATE items SET pin_hash = ?, locked = 1, pin_fails = 0, pin_blocked_until = 0, updated_at = ?
+     WHERE id = ? AND board_id = ? AND pin_hash IS NULL`
+  )
+  const clearPin = db.prepare(
+    `UPDATE items SET pin_hash = NULL, locked = 0, pin_fails = 0, pin_blocked_until = 0, updated_at = ?
+     WHERE id = ? AND board_id = ?`
+  )
+  const failPin = db.prepare('UPDATE items SET pin_fails = ?, pin_blocked_until = ? WHERE id = ? AND board_id = ?')
 
   return {
     list: (boardId: string): BoardItem[] => (list.all(boardId) as unknown as ItemRow[]).map(toItem),
@@ -72,7 +89,20 @@ export function createItemsRepo(db: Database) {
         item.updatedAt
       )
     },
-    remove: (boardId: string, id: string): boolean => remove.run(id, boardId).changes > 0
+    remove: (boardId: string, id: string): boolean => remove.run(id, boardId).changes > 0,
+
+    /** PIN state of an item on the board, or null when the item does not exist there. */
+    pinState: (boardId: string, id: string): { hash: string | null; fails: number; blockedUntil: number } | null => {
+      const r = pinOf.get(id, boardId) as { pin_hash: string | null; pin_fails: number; pin_blocked_until: number } | undefined
+      return r ? { hash: r.pin_hash, fails: r.pin_fails, blockedUntil: r.pin_blocked_until } : null
+    },
+    isPinLocked: (id: string): boolean => pinLockedAny.get(id) !== undefined,
+    boardHasPinLocked: (boardId: string): boolean => pinLockedOnBoard.get(boardId) !== undefined,
+    caseHasPinLocked: (caseId: string): boolean => pinLockedInCase.get(caseId) !== undefined,
+    lockWithPin: (boardId: string, id: string, hash: string, at: number): boolean => setPin.run(hash, at, id, boardId).changes > 0,
+    clearPin: (boardId: string, id: string, at: number): void => void clearPin.run(at, id, boardId),
+    recordPinFailure: (boardId: string, id: string, fails: number, blockedUntil: number): void =>
+      void failPin.run(fails, blockedUntil, id, boardId)
   }
 }
 

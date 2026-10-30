@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface ModalProps {
   title: string
@@ -12,6 +13,7 @@ interface ModalProps {
 
 /** Accessible modal dialog. Closes on Escape and backdrop click. */
 export function Modal({ title, open, onClose, children, footer, width = 480 }: ModalProps) {
+  const { t } = useTranslation()
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export function Modal({ title, open, onClose, children, footer, width = 480 }: M
       <div className="modal" role="dialog" aria-modal="true" aria-label={title} style={{ width }} ref={ref}>
         <div className="modal__header">
           <h2>{title}</h2>
-          <button className="icon-btn modal__close" onClick={onClose} aria-label="close">
+          <button className="icon-btn modal__close" onClick={onClose} aria-label={t('common.close')}>
             <X size={18} />
           </button>
         </div>

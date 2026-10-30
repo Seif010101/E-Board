@@ -86,7 +86,7 @@ export interface BoardState {
 
   // links
   addLink(link: LinkRecord, opts?: MutateOptions): boolean
-  updateLink(id: Id, patch: Partial<Pick<LinkRecord, 'kind' | 'label' | 'color' | 'fromId' | 'toId'>>, opts?: MutateOptions): void
+  updateLink(id: Id, patch: Partial<Pick<LinkRecord, 'kind' | 'label' | 'color' | 'fromId' | 'toId' | 'via'>>, opts?: MutateOptions): void
   removeLinks(ids: Id[], opts?: MutateOptions): void
 
   // board meta
@@ -111,6 +111,9 @@ export interface BoardState {
   undo(): void
   redo(): void
 
+  /** Reflects a lock change made by the main process (PIN lock / unlock); not saved back and not undoable. */
+  syncItemLock(id: Id, lock: { locked: boolean; pinLocked: boolean }): void
+
   // persistence (used by persistence.ts only)
   takeDirty(): { itemIds: Id[]; linkIds: Id[]; boardMeta: boolean; viewport: boolean }
   restoreDirty(d: { itemIds: Id[]; linkIds: Id[]; boardMeta: boolean; viewport: boolean }): void
@@ -131,6 +134,14 @@ const internal = {
 
 const emptyPatch = (): Patch => ({ items: {}, links: {} })
 const isEmptyPatch = (p: Patch) => Object.keys(p.items).length === 0 && Object.keys(p.links).length === 0
+
+/** The same patch with the lock state of `id` set in every item snapshot it holds. */
+const syncPatch = (p: Patch, id: Id, lock: { locked: boolean; pinLocked: boolean }): Patch => {
+  const pair = p.items[id]
+  if (!pair) return p
+  const apply = (i: BoardItem | null) => (i ? ({ ...i, ...lock } as BoardItem) : i)
+  return { ...p, items: { ...p.items, [id]: [apply(pair[0]), apply(pair[1])] } }
+}
 
 const mergeInto = (target: Patch, p: Patch) => {
   for (const [id, [before, after]] of Object.entries(p.items)) {
@@ -172,6 +183,8 @@ export const useBoard = create<BoardState>((set, get) => {
     const patch = emptyPatch()
     const now = Date.now()
 
+    // Items locked with a PIN cannot be changed or deleted here (the main process refuses them too).
+    for (const id of Object.keys(itemChanges)) if (s.items[id]?.pinLocked) delete itemChanges[id]
     for (const [id, next] of Object.entries(itemChanges)) {
       const before = s.items[id] ?? null
       if (before === null && next === null) continue
@@ -180,6 +193,13 @@ export const useBoard = create<BoardState>((set, get) => {
       if (after) items[id] = after
       else delete items[id]
       internal.dirtyItems.add(id)
+    }
+    for (const [id, link] of Object.entries(s.links)) {
+      if (!(id in linkChanges)) continue
+      const pinned = s.items[link.fromId]?.pinLocked || s.items[link.toId]?.pinLocked
+      // A thread vanishes with an item that is deleted; otherwise threads of a PIN-locked item stay as they are.
+      const cascaded = itemChanges[link.fromId] === null || itemChanges[link.toId] === null
+      if (pinned && !cascaded) delete linkChanges[id]
     }
     for (const [id, next] of Object.entries(linkChanges)) {
       const before = s.links[id] ?? null
@@ -239,6 +259,13 @@ export const useBoard = create<BoardState>((set, get) => {
     return changes
   }
 
+  /** Level every tilted item (no undo step: tilt is purely a detective-board look). */
+  const straighten = () => {
+    const tilted = Object.values(get().items).filter((i) => i.rotation !== 0)
+    if (!tilted.length) return
+    commit(Object.fromEntries(tilted.map((i) => [i.id, { ...i, rotation: 0 }])), {}, { history: false })
+  }
+
   const applyItemPatch = (item: BoardItem, patch: ItemPatch): BoardItem => {
     const { data, ...base } = patch
     return { ...item, ...base, data: data ? { ...item.data, ...data } : item.data } as BoardItem
@@ -265,6 +292,7 @@ export const useBoard = create<BoardState>((set, get) => {
         links: Object.fromEntries(bundle.links.map((l) => [l.id, l])),
         viewport: bundle.board.viewport
       })
+      if (bundle.board.theme !== 'detective') straighten()
     },
 
     reset() {
@@ -272,6 +300,11 @@ export const useBoard = create<BoardState>((set, get) => {
       internal.future = []
       internal.tx = null
       internal.txDepth = 0
+      // The board's contents are gone, so are its pending changes.
+      internal.dirtyItems.clear()
+      internal.dirtyLinks.clear()
+      internal.dirtyBoardMeta = false
+      internal.dirtyViewport = false
       set({ ...initialView })
     },
 
@@ -361,6 +394,8 @@ export const useBoard = create<BoardState>((set, get) => {
       if (!board || board.theme === theme) return
       internal.dirtyBoardMeta = true
       set({ board: { ...board, theme }, dirtyVersion: get().dirtyVersion + 1 })
+      // Only the detective board hangs its paper crooked; the other themes keep everything straight.
+      if (theme !== 'detective') straighten()
     },
 
     setBoardTitle(title) {
@@ -442,6 +477,15 @@ export const useBoard = create<BoardState>((set, get) => {
       applyPatch(patch, 'redo')
       internal.past.push(patch)
       set({ canUndo: true, canRedo: internal.future.length > 0 })
+    },
+
+    syncItemLock(id, lock) {
+      const item = get().items[id]
+      if (!item) return
+      set({ items: { ...get().items, [id]: { ...item, ...lock } as BoardItem } })
+      // The stored item changed under any undo step that still mentions it.
+      internal.past = internal.past.map((p) => syncPatch(p, id, lock))
+      internal.future = internal.future.map((p) => syncPatch(p, id, lock))
     },
 
     takeDirty() {
